@@ -185,10 +185,10 @@ type SeasonSummary struct {
 
 // SeasonMetadata contains full season details.
 type SeasonMetadata struct {
-	ProviderID   string
-	Provider     ProviderID
-	TMDbID       *int32
-	TVDbID       *int32
+	ProviderID string
+	Provider   ProviderID
+	TMDbID     *int32
+	TVDbID     *int32
 
 	ShowID       string // Provider ID of the parent show
 	SeasonNumber int
@@ -233,16 +233,16 @@ type EpisodeMetadata struct {
 	TVDbID     *int32
 	IMDbID     *string
 
-	ShowID        string // Provider ID of the parent show
-	SeasonNumber  int
-	EpisodeNumber int
-	Name          string
-	Overview      *string
-	AirDate       *time.Time
-	Runtime       *int32
-	StillPath     *string
-	VoteAverage   float64
-	VoteCount     int
+	ShowID         string // Provider ID of the parent show
+	SeasonNumber   int
+	EpisodeNumber  int
+	Name           string
+	Overview       *string
+	AirDate        *time.Time
+	Runtime        *int32
+	StillPath      *string
+	VoteAverage    float64
+	VoteCount      int
 	ProductionCode *string
 
 	// Guest stars and crew
@@ -279,18 +279,18 @@ type PersonMetadata struct {
 	IMDbID     *string
 	TMDbID     *int32
 
-	Name           string
-	AlsoKnownAs    []string
-	Biography      *string
-	Birthday       *time.Time
-	Deathday       *time.Time
-	Gender         int // 0=not specified, 1=female, 2=male, 3=non-binary
-	PlaceOfBirth   *string
-	ProfilePath    *string
-	Homepage       *string
-	Popularity     float64
-	Adult          bool
-	KnownForDept   string // Acting, Directing, etc.
+	Name         string
+	AlsoKnownAs  []string
+	Biography    *string
+	Birthday     *time.Time
+	Deathday     *time.Time
+	Gender       int // 0=not specified, 1=female, 2=male, 3=non-binary
+	PlaceOfBirth *string
+	ProfilePath  *string
+	Homepage     *string
+	Popularity   float64
+	Adult        bool
+	KnownForDept string // Acting, Directing, etc.
 
 	// Localized data
 	Translations map[string]*LocalizedPersonData
@@ -386,8 +386,8 @@ type Images struct {
 	Posters   []Image
 	Backdrops []Image
 	Logos     []Image
-	Stills    []Image  // For episodes
-	Profiles  []Image  // For people
+	Stills    []Image // For episodes
+	Profiles  []Image // For people
 }
 
 // Image represents a single image.
@@ -457,18 +457,18 @@ type ReleaseDate struct {
 
 // ContentRating contains a content rating for a specific country (TV shows).
 type ContentRating struct {
-	CountryCode string // ISO 3166-1 alpha-2
-	Rating      string // Content rating
+	CountryCode string   // ISO 3166-1 alpha-2
+	Rating      string   // Content rating
 	Descriptors []string // Content descriptors (violence, language, etc.)
 }
 
 // Translation contains translation availability info.
 type Translation struct {
-	ISOCode    string // ISO 3166-1 alpha-2
-	Language   string // ISO 639-1
-	Name       string // Localized country name
+	ISOCode     string // ISO 3166-1 alpha-2
+	Language    string // ISO 639-1
+	Name        string // Localized country name
 	EnglishName string
-	Data       *TranslationData
+	Data        *TranslationData
 }
 
 // TranslationData contains translated content.
@@ -489,16 +489,16 @@ type ExternalRating struct {
 
 // ExternalIDs contains external identifiers from various sources.
 type ExternalIDs struct {
-	IMDbID       *string
-	TVDbID       *int32
-	TMDbID       *int32
-	WikidataID   *string
-	FacebookID   *string
-	InstagramID  *string
-	TwitterID    *string
-	TikTokID     *string
-	YouTubeID    *string
-	FreebaseID   *string
-	FreebaseMID  *string
-	TVRageID     *int32
+	IMDbID      *string
+	TVDbID      *int32
+	TMDbID      *int32
+	WikidataID  *string
+	FacebookID  *string
+	InstagramID *string
+	TwitterID   *string
+	TikTokID    *string
+	YouTubeID   *string
+	FreebaseID  *string
+	FreebaseMID *string
+	TVRageID    *int32
 }

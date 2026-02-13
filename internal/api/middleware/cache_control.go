@@ -33,7 +33,7 @@ var cacheableOperations = map[string]struct{}{
 	"getSeasonMetadata": {}, "getSeasonMetadataImages": {},
 	"getEpisodeMetadata": {}, "getEpisodeMetadataImages": {},
 	"getCollectionMetadata": {},
-	"getPersonMetadata": {}, "getPersonMetadataCredits": {}, "getPersonMetadataImages": {},
+	"getPersonMetadata":     {}, "getPersonMetadataCredits": {}, "getPersonMetadataImages": {},
 	"searchPersonMetadata": {}, "searchMoviesMetadata": {}, "searchTVShowsMetadata": {},
 
 	// Search facets & libraries

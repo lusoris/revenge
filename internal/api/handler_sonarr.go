@@ -141,7 +141,7 @@ func (h *Handler) AdminTriggerSonarrSync(ctx context.Context) (ogen.AdminTrigger
 			Operation: sonarr.SonarrSyncOperationFull,
 		}, nil)
 		if err != nil {
-			h.logger.Error("Failed to queue Sonarr sync job", slog.Any("error",err))
+			h.logger.Error("Failed to queue Sonarr sync job", slog.Any("error", err))
 			return &ogen.AdminTriggerSonarrSyncServiceUnavailable{
 				Code:    503,
 				Message: "Failed to queue sync job",
@@ -189,7 +189,7 @@ func (h *Handler) AdminGetSonarrQualityProfiles(ctx context.Context) (ogen.Admin
 
 	profiles, err := h.sonarrService.GetQualityProfiles(ctx)
 	if err != nil {
-		h.logger.Error("Failed to get quality profiles from Sonarr", slog.Any("error",err))
+		h.logger.Error("Failed to get quality profiles from Sonarr", slog.Any("error", err))
 		return &ogen.AdminGetSonarrQualityProfilesServiceUnavailable{
 			Code:    503,
 			Message: "Failed to connect to Sonarr",
@@ -239,7 +239,7 @@ func (h *Handler) AdminGetSonarrRootFolders(ctx context.Context) (ogen.AdminGetS
 
 	folders, err := h.sonarrService.GetRootFolders(ctx)
 	if err != nil {
-		h.logger.Error("Failed to get root folders from Sonarr", slog.Any("error",err))
+		h.logger.Error("Failed to get root folders from Sonarr", slog.Any("error", err))
 		return &ogen.AdminGetSonarrRootFoldersServiceUnavailable{
 			Code:    503,
 			Message: "Failed to connect to Sonarr",
@@ -276,7 +276,7 @@ func (h *Handler) HandleSonarrWebhook(ctx context.Context, req *ogen.SonarrWebho
 			Payload: *payload,
 		}, nil)
 		if err != nil {
-			h.logger.Error("Failed to queue Sonarr webhook job", slog.Any("error",err))
+			h.logger.Error("Failed to queue Sonarr webhook job", slog.Any("error", err))
 			return &ogen.Error{
 				Code:    400,
 				Message: "Failed to process webhook",

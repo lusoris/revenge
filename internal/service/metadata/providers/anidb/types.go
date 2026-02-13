@@ -4,25 +4,25 @@ import "encoding/xml"
 
 // AnimeResponse is the top-level XML response for an anime lookup.
 type AnimeResponse struct {
-	XMLName    xml.Name       `xml:"anime"`
-	ID         int            `xml:"id,attr"`
-	Restricted bool           `xml:"restricted,attr"`
-	Type       string         `xml:"type"`
-	EpCount    int            `xml:"episodecount"`
-	StartDate  string         `xml:"startdate"`
-	EndDate    string         `xml:"enddate"`
-	Titles     Titles         `xml:"titles"`
-	Related    RelatedAnime   `xml:"relatedanime"`
-	Similar    SimilarAnime   `xml:"similaranime"`
-	URL        string         `xml:"url"`
-	Creators   Creators       `xml:"creators"`
-	Description string        `xml:"description"`
-	Ratings    Ratings        `xml:"ratings"`
-	Picture    string         `xml:"picture"`
-	Resources  Resources      `xml:"resources"`
-	Tags       Tags           `xml:"tags"`
-	Characters Characters     `xml:"characters"`
-	Episodes   Episodes       `xml:"episodes"`
+	XMLName     xml.Name     `xml:"anime"`
+	ID          int          `xml:"id,attr"`
+	Restricted  bool         `xml:"restricted,attr"`
+	Type        string       `xml:"type"`
+	EpCount     int          `xml:"episodecount"`
+	StartDate   string       `xml:"startdate"`
+	EndDate     string       `xml:"enddate"`
+	Titles      Titles       `xml:"titles"`
+	Related     RelatedAnime `xml:"relatedanime"`
+	Similar     SimilarAnime `xml:"similaranime"`
+	URL         string       `xml:"url"`
+	Creators    Creators     `xml:"creators"`
+	Description string       `xml:"description"`
+	Ratings     Ratings      `xml:"ratings"`
+	Picture     string       `xml:"picture"`
+	Resources   Resources    `xml:"resources"`
+	Tags        Tags         `xml:"tags"`
+	Characters  Characters   `xml:"characters"`
+	Episodes    Episodes     `xml:"episodes"`
 }
 
 // Titles contains all titles for an anime.
@@ -94,8 +94,8 @@ type Resources struct {
 
 // Resource is an external ID reference.
 type Resource struct {
-	Type       int                `xml:"type,attr"`
-	ExternalID []ExternalEntity   `xml:"externalentity"`
+	Type       int              `xml:"type,attr"`
+	ExternalID []ExternalEntity `xml:"externalentity"`
 }
 
 // ExternalEntity contains identifiers for external resources.
@@ -110,13 +110,13 @@ type Tags struct {
 
 // Tag is a content tag with weight.
 type Tag struct {
-	ID          int    `xml:"id,attr"`
-	Weight      int    `xml:"weight,attr"`
-	LocalSpoiler bool  `xml:"localspoiler,attr"`
-	GlobalSpoiler bool `xml:"globalspoiler,attr"`
-	Verified    bool   `xml:"verified,attr"`
-	Name        string `xml:"name"`
-	Description string `xml:"description"`
+	ID            int    `xml:"id,attr"`
+	Weight        int    `xml:"weight,attr"`
+	LocalSpoiler  bool   `xml:"localspoiler,attr"`
+	GlobalSpoiler bool   `xml:"globalspoiler,attr"`
+	Verified      bool   `xml:"verified,attr"`
+	Name          string `xml:"name"`
+	Description   string `xml:"description"`
 }
 
 // Characters contains character entries.
@@ -126,13 +126,13 @@ type Characters struct {
 
 // Character represents an anime character.
 type Character struct {
-	ID      int            `xml:"id,attr"`
-	Type    string         `xml:"type,attr"` // main character in, secondary cast in, etc.
-	Rating  *CharRating    `xml:"rating"`
-	Name    string         `xml:"name"`
-	Gender  string         `xml:"gender"`
-	Picture string         `xml:"picture"`
-	Seiyuu  []Seiyuu       `xml:"seiyuu"`
+	ID      int         `xml:"id,attr"`
+	Type    string      `xml:"type,attr"` // main character in, secondary cast in, etc.
+	Rating  *CharRating `xml:"rating"`
+	Name    string      `xml:"name"`
+	Gender  string      `xml:"gender"`
+	Picture string      `xml:"picture"`
+	Seiyuu  []Seiyuu    `xml:"seiyuu"`
 }
 
 // CharRating is a character's rating.
@@ -155,13 +155,13 @@ type Episodes struct {
 
 // Episode represents a single episode.
 type Episode struct {
-	ID      int           `xml:"id,attr"`
-	Update  string        `xml:"update,attr"`
-	EpNo    EpNo          `xml:"epno"`
-	Length  int           `xml:"length"`  // minutes
-	Airdate string        `xml:"airdate"`
+	ID      int            `xml:"id,attr"`
+	Update  string         `xml:"update,attr"`
+	EpNo    EpNo           `xml:"epno"`
+	Length  int            `xml:"length"` // minutes
+	Airdate string         `xml:"airdate"`
 	Rating  *EpisodeRating `xml:"rating"`
-	Title   []EpTitle     `xml:"title"`
+	Title   []EpTitle      `xml:"title"`
 }
 
 // EpNo is the episode number with type.
@@ -190,8 +190,8 @@ type ErrorResponse struct {
 
 // TitleDumpEntry represents a parsed line from the title dump.
 type TitleDumpEntry struct {
-	AID    int
-	Type   string // main, official, synonym, short
-	Lang   string
-	Title  string
+	AID   int
+	Type  string // main, official, synonym, short
+	Lang  string
+	Title string
 }

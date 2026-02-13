@@ -55,7 +55,7 @@ func (s *CachedService) ValidateSession(ctx context.Context, token string) (*db.
 			if err := s.repo.UpdateSessionActivity(actCtx, session.ID); err != nil {
 				s.logger.Warn("failed to update session activity",
 					slog.String("session_id", session.ID.String()),
-					slog.Any("error",err))
+					slog.Any("error", err))
 			}
 		}()
 
@@ -75,7 +75,7 @@ func (s *CachedService) ValidateSession(ctx context.Context, token string) (*db.
 		cacheCtx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
 		defer cancel()
 		if setErr := s.cache.SetJSON(cacheCtx, cacheKey, result, s.cacheTTL); setErr != nil {
-			s.logger.Warn("failed to cache session", slog.Any("error",setErr))
+			s.logger.Warn("failed to cache session", slog.Any("error", setErr))
 		}
 	}()
 
@@ -103,7 +103,7 @@ func (s *CachedService) CreateSession(ctx context.Context, userID uuid.UUID, dev
 				cacheCtx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
 				defer cancel()
 				if setErr := s.cache.SetJSON(cacheCtx, cacheKey, session, s.cacheTTL); setErr != nil {
-					s.logger.Warn("failed to cache new session", slog.Any("error",setErr))
+					s.logger.Warn("failed to cache new session", slog.Any("error", setErr))
 				} else {
 					s.logger.Debug("session cached on create",
 						slog.String("user_id", userID.String()),
@@ -135,7 +135,7 @@ func (s *CachedService) RevokeSession(ctx context.Context, sessionID uuid.UUID) 
 		if err := s.cache.Delete(ctx, cacheKey); err != nil {
 			s.logger.Warn("failed to invalidate session cache",
 				slog.String("session_id", sessionID.String()),
-				slog.Any("error",err))
+				slog.Any("error", err))
 		}
 	}
 

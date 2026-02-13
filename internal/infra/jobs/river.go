@@ -33,10 +33,10 @@ func DefaultConfig() *Config {
 		Queues: map[string]river.QueueConfig{
 			river.QueueDefault: {MaxWorkers: 100},
 		},
-		FetchCooldown:         100 * time.Millisecond,
-		FetchPollInterval:     500 * time.Millisecond,
-		RescueStuckJobsAfter:  1 * time.Hour,
-		MaxAttempts:           5,
+		FetchCooldown:               100 * time.Millisecond,
+		FetchPollInterval:           500 * time.Millisecond,
+		RescueStuckJobsAfter:        1 * time.Hour,
+		MaxAttempts:                 5,
 		CompletedJobRetentionPeriod: 24 * time.Hour,
 		DiscardedJobRetentionPeriod: 7 * 24 * time.Hour,
 	}
@@ -71,14 +71,14 @@ func NewClient(pool *pgxpool.Pool, workers *river.Workers, config *Config, logge
 	})
 
 	riverConfig := &river.Config{
-		Queues:                config.Queues,
-		FetchCooldown:         config.FetchCooldown,
-		FetchPollInterval:     config.FetchPollInterval,
-		RescueStuckJobsAfter:  config.RescueStuckJobsAfter,
-		MaxAttempts:           config.MaxAttempts,
-		PeriodicJobs:          config.PeriodicJobs,
-		Workers:               workers,
-		Logger:                riverLogger,
+		Queues:                      config.Queues,
+		FetchCooldown:               config.FetchCooldown,
+		FetchPollInterval:           config.FetchPollInterval,
+		RescueStuckJobsAfter:        config.RescueStuckJobsAfter,
+		MaxAttempts:                 config.MaxAttempts,
+		PeriodicJobs:                config.PeriodicJobs,
+		Workers:                     workers,
+		Logger:                      riverLogger,
 		JobTimeout:                  -1, // Per-worker Timeout() methods handle this
 		CompletedJobRetentionPeriod: config.CompletedJobRetentionPeriod,
 		DiscardedJobRetentionPeriod: config.DiscardedJobRetentionPeriod,

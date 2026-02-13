@@ -1056,10 +1056,3 @@ func TestMapper_ToEpisodeFile_ZeroResolution(t *testing.T) {
 	// Resolution 0 is not > 0, so Resolution should be nil
 	assert.Nil(t, file.Resolution)
 }
-
-// strPtr is a test helper to create string pointers.
-//
-//go:fix inline
-func strPtr(s string) *string {
-	return new(s)
-}

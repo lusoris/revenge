@@ -73,7 +73,7 @@ func TestAllJobKinds_AreUnique(t *testing.T) {
 	kinds := []string{
 		MovieLibraryScanJobKind,
 		MovieFileMatchJobKind,
-		"movie_search_index", // From MovieSearchIndexArgs.Kind()
+		"movie_search_index",     // From MovieSearchIndexArgs.Kind()
 		"metadata_refresh_movie", // From metadatajobs.RefreshMovieArgs.Kind()
 	}
 

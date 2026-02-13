@@ -11,9 +11,6 @@ func TestTo(t *testing.T) {
 
 	t.Run("int", func(t *testing.T) {
 		p := new(42)
-		if p == nil {
-			t.Fatal("expected non-nil pointer")
-		}
 		if *p != 42 {
 			t.Errorf("expected 42, got %d", *p)
 		}
@@ -21,9 +18,6 @@ func TestTo(t *testing.T) {
 
 	t.Run("string", func(t *testing.T) {
 		p := new("hello")
-		if p == nil {
-			t.Fatal("expected non-nil pointer")
-		}
 		if *p != "hello" {
 			t.Errorf("expected hello, got %s", *p)
 		}
@@ -32,9 +26,6 @@ func TestTo(t *testing.T) {
 	t.Run("struct", func(t *testing.T) {
 		type S struct{ X int }
 		p := new(S{X: 10})
-		if p == nil {
-			t.Fatal("expected non-nil pointer")
-		}
 		if p.X != 10 {
 			t.Errorf("expected X=10, got X=%d", p.X)
 		}

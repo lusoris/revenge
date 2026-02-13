@@ -487,11 +487,11 @@ func (c *Client) GetCalendar(ctx context.Context, start, end time.Time) ([]Calen
 	resp, err := c.client.R().
 		SetContext(ctx).
 		SetQueryParams(map[string]string{
-			"start":              start.Format(time.RFC3339),
-			"end":                end.Format(time.RFC3339),
-			"unmonitored":        "false",
-			"includeSeries":      "true",
-			"includeEpisodeFile": "false",
+			"start":                start.Format(time.RFC3339),
+			"end":                  end.Format(time.RFC3339),
+			"unmonitored":          "false",
+			"includeSeries":        "true",
+			"includeEpisodeFile":   "false",
 			"includeEpisodeImages": "false",
 		}).
 		SetSuccessResult(&result).
@@ -581,7 +581,7 @@ func (c *Client) DeleteSeries(ctx context.Context, seriesID int, deleteFiles, ad
 	resp, err := c.client.R().
 		SetContext(ctx).
 		SetQueryParams(map[string]string{
-			"deleteFiles":           fmt.Sprintf("%t", deleteFiles),
+			"deleteFiles":            fmt.Sprintf("%t", deleteFiles),
 			"addImportListExclusion": fmt.Sprintf("%t", addImportListExclusion),
 		}).
 		Delete(fmt.Sprintf("/series/%d", seriesID))

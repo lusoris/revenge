@@ -795,13 +795,3 @@ func TestRepositoryPg_Update_NotFound(t *testing.T) {
 // ============================================================================
 // Helper Functions
 // ============================================================================
-
-//go:fix inline
-func stringPtr(s string) *string {
-	return new(s)
-}
-
-//go:fix inline
-func boolPtr(b bool) *bool {
-	return new(b)
-}

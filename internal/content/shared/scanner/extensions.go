@@ -55,15 +55,15 @@ var ImageExtensions = map[string]bool{
 
 // SubtitleExtensions contains subtitle file extensions.
 var SubtitleExtensions = map[string]bool{
-	".srt":  true,
-	".ass":  true,
-	".ssa":  true,
-	".sub":  true,
-	".idx":  true,
-	".vtt":  true,
-	".smi":  true,
-	".pgs":  true,
-	".sup":  true,
+	".srt": true,
+	".ass": true,
+	".ssa": true,
+	".sub": true,
+	".idx": true,
+	".vtt": true,
+	".smi": true,
+	".pgs": true,
+	".sup": true,
 }
 
 // IsVideoFile checks if a filename has a video extension

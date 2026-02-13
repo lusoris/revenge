@@ -10,28 +10,28 @@ type ShowSearchResult struct {
 
 // Show is the TVmaze show object.
 type Show struct {
-	ID           int        `json:"id"`
-	URL          string     `json:"url"`
-	Name         string     `json:"name"`
-	Type         string     `json:"type"`    // Scripted, Reality, etc.
-	Language     string     `json:"language"`
-	Genres       []string   `json:"genres"`
-	Status       string     `json:"status"` // Running, Ended, etc.
-	Runtime      *int       `json:"runtime"`
-	AverageRuntime *int     `json:"averageRuntime"`
-	Premiered    *string    `json:"premiered"` // "2008-01-20"
-	Ended        *string    `json:"ended"`
-	OfficialSite *string    `json:"officialSite"`
-	Schedule     Schedule   `json:"schedule"`
-	Rating       Rating     `json:"rating"`
-	Weight       int        `json:"weight"`
-	Network      *Network   `json:"network"`
-	WebChannel   *Network   `json:"webChannel"`
-	DVRCountry   *Country   `json:"dvr_country"`
-	Externals    Externals  `json:"externals"`
-	Image        *ImageSet  `json:"image"`
-	Summary      *string    `json:"summary"` // HTML-formatted
-	Updated      int64      `json:"updated"`
+	ID             int       `json:"id"`
+	URL            string    `json:"url"`
+	Name           string    `json:"name"`
+	Type           string    `json:"type"` // Scripted, Reality, etc.
+	Language       string    `json:"language"`
+	Genres         []string  `json:"genres"`
+	Status         string    `json:"status"` // Running, Ended, etc.
+	Runtime        *int      `json:"runtime"`
+	AverageRuntime *int      `json:"averageRuntime"`
+	Premiered      *string   `json:"premiered"` // "2008-01-20"
+	Ended          *string   `json:"ended"`
+	OfficialSite   *string   `json:"officialSite"`
+	Schedule       Schedule  `json:"schedule"`
+	Rating         Rating    `json:"rating"`
+	Weight         int       `json:"weight"`
+	Network        *Network  `json:"network"`
+	WebChannel     *Network  `json:"webChannel"`
+	DVRCountry     *Country  `json:"dvr_country"`
+	Externals      Externals `json:"externals"`
+	Image          *ImageSet `json:"image"`
+	Summary        *string   `json:"summary"` // HTML-formatted
+	Updated        int64     `json:"updated"`
 }
 
 // Schedule is the airing schedule.
@@ -75,34 +75,34 @@ type ImageSet struct {
 
 // Season is a TVmaze season object.
 type Season struct {
-	ID            int       `json:"id"`
-	URL           string    `json:"url"`
-	Number        int       `json:"number"`
-	Name          string    `json:"name"`
-	EpisodeOrder  *int      `json:"episodeOrder"`
-	PremiereDate  *string   `json:"premiereDate"`
-	EndDate       *string   `json:"endDate"`
-	Network       *Network  `json:"network"`
-	WebChannel    *Network  `json:"webChannel"`
-	Image         *ImageSet `json:"image"`
-	Summary       *string   `json:"summary"`
+	ID           int       `json:"id"`
+	URL          string    `json:"url"`
+	Number       int       `json:"number"`
+	Name         string    `json:"name"`
+	EpisodeOrder *int      `json:"episodeOrder"`
+	PremiereDate *string   `json:"premiereDate"`
+	EndDate      *string   `json:"endDate"`
+	Network      *Network  `json:"network"`
+	WebChannel   *Network  `json:"webChannel"`
+	Image        *ImageSet `json:"image"`
+	Summary      *string   `json:"summary"`
 }
 
 // Episode is a TVmaze episode object.
 type Episode struct {
-	ID       int       `json:"id"`
-	URL      string    `json:"url"`
-	Name     string    `json:"name"`
-	Season   int       `json:"season"`
-	Number   *int      `json:"number"` // nil for specials
-	Type     string    `json:"type"`   // "regular", "significant_special"
-	Airdate  string    `json:"airdate"`
-	Airtime  string    `json:"airtime"`
+	ID       int        `json:"id"`
+	URL      string     `json:"url"`
+	Name     string     `json:"name"`
+	Season   int        `json:"season"`
+	Number   *int       `json:"number"` // nil for specials
+	Type     string     `json:"type"`   // "regular", "significant_special"
+	Airdate  string     `json:"airdate"`
+	Airtime  string     `json:"airtime"`
 	Airstamp *time.Time `json:"airstamp"`
-	Runtime  *int      `json:"runtime"`
-	Rating   Rating    `json:"rating"`
-	Image    *ImageSet `json:"image"`
-	Summary  *string   `json:"summary"`
+	Runtime  *int       `json:"runtime"`
+	Rating   Rating     `json:"rating"`
+	Image    *ImageSet  `json:"image"`
+	Summary  *string    `json:"summary"`
 }
 
 // CastMember is a TVmaze cast entry.

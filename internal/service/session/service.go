@@ -115,7 +115,7 @@ func (s *Service) ValidateSession(ctx context.Context, token string) (*db.Shared
 	if err := s.repo.UpdateSessionActivity(ctx, session.ID); err != nil {
 		s.logger.Warn("Failed to update session activity",
 			slog.String("session_id", session.ID.String()),
-			slog.Any("error",err))
+			slog.Any("error", err))
 	}
 
 	return session, nil
@@ -182,7 +182,7 @@ func (s *Service) RefreshSession(ctx context.Context, refreshToken string) (stri
 	reason := "Refresh token rotation"
 	if err := s.repo.RevokeSession(ctx, session.ID, &reason); err != nil {
 		// Log error but don't fail - new session is already valid
-		s.logger.Warn("failed to revoke old session during refresh", slog.Any("error",err), slog.String("session_id", session.ID.String()))
+		s.logger.Warn("failed to revoke old session during refresh", slog.Any("error", err), slog.String("session_id", session.ID.String()))
 	}
 
 	s.logger.Info("Session refreshed", slog.String("user_id", session.UserID.String()))

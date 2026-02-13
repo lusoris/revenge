@@ -68,33 +68,33 @@ type Show struct {
 
 // Season represents a Trakt season.
 type Season struct {
-	Number       int        `json:"number"`
-	IDs          IDs        `json:"ids"`
-	Rating       float64    `json:"rating"`
-	Votes        int        `json:"votes"`
-	EpisodeCount int        `json:"episode_count"`
-	AiredEpisodes int       `json:"aired_episodes"`
-	Title        string     `json:"title,omitempty"`
-	Overview     string     `json:"overview,omitempty"`
-	FirstAired   *time.Time `json:"first_aired,omitempty"`
-	UpdatedAt    *time.Time `json:"updated_at,omitempty"`
-	Network      string     `json:"network,omitempty"`
-	Episodes     []Episode  `json:"episodes,omitempty"` // populated with ?extended=episodes
+	Number        int        `json:"number"`
+	IDs           IDs        `json:"ids"`
+	Rating        float64    `json:"rating"`
+	Votes         int        `json:"votes"`
+	EpisodeCount  int        `json:"episode_count"`
+	AiredEpisodes int        `json:"aired_episodes"`
+	Title         string     `json:"title,omitempty"`
+	Overview      string     `json:"overview,omitempty"`
+	FirstAired    *time.Time `json:"first_aired,omitempty"`
+	UpdatedAt     *time.Time `json:"updated_at,omitempty"`
+	Network       string     `json:"network,omitempty"`
+	Episodes      []Episode  `json:"episodes,omitempty"` // populated with ?extended=episodes
 }
 
 // Episode represents a Trakt episode.
 type Episode struct {
-	Season        int        `json:"season"`
-	Number        int        `json:"number"`
-	Title         string     `json:"title,omitempty"`
-	IDs           IDs        `json:"ids"`
-	Overview      string     `json:"overview,omitempty"`
-	Rating        float64    `json:"rating"`
-	Votes         int        `json:"votes"`
-	CommentCount  int        `json:"comment_count"`
-	FirstAired    *time.Time `json:"first_aired,omitempty"`
-	UpdatedAt     *time.Time `json:"updated_at,omitempty"`
-	Runtime       int        `json:"runtime,omitempty"`
+	Season       int        `json:"season"`
+	Number       int        `json:"number"`
+	Title        string     `json:"title,omitempty"`
+	IDs          IDs        `json:"ids"`
+	Overview     string     `json:"overview,omitempty"`
+	Rating       float64    `json:"rating"`
+	Votes        int        `json:"votes"`
+	CommentCount int        `json:"comment_count"`
+	FirstAired   *time.Time `json:"first_aired,omitempty"`
+	UpdatedAt    *time.Time `json:"updated_at,omitempty"`
+	Runtime      int        `json:"runtime,omitempty"`
 }
 
 // CastMember represents a person in a cast/crew listing.

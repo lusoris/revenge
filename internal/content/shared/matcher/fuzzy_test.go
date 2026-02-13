@@ -291,8 +291,3 @@ func TestConfidenceScore(t *testing.T) {
 		assert.Equal(t, 0.0, score)
 	})
 }
-
-//go:fix inline
-func intPtr(i int) *int {
-	return new(i)
-}

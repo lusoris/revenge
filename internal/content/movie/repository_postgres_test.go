@@ -43,12 +43,6 @@ func createTestMovie(t *testing.T, repo Repository, title string) *Movie {
 	return m
 }
 
-//go:fix inline
-func strPtr(s string) *string { return new(s) }
-
-//go:fix inline
-func i32Ptr(v int32) *int32 { return new(v) }
-
 // ============================================================================
 // Movie CRUD
 // ============================================================================

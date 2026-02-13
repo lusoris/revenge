@@ -11,20 +11,20 @@ import (
 // SearchResult represents a generic search result from a metadata provider.
 // Content-type-specific packages wrap this with additional fields.
 type SearchResult struct {
-	ExternalID       int      // Provider-specific ID (TMDb ID, TVDb ID, etc.)
-	Title            string   // Primary title
-	OriginalTitle    string   // Title in original language
-	OriginalLanguage string   // ISO 639-1 language code
-	Overview         string   // Description/summary
-	ReleaseDate      string   // Release/air date (ISO format)
-	PosterPath       *string  // Poster image path
-	BackdropPath     *string  // Backdrop image path
-	VoteAverage      float64  // Rating (0-10 scale)
-	VoteCount        int      // Number of votes
-	Popularity       float64  // Provider-specific popularity score
-	Adult            bool     // Adult content flag
-	GenreIDs         []int    // Provider-specific genre IDs
-	MediaType        string   // "movie", "tv", "person", etc.
+	ExternalID       int     // Provider-specific ID (TMDb ID, TVDb ID, etc.)
+	Title            string  // Primary title
+	OriginalTitle    string  // Title in original language
+	OriginalLanguage string  // ISO 639-1 language code
+	Overview         string  // Description/summary
+	ReleaseDate      string  // Release/air date (ISO format)
+	PosterPath       *string // Poster image path
+	BackdropPath     *string // Backdrop image path
+	VoteAverage      float64 // Rating (0-10 scale)
+	VoteCount        int     // Number of votes
+	Popularity       float64 // Provider-specific popularity score
+	Adult            bool    // Adult content flag
+	GenreIDs         []int   // Provider-specific genre IDs
+	MediaType        string  // "movie", "tv", "person", etc.
 }
 
 // Genre represents a content genre from a metadata provider.
@@ -151,11 +151,11 @@ type SearchProvider interface {
 
 // SearchOptions configures a search query.
 type SearchOptions struct {
-	Year       *int   // Filter by release year
-	Language   string // Response language (default: en-US)
-	Page       int    // Page number for pagination
-	Adult      bool   // Include adult content
-	Region     string // ISO 3166-1 region code
+	Year       *int     // Filter by release year
+	Language   string   // Response language (default: en-US)
+	Page       int      // Page number for pagination
+	Adult      bool     // Include adult content
+	Region     string   // ISO 3166-1 region code
 	MediaTypes []string // Filter by media types ("movie", "tv", etc.)
 }
 

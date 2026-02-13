@@ -76,7 +76,7 @@ func (w *MovieFileMatchWorker) Work(ctx context.Context, job *river.Job[MovieFil
 	if err != nil {
 		w.logger.Error("file match failed",
 			slog.String("file_path", args.FilePath),
-			slog.Any("error",err),
+			slog.Any("error", err),
 		)
 		return err
 	}
@@ -85,7 +85,7 @@ func (w *MovieFileMatchWorker) Work(ctx context.Context, job *river.Job[MovieFil
 	if result.Error != nil {
 		w.logger.Warn("file matched with warnings",
 			slog.String("file_path", args.FilePath),
-			slog.Any("error",result.Error),
+			slog.Any("error", result.Error),
 		)
 	}
 

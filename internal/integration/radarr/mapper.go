@@ -131,8 +131,9 @@ func (m *Mapper) ToMovieFile(rmf *MovieFile, movieID uuid.UUID) *movie.MovieFile
 		// Parse runtime duration
 		if mi.RunTime != "" {
 			// RunTime is in format "HH:MM:SS" or similar
-			if duration, err := time.ParseDuration(mi.RunTime); err == nil {
-				result.DurationSeconds = new(util.SafeInt64ToInt32(int64(duration.Seconds())))
+			if d, err := time.ParseDuration(mi.RunTime); err == nil {
+				secs := util.SafeInt64ToInt32(int64(d.Seconds()))
+				result.DurationSeconds = &secs
 			}
 		}
 

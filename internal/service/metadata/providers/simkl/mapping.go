@@ -38,10 +38,10 @@ func mapMovieToMetadata(m *Movie) *metadata.MovieMetadata {
 	}
 
 	md := &metadata.MovieMetadata{
-		ProviderID:       strconv.Itoa(m.IDs.Simkl),
-		Provider:         metadata.ProviderSimkl,
-		Title:            m.Title,
-		Status:           mapMovieStatus(m.Status),
+		ProviderID: strconv.Itoa(m.IDs.Simkl),
+		Provider:   metadata.ProviderSimkl,
+		Title:      m.Title,
+		Status:     mapMovieStatus(m.Status),
 	}
 
 	if m.Overview != "" {
@@ -412,9 +412,9 @@ func genreNameToID(genre string) int {
 		"music":           10402,
 		"mystery":         9648,
 		"romance":         10749,
-		"science-fiction":  878,
+		"science-fiction": 878,
 		"sci-fi":          878,
-		"science fiction":  878,
+		"science fiction": 878,
 		"thriller":        53,
 		"war":             10752,
 		"western":         37,

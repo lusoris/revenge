@@ -13,32 +13,32 @@ import (
 
 // Series represents a TV show with metadata from TMDb/TVDb/Sonarr.
 type Series struct {
-	ID               uuid.UUID
-	TMDbID           *int32
-	TVDbID           *int32
-	IMDbID           *string
-	SonarrID         *int32
-	Title            string
-	OriginalTitle    *string
-	OriginalLanguage string
-	Tagline          *string
-	Overview         *string
-	Status           *string            // "Returning Series", "Ended", "Canceled", etc.
-	Type             *string            // "Scripted", "Reality", "Documentary", etc.
-	FirstAirDate     *time.Time
-	LastAirDate      *time.Time
-	VoteAverage      *decimal.Decimal
-	VoteCount        *int32
-	Popularity       *decimal.Decimal
-	PosterPath       *string
-	BackdropPath     *string
-	TotalSeasons     int32
-	TotalEpisodes    int32
-	TrailerURL       *string
-	Homepage         *string
+	ID                uuid.UUID
+	TMDbID            *int32
+	TVDbID            *int32
+	IMDbID            *string
+	SonarrID          *int32
+	Title             string
+	OriginalTitle     *string
+	OriginalLanguage  string
+	Tagline           *string
+	Overview          *string
+	Status            *string // "Returning Series", "Ended", "Canceled", etc.
+	Type              *string // "Scripted", "Reality", "Documentary", etc.
+	FirstAirDate      *time.Time
+	LastAirDate       *time.Time
+	VoteAverage       *decimal.Decimal
+	VoteCount         *int32
+	Popularity        *decimal.Decimal
+	PosterPath        *string
+	BackdropPath      *string
+	TotalSeasons      int32
+	TotalEpisodes     int32
+	TrailerURL        *string
+	Homepage          *string
 	MetadataUpdatedAt *time.Time
-	CreatedAt        time.Time
-	UpdatedAt        time.Time
+	CreatedAt         time.Time
+	UpdatedAt         time.Time
 
 	// Multi-language support (Hybrid JSONB approach)
 	TitlesI18n    map[string]string            // {"en": "Breaking Bad", "de": "Breaking Bad", "es": "Breaking Bad"}
@@ -50,9 +50,9 @@ type Series struct {
 	ExternalRatings []ExternalRating
 
 	// Relations (populated by repository when requested)
-	Seasons []Season
-	Genres  []SeriesGenre
-	Credits []SeriesCredit
+	Seasons  []Season
+	Genres   []SeriesGenre
+	Credits  []SeriesCredit
 	Networks []Network
 }
 
@@ -491,10 +491,10 @@ func (s *SeriesWatchStats) CompletionPercent() float64 {
 
 // UserTVStats contains aggregated TV watching statistics for a user.
 type UserTVStats struct {
-	SeriesCount       int64
-	EpisodesWatched   int64
+	SeriesCount        int64
+	EpisodesWatched    int64
 	EpisodesInProgress int64
-	TotalWatches      int64
+	TotalWatches       int64
 }
 
 // SeriesListFilters contains filters for listing series.
@@ -526,8 +526,8 @@ type ContinueWatchingItem struct {
 
 // NextEpisode represents the next episode to watch in a series.
 type NextEpisode struct {
-	Episode       *Episode
-	IsNewSeason   bool
+	Episode        *Episode
+	IsNewSeason    bool
 	IsSeriesFinale bool
 }
 

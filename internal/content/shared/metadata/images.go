@@ -166,7 +166,7 @@ func NewImageDownloader(client *BaseClient) *ImageDownloader {
 	// Use a dedicated HTTP client for image downloads (different host than API).
 	// Configured once instead of creating a throwaway req.C() per request.
 	imgClient := req.C().
-		SetTimeout(30 * time.Second).
+		SetTimeout(30*time.Second).
 		SetCommonRetryCount(2).
 		SetCommonRetryBackoffInterval(1*time.Second, 5*time.Second).
 		SetCommonRetryCondition(func(resp *req.Response, err error) bool {

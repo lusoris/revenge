@@ -43,7 +43,7 @@ type RegisterWorkersParams struct {
 	MetadataRefreshWorker *MovieMetadataRefreshWorker
 	LibraryScanWorker     *MovieLibraryScanWorker
 	FileMatchWorker       *MovieFileMatchWorker
-	SearchIndexWorker     *MovieSearchIndexWorker    `optional:"true"`
+	SearchIndexWorker     *MovieSearchIndexWorker `optional:"true"`
 	MovieService          movie.Service
 	LibraryService        *movie.LibraryService
 	SearchService         *search.MovieSearchService `optional:"true"`

@@ -36,7 +36,7 @@ func NewProvider(config Config) (*Provider, error) {
 	}, nil
 }
 
-func (p *Provider) ID() metadata.ProviderID       { return metadata.ProviderLetterboxd }
+func (p *Provider) ID() metadata.ProviderID        { return metadata.ProviderLetterboxd }
 func (p *Provider) Name() string                   { return "Letterboxd" }
 func (p *Provider) Priority() int                  { return p.priority }
 func (p *Provider) SupportsMovies() bool           { return true }
@@ -91,9 +91,6 @@ func (p *Provider) GetMovieCredits(ctx context.Context, id string) (*metadata.Cr
 	return &credits, nil
 }
 
-
-
-
 func (p *Provider) GetMovieExternalIDs(ctx context.Context, id string) (*metadata.ExternalIDs, error) {
 	film, err := p.client.GetFilm(ctx, id)
 	if err != nil {
@@ -115,5 +112,3 @@ func (p *Provider) GetMovieExternalIDs(ctx context.Context, id string) (*metadat
 
 	return ids, nil
 }
-
-

@@ -56,7 +56,7 @@ func (s *CachedMovieSearchService) Search(ctx context.Context, params SearchPara
 		cacheCtx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
 		defer cancel()
 		if setErr := s.cache.SetJSON(cacheCtx, cacheKey, searchResult, cache.SearchResultsTTL); setErr != nil {
-			s.logger.Warn("failed to cache search result", slog.Any("error",setErr))
+			s.logger.Warn("failed to cache search result", slog.Any("error", setErr))
 		}
 	}()
 
@@ -89,7 +89,7 @@ func (s *CachedMovieSearchService) Autocomplete(ctx context.Context, query strin
 		cacheCtx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
 		defer cancel()
 		if setErr := s.cache.SetJSON(cacheCtx, cacheKey, autocompleteResults, cache.SearchResultsTTL); setErr != nil {
-			s.logger.Warn("failed to cache autocomplete result", slog.Any("error",setErr))
+			s.logger.Warn("failed to cache autocomplete result", slog.Any("error", setErr))
 		}
 	}()
 
@@ -122,7 +122,7 @@ func (s *CachedMovieSearchService) GetFacets(ctx context.Context, facetFields []
 		cacheCtx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
 		defer cancel()
 		if setErr := s.cache.SetJSON(cacheCtx, cacheKey, facetResults, 2*time.Minute); setErr != nil {
-			s.logger.Warn("failed to cache facets", slog.Any("error",setErr))
+			s.logger.Warn("failed to cache facets", slog.Any("error", setErr))
 		}
 	}()
 

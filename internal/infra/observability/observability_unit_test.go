@@ -548,9 +548,9 @@ func TestIsIDSegment_EdgeCases(t *testing.T) {
 		{"large number", "999999999", true},
 		{"short word", "api", false},
 		{"two chars", "v1", false},
-		{"seven alphanumeric with digit", "abc1234", false},     // less than 8 chars
-		{"eight alphanumeric with digit", "abcd1234", true},     // exactly 8 chars
-		{"eight alpha no digit", "abcdefgh", false},             // no digits
+		{"seven alphanumeric with digit", "abc1234", false}, // less than 8 chars
+		{"eight alphanumeric with digit", "abcd1234", true}, // exactly 8 chars
+		{"eight alpha no digit", "abcdefgh", false},         // no digits
 		{"UUID-like format", "12345678-1234-1234-1234-123456789012", true},
 		{"not quite UUID (still looks like ID)", "12345678-1234-1234-1234", true}, // alphanumeric with hyphens, 8+ chars, has digits
 		{"special characters", "abc!@#123", false},

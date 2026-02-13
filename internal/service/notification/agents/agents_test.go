@@ -1027,12 +1027,12 @@ func TestNtfyAgent_GetPriority(t *testing.T) {
 		eventType notification.EventType
 		priority  int
 	}{
-		{notification.EventLoginFailed, 5},         // Urgent
-		{notification.EventPasswordChanged, 4},    // High
-		{notification.EventMFAEnabled, 4},         // High
-		{notification.EventMovieAvailable, 3},     // Default
-		{notification.EventRequestApproved, 3},    // Default
-		{notification.EventLibraryScanDone, 2},    // Uses config default
+		{notification.EventLoginFailed, 5},     // Urgent
+		{notification.EventPasswordChanged, 4}, // High
+		{notification.EventMFAEnabled, 4},      // High
+		{notification.EventMovieAvailable, 3},  // Default
+		{notification.EventRequestApproved, 3}, // Default
+		{notification.EventLibraryScanDone, 2}, // Uses config default
 	}
 
 	for _, tt := range tests {
@@ -1176,10 +1176,10 @@ func TestEmailAgent_BuildBody(t *testing.T) {
 
 	event := notification.NewEvent(notification.EventMovieAdded)
 	event.Data = map[string]any{
-		"description":  "A sci-fi epic",
-		"movie_title":  "Arrival",
-		"year":         2016,
-		"quality":      "1080p",
+		"description": "A sci-fi epic",
+		"movie_title": "Arrival",
+		"year":        2016,
+		"quality":     "1080p",
 	}
 
 	body := agent.buildBody(event)
@@ -1552,12 +1552,12 @@ func TestDiscordAgent_BuildFields(t *testing.T) {
 
 	event := notification.NewEvent(notification.EventLoginFailed)
 	event.Data = map[string]any{
-		"year":           2024,
-		"quality":        "4K",
-		"username":       "testuser",
-		"ip_address":     "192.168.1.50",
-		"movies_added":   5,
-		"scan_duration":  "2m30s",
+		"year":          2024,
+		"quality":       "4K",
+		"username":      "testuser",
+		"ip_address":    "192.168.1.50",
+		"movies_added":  5,
+		"scan_duration": "2m30s",
 	}
 
 	fields := agent.buildFields(event)

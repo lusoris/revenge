@@ -7,9 +7,9 @@ import (
 
 	"github.com/go-faster/jx"
 	"github.com/google/uuid"
+	"github.com/lusoris/revenge/internal/infra/logging"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/lusoris/revenge/internal/infra/logging"
 
 	"github.com/lusoris/revenge/internal/api/ogen"
 )
@@ -585,7 +585,7 @@ func TestHandler_NilMFAHandler_Panics(t *testing.T) {
 // handler with nil webauthnService to verify the 501-before-401 ordering).
 func TestMFAHandler_WebAuthn_NoAuth(t *testing.T) {
 	handler := newTestMFAHandler() // webauthnService is nil
-	ctx := context.Background()   // no user
+	ctx := context.Background()    // no user
 
 	// When webauthnService is nil, the nil check runs before auth check,
 	// so we get 501 for methods that check nil first.

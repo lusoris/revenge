@@ -42,5 +42,4 @@ func setOptDecimalFloat32(opt interface{ SetTo(float32) }, v *decimal.Decimal) {
 
 // Common conversion functions for use with setOptConv.
 
-func int32ToInt(v int32) int     { return int(v) }
-func int64ToInt64(v int64) int64 { return v } // identity — for documentation clarity
+func int32ToInt(v int32) int { return int(v) }

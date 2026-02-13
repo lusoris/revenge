@@ -35,8 +35,8 @@ type Config struct {
 	EnableEnrichment bool
 
 	// TMDb configuration
-	TMDbAPIKey    string
-	TMDbProxyURL  string
+	TMDbAPIKey   string
+	TMDbProxyURL string
 
 	// TVDb configuration (optional)
 	TVDbAPIKey string
@@ -85,19 +85,19 @@ type Config struct {
 type ModuleParams struct {
 	fx.In
 
-	Config         Config          `optional:"true"`
-	TMDbConfig     tmdb.Config     `optional:"true"`
-	TVDbConfig     tvdb.Config     `optional:"true"`
-	FanartTVConfig fanarttv.Config `optional:"true"`
-	OMDbConfig     omdb.Config     `optional:"true"`
-	TVmazeConfig   tvmaze.Config   `optional:"true"`
-	AniListConfig  anilist.Config  `optional:"true"`
-	KitsuConfig    kitsu.Config    `optional:"true"`
-	AniDBConfig    anidb.Config    `optional:"true"`
-	MALConfig      mal.Config      `optional:"true"`
-	TraktConfig       trakt.Config       `optional:"true"`
-	SimklConfig       simkl.Config       `optional:"true"`
-	LetterboxdConfig  letterboxd.Config  `optional:"true"`
+	Config           Config            `optional:"true"`
+	TMDbConfig       tmdb.Config       `optional:"true"`
+	TVDbConfig       tvdb.Config       `optional:"true"`
+	FanartTVConfig   fanarttv.Config   `optional:"true"`
+	OMDbConfig       omdb.Config       `optional:"true"`
+	TVmazeConfig     tvmaze.Config     `optional:"true"`
+	AniListConfig    anilist.Config    `optional:"true"`
+	KitsuConfig      kitsu.Config      `optional:"true"`
+	AniDBConfig      anidb.Config      `optional:"true"`
+	MALConfig        mal.Config        `optional:"true"`
+	TraktConfig      trakt.Config      `optional:"true"`
+	SimklConfig      simkl.Config      `optional:"true"`
+	LetterboxdConfig letterboxd.Config `optional:"true"`
 }
 
 // ModuleResult contains the provided services.
@@ -107,15 +107,15 @@ type ModuleResult struct {
 	Service               metadata.Service
 	MovieMetadataAdapter  movie.MetadataProvider
 	TVShowMetadataAdapter tvshow.MetadataProvider
-	TMDbProvider          *tmdb.Provider     `optional:"true"`
-	TVDbProvider          *tvdb.Provider     `optional:"true"`
-	FanartTVProvider      *fanarttv.Provider `optional:"true"`
-	OMDbProvider          *omdb.Provider     `optional:"true"`
-	TVmazeProvider        *tvmaze.Provider   `optional:"true"`
-	AniListProvider       *anilist.Provider   `optional:"true"`
-	KitsuProvider         *kitsu.Provider     `optional:"true"`
-	AniDBProvider         *anidb.Provider     `optional:"true"`
-	MALProvider           *mal.Provider       `optional:"true"`
+	TMDbProvider          *tmdb.Provider       `optional:"true"`
+	TVDbProvider          *tvdb.Provider       `optional:"true"`
+	FanartTVProvider      *fanarttv.Provider   `optional:"true"`
+	OMDbProvider          *omdb.Provider       `optional:"true"`
+	TVmazeProvider        *tvmaze.Provider     `optional:"true"`
+	AniListProvider       *anilist.Provider    `optional:"true"`
+	KitsuProvider         *kitsu.Provider      `optional:"true"`
+	AniDBProvider         *anidb.Provider      `optional:"true"`
+	MALProvider           *mal.Provider        `optional:"true"`
 	TraktProvider         *trakt.Provider      `optional:"true"`
 	SimklProvider         *simkl.Provider      `optional:"true"`
 	LetterboxdProvider    *letterboxd.Provider `optional:"true"`

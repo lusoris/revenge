@@ -43,7 +43,7 @@ func (h *Handler) SearchLibraryMovies(ctx context.Context, params ogen.SearchLib
 	// Execute search — return empty results on error (e.g. collection not found)
 	result, err := h.searchService.Search(ctx, searchParams)
 	if err != nil {
-		h.logger.Warn("search unavailable, returning empty results", slog.Any("error",err))
+		h.logger.Warn("search unavailable, returning empty results", slog.Any("error", err))
 		return &ogen.SearchResults{
 			TotalHits:    ogen.NewOptInt(0),
 			TotalPages:   ogen.NewOptInt(0),
@@ -71,21 +71,21 @@ func (h *Handler) SearchLibraryMovies(ctx context.Context, params ogen.SearchLib
 		// Convert document
 		doc := hit.Document
 		apiDoc := ogen.SearchDocument{
-			ID:            ogen.NewOptUUID(parseUUID(doc.ID)),
-			TmdbID:        ogen.NewOptInt(int(doc.TMDbID)),
-			ImdbID:        ogen.NewOptString(doc.IMDbID),
-			Title:         ogen.NewOptString(doc.Title),
-			OriginalTitle: ogen.NewOptString(doc.OriginalTitle),
-			Year:          ogen.NewOptInt(int(doc.Year)),
-			Runtime:       ogen.NewOptInt(int(doc.Runtime)),
-			Overview:      ogen.NewOptString(doc.Overview),
-			Status:        ogen.NewOptString(doc.Status),
-			PosterPath:    ogen.NewOptString(doc.PosterPath),
-			BackdropPath:  ogen.NewOptString(doc.BackdropPath),
-			VoteAverage:   ogen.NewOptFloat32(float32(doc.VoteAverage)),
-			Popularity:    ogen.NewOptFloat32(float32(doc.Popularity)),
-			HasFile:       ogen.NewOptBool(doc.HasFile),
-			Resolution:    ogen.NewOptString(doc.Resolution),
+			ID:             ogen.NewOptUUID(parseUUID(doc.ID)),
+			TmdbID:         ogen.NewOptInt(int(doc.TMDbID)),
+			ImdbID:         ogen.NewOptString(doc.IMDbID),
+			Title:          ogen.NewOptString(doc.Title),
+			OriginalTitle:  ogen.NewOptString(doc.OriginalTitle),
+			Year:           ogen.NewOptInt(int(doc.Year)),
+			Runtime:        ogen.NewOptInt(int(doc.Runtime)),
+			Overview:       ogen.NewOptString(doc.Overview),
+			Status:         ogen.NewOptString(doc.Status),
+			PosterPath:     ogen.NewOptString(doc.PosterPath),
+			BackdropPath:   ogen.NewOptString(doc.BackdropPath),
+			VoteAverage:    ogen.NewOptFloat32(float32(doc.VoteAverage)),
+			Popularity:     ogen.NewOptFloat32(float32(doc.Popularity)),
+			HasFile:        ogen.NewOptBool(doc.HasFile),
+			Resolution:     ogen.NewOptString(doc.Resolution),
 			QualityProfile: ogen.NewOptString(doc.QualityProfile),
 		}
 
@@ -157,7 +157,7 @@ func (h *Handler) AutocompleteMovies(ctx context.Context, params ogen.Autocomple
 
 	suggestions, err := h.searchService.Autocomplete(ctx, params.Q, limit)
 	if err != nil {
-		h.logger.Warn("autocomplete unavailable, returning empty", slog.Any("error",err))
+		h.logger.Warn("autocomplete unavailable, returning empty", slog.Any("error", err))
 		return &ogen.AutocompleteResults{
 			Suggestions: []string{},
 		}, nil
@@ -174,7 +174,7 @@ func (h *Handler) GetSearchFacets(ctx context.Context) (ogen.GetSearchFacetsRes,
 
 	facets, err := h.searchService.GetFacets(ctx, facetNames)
 	if err != nil {
-		h.logger.Warn("facets unavailable, returning empty", slog.Any("error",err))
+		h.logger.Warn("facets unavailable, returning empty", slog.Any("error", err))
 		return &ogen.SearchFacets{}, nil
 	}
 
@@ -212,7 +212,7 @@ func (h *Handler) ReindexSearch(ctx context.Context) (ogen.ReindexSearchRes, err
 		Operation: moviejobs.SearchIndexOperationReindex,
 	}, nil)
 	if err != nil {
-		h.logger.Error("failed to enqueue reindex job", slog.Any("error",err))
+		h.logger.Error("failed to enqueue reindex job", slog.Any("error", err))
 		return nil, fmt.Errorf("failed to enqueue reindex job: %w", err)
 	}
 
@@ -570,14 +570,14 @@ func (h *Handler) convertMovieResults(result *search.SearchResult) ogen.SearchRe
 	for _, hit := range result.Hits {
 		doc := hit.Document
 		apiDoc := ogen.SearchDocument{
-			ID:            ogen.NewOptUUID(parseUUID(doc.ID)),
-			TmdbID:        ogen.NewOptInt(int(doc.TMDbID)),
-			Title:         ogen.NewOptString(doc.Title),
-			Overview:      ogen.NewOptString(doc.Overview),
-			PosterPath:    ogen.NewOptString(doc.PosterPath),
-			VoteAverage:   ogen.NewOptFloat32(float32(doc.VoteAverage)),
-			HasFile:       ogen.NewOptBool(doc.HasFile),
-			Year:          ogen.NewOptInt(int(doc.Year)),
+			ID:          ogen.NewOptUUID(parseUUID(doc.ID)),
+			TmdbID:      ogen.NewOptInt(int(doc.TMDbID)),
+			Title:       ogen.NewOptString(doc.Title),
+			Overview:    ogen.NewOptString(doc.Overview),
+			PosterPath:  ogen.NewOptString(doc.PosterPath),
+			VoteAverage: ogen.NewOptFloat32(float32(doc.VoteAverage)),
+			HasFile:     ogen.NewOptBool(doc.HasFile),
+			Year:        ogen.NewOptInt(int(doc.Year)),
 		}
 		if doc.ReleaseDate > 0 {
 			apiDoc.ReleaseDate = ogen.NewOptDate(time.Unix(doc.ReleaseDate, 0))
@@ -606,14 +606,14 @@ func (h *Handler) convertTVShowResults(result *search.TVShowSearchResult) ogen.T
 	for _, hit := range result.Hits {
 		doc := hit.Document
 		apiDoc := ogen.TVShowSearchDocument{
-			ID:           ogen.NewOptUUID(parseUUID(doc.ID)),
-			TmdbID:       ogen.NewOptInt(int(doc.TMDbID)),
-			Title:        ogen.NewOptString(doc.Title),
-			Overview:     ogen.NewOptString(doc.Overview),
-			PosterPath:   ogen.NewOptString(doc.PosterPath),
-			VoteAverage:  ogen.NewOptFloat32(float32(doc.VoteAverage)),
-			HasFile:      ogen.NewOptBool(doc.HasFile),
-			Year:         ogen.NewOptInt(int(doc.Year)),
+			ID:          ogen.NewOptUUID(parseUUID(doc.ID)),
+			TmdbID:      ogen.NewOptInt(int(doc.TMDbID)),
+			Title:       ogen.NewOptString(doc.Title),
+			Overview:    ogen.NewOptString(doc.Overview),
+			PosterPath:  ogen.NewOptString(doc.PosterPath),
+			VoteAverage: ogen.NewOptFloat32(float32(doc.VoteAverage)),
+			HasFile:     ogen.NewOptBool(doc.HasFile),
+			Year:        ogen.NewOptInt(int(doc.Year)),
 		}
 		if doc.FirstAirDate > 0 {
 			apiDoc.FirstAirDate = ogen.NewOptDate(time.Unix(doc.FirstAirDate, 0))

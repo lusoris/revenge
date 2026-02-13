@@ -311,8 +311,3 @@ func TestExtractSource(t *testing.T) {
 		})
 	}
 }
-
-//go:fix inline
-func intPtr(i int) *int {
-	return new(i)
-}

@@ -19,10 +19,10 @@ type testContent struct {
 
 // mockStrategy is a test implementation of MatchStrategy
 type mockStrategy struct {
-	findExistingFn    func(ctx context.Context, sr scanner.ScanResult) (*testContent, float64, error)
-	searchExternalFn  func(ctx context.Context, sr scanner.ScanResult) ([]*testContent, error)
-	calculateConfFn   func(sr scanner.ScanResult, c *testContent) float64
-	createContentFn   func(ctx context.Context, c *testContent) (*testContent, error)
+	findExistingFn   func(ctx context.Context, sr scanner.ScanResult) (*testContent, float64, error)
+	searchExternalFn func(ctx context.Context, sr scanner.ScanResult) ([]*testContent, error)
+	calculateConfFn  func(sr scanner.ScanResult, c *testContent) float64
+	createContentFn  func(ctx context.Context, c *testContent) (*testContent, error)
 }
 
 func (m *mockStrategy) FindExisting(ctx context.Context, sr scanner.ScanResult) (*testContent, float64, error) {

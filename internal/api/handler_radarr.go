@@ -133,7 +133,7 @@ func (h *Handler) AdminTriggerRadarrSync(ctx context.Context) (ogen.AdminTrigger
 			Operation: radarr.RadarrSyncOperationFull,
 		}, nil)
 		if err != nil {
-			h.logger.Error("Failed to queue Radarr sync job", slog.Any("error",err))
+			h.logger.Error("Failed to queue Radarr sync job", slog.Any("error", err))
 			return &ogen.AdminTriggerRadarrSyncServiceUnavailable{
 				Code:    503,
 				Message: "Failed to queue sync job",
@@ -181,7 +181,7 @@ func (h *Handler) AdminGetRadarrQualityProfiles(ctx context.Context) (ogen.Admin
 
 	profiles, err := h.radarrService.GetQualityProfiles(ctx)
 	if err != nil {
-		h.logger.Error("Failed to get quality profiles from Radarr", slog.Any("error",err))
+		h.logger.Error("Failed to get quality profiles from Radarr", slog.Any("error", err))
 		return &ogen.AdminGetRadarrQualityProfilesServiceUnavailable{
 			Code:    503,
 			Message: "Failed to connect to Radarr",
@@ -231,7 +231,7 @@ func (h *Handler) AdminGetRadarrRootFolders(ctx context.Context) (ogen.AdminGetR
 
 	folders, err := h.radarrService.GetRootFolders(ctx)
 	if err != nil {
-		h.logger.Error("Failed to get root folders from Radarr", slog.Any("error",err))
+		h.logger.Error("Failed to get root folders from Radarr", slog.Any("error", err))
 		return &ogen.AdminGetRadarrRootFoldersServiceUnavailable{
 			Code:    503,
 			Message: "Failed to connect to Radarr",
@@ -268,7 +268,7 @@ func (h *Handler) HandleRadarrWebhook(ctx context.Context, req *ogen.RadarrWebho
 			Payload: *payload,
 		}, nil)
 		if err != nil {
-			h.logger.Error("Failed to queue webhook job", slog.Any("error",err))
+			h.logger.Error("Failed to queue webhook job", slog.Any("error", err))
 			return &ogen.Error{
 				Code:    400,
 				Message: "Failed to process webhook",
@@ -291,12 +291,12 @@ func convertWebhookPayload(req *ogen.RadarrWebhookPayload) *radarr.WebhookPayloa
 	}
 
 	payload := &radarr.WebhookPayload{
-		EventType:       string(req.EventType),
-		InstanceName:    req.InstanceName.Value,
-		ApplicationURL:  req.ApplicationUrl.Value,
-		DownloadClient:  req.DownloadClient.Value,
-		DownloadID:      req.DownloadId.Value,
-		IsUpgrade:       req.IsUpgrade.Value,
+		EventType:      string(req.EventType),
+		InstanceName:   req.InstanceName.Value,
+		ApplicationURL: req.ApplicationUrl.Value,
+		DownloadClient: req.DownloadClient.Value,
+		DownloadID:     req.DownloadId.Value,
+		IsUpgrade:      req.IsUpgrade.Value,
 	}
 
 	// Convert movie

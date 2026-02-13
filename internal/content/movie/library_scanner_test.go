@@ -281,10 +281,3 @@ func TestScanner_ParseMovieFilename_EdgeCases(t *testing.T) {
 		})
 	}
 }
-
-// Helper function
-//
-//go:fix inline
-func intPtr(i int) *int {
-	return new(i)
-}

@@ -1241,8 +1241,8 @@ func Test_generateRandomString(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		name       string
-		length     int
+		name         string
+		length       int
 		expectHexLen int
 	}{
 		{"16 bytes", 16, 32},

@@ -112,33 +112,33 @@ type Repository interface {
 
 // CreateSeriesParams contains parameters for creating a series
 type CreateSeriesParams struct {
-	TMDbID           *int32
-	TVDbID           *int32
-	IMDbID           *string
-	SonarrID         *int32
-	Title            string
-	OriginalTitle    *string
-	OriginalLanguage string
-	Tagline          *string
-	Overview         *string
-	Status           *string
-	Type             *string
-	FirstAirDate     *string
-	LastAirDate      *string
-	VoteAverage      *string
-	VoteCount        *int32
-	Popularity       *string
-	PosterPath       *string
-	BackdropPath     *string
-	TotalSeasons     int32
-	TotalEpisodes    int32
-	TrailerURL       *string
-	Homepage         *string
-	TitlesI18n       map[string]string
-	TaglinesI18n     map[string]string
-	OverviewsI18n    map[string]string
-	AgeRatings       map[string]map[string]string
-	ExternalRatings  []ExternalRating
+	TMDbID            *int32
+	TVDbID            *int32
+	IMDbID            *string
+	SonarrID          *int32
+	Title             string
+	OriginalTitle     *string
+	OriginalLanguage  string
+	Tagline           *string
+	Overview          *string
+	Status            *string
+	Type              *string
+	FirstAirDate      *string
+	LastAirDate       *string
+	VoteAverage       *string
+	VoteCount         *int32
+	Popularity        *string
+	PosterPath        *string
+	BackdropPath      *string
+	TotalSeasons      int32
+	TotalEpisodes     int32
+	TrailerURL        *string
+	Homepage          *string
+	TitlesI18n        map[string]string
+	TaglinesI18n      map[string]string
+	OverviewsI18n     map[string]string
+	AgeRatings        map[string]map[string]string
+	ExternalRatings   []ExternalRating
 	MetadataUpdatedAt *string
 }
 
@@ -334,9 +334,9 @@ type SeasonWithEpisodeCount struct {
 // EpisodeWithSeriesInfo extends Episode with series information
 type EpisodeWithSeriesInfo struct {
 	Episode
-	SeriesID          uuid.UUID
-	SeriesTitle       string
-	SeriesPosterPath  *string
+	SeriesID         uuid.UUID
+	SeriesTitle      string
+	SeriesPosterPath *string
 }
 
 // WatchedEpisodeItem represents a watched episode with additional info

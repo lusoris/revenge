@@ -176,7 +176,7 @@ func (s *TOTPService) VerifyCode(ctx context.Context, userID uuid.UUID, code str
 	}); err != nil {
 		s.logger.Error("failed to update TOTP last used",
 			slog.String("user_id", userID.String()),
-			slog.Any("error",err),
+			slog.Any("error", err),
 		)
 		// Don't fail verification if we can't update timestamp
 	}

@@ -120,7 +120,7 @@ func mapFilmToMetadata(f *Film) metadata.MovieMetadata {
 	for _, c := range f.Countries {
 		m.ProductionCountries = append(m.ProductionCountries, metadata.ProductionCountry{
 			ISOCode: c.Code,
-			Name:      c.Name,
+			Name:    c.Name,
 		})
 	}
 
@@ -128,7 +128,7 @@ func mapFilmToMetadata(f *Film) metadata.MovieMetadata {
 	for _, l := range f.Languages {
 		m.SpokenLanguages = append(m.SpokenLanguages, metadata.SpokenLanguage{
 			ISOCode: l.Code,
-			Name:     l.Name,
+			Name:    l.Name,
 		})
 	}
 

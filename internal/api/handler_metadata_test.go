@@ -17,20 +17,20 @@ import (
 
 // mockMetadataService implements metadata.Service for testing.
 type mockMetadataService struct {
-	searchMovieResults     []metadata.MovieSearchResult
-	searchMovieErr         error
-	movieMetadata          *metadata.MovieMetadata
-	movieMetadataErr       error
-	collectionMetadata     *metadata.CollectionMetadata
-	collectionMetadataErr  error
-	searchTVShowResults    []metadata.TVShowSearchResult
-	searchTVShowErr        error
-	tvShowMetadata         *metadata.TVShowMetadata
-	tvShowMetadataErr      error
-	seasonMetadata         *metadata.SeasonMetadata
-	seasonMetadataErr      error
-	episodeMetadata        *metadata.EpisodeMetadata
-	episodeMetadataErr     error
+	searchMovieResults    []metadata.MovieSearchResult
+	searchMovieErr        error
+	movieMetadata         *metadata.MovieMetadata
+	movieMetadataErr      error
+	collectionMetadata    *metadata.CollectionMetadata
+	collectionMetadataErr error
+	searchTVShowResults   []metadata.TVShowSearchResult
+	searchTVShowErr       error
+	tvShowMetadata        *metadata.TVShowMetadata
+	tvShowMetadataErr     error
+	seasonMetadata        *metadata.SeasonMetadata
+	seasonMetadataErr     error
+	episodeMetadata       *metadata.EpisodeMetadata
+	episodeMetadataErr    error
 }
 
 func (m *mockMetadataService) SearchMovie(_ context.Context, _ string, _ metadata.SearchOptions) ([]metadata.MovieSearchResult, error) {
@@ -354,13 +354,13 @@ func TestHandler_GetCollectionMetadata_Success(t *testing.T) {
 			PosterPath: &poster,
 			Parts: []metadata.MovieSearchResult{
 				{
-					ProviderID: "101",
-					Title:      "Part 1",
+					ProviderID:  "101",
+					Title:       "Part 1",
 					VoteAverage: 7.0,
 				},
 				{
-					ProviderID: "102",
-					Title:      "Part 2",
+					ProviderID:  "102",
+					Title:       "Part 2",
 					VoteAverage: 8.0,
 				},
 			},
@@ -413,10 +413,10 @@ func TestHandler_SearchTVShowsMetadata_Success(t *testing.T) {
 	mock := &mockMetadataService{
 		searchTVShowResults: []metadata.TVShowSearchResult{
 			{
-				ProviderID: "5000",
-				Name:       "Test Show",
+				ProviderID:   "5000",
+				Name:         "Test Show",
 				OriginalName: "Original Show",
-				Overview:   "A test show",
+				Overview:     "A test show",
 				FirstAirDate: &firstAir,
 				PosterPath:   &poster,
 				VoteAverage:  8.5,
@@ -567,7 +567,7 @@ func TestHandler_GetSeasonMetadata_Success(t *testing.T) {
 	handler := newMetadataTestHandler(mock)
 
 	result, err := handler.GetSeasonMetadata(context.Background(), ogen.GetSeasonMetadataParams{
-		ID: "5000",
+		ID:           "5000",
 		SeasonNumber: 2,
 	})
 	require.NoError(t, err)
@@ -591,7 +591,7 @@ func TestHandler_GetSeasonMetadata_NotFound(t *testing.T) {
 	handler := newMetadataTestHandler(mock)
 
 	result, err := handler.GetSeasonMetadata(context.Background(), ogen.GetSeasonMetadataParams{
-		ID: "5000",
+		ID:           "5000",
 		SeasonNumber: 99,
 	})
 	require.NoError(t, err)
@@ -644,7 +644,7 @@ func TestHandler_GetEpisodeMetadata_Success(t *testing.T) {
 	handler := newMetadataTestHandler(mock)
 
 	result, err := handler.GetEpisodeMetadata(context.Background(), ogen.GetEpisodeMetadataParams{
-		ID: "5000",
+		ID:            "5000",
 		SeasonNumber:  1,
 		EpisodeNumber: 3,
 	})
@@ -673,7 +673,7 @@ func TestHandler_GetEpisodeMetadata_NotFound(t *testing.T) {
 	handler := newMetadataTestHandler(mock)
 
 	result, err := handler.GetEpisodeMetadata(context.Background(), ogen.GetEpisodeMetadataParams{
-		ID: "5000",
+		ID:            "5000",
 		SeasonNumber:  1,
 		EpisodeNumber: 99,
 	})
@@ -692,7 +692,7 @@ func TestHandler_GetEpisodeMetadata_Error(t *testing.T) {
 	handler := newMetadataTestHandler(mock)
 
 	_, err := handler.GetEpisodeMetadata(context.Background(), ogen.GetEpisodeMetadataParams{
-		ID: "5000",
+		ID:            "5000",
 		SeasonNumber:  1,
 		EpisodeNumber: 1,
 	})

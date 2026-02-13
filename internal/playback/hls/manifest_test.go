@@ -92,4 +92,3 @@ func TestSubtitlePath(t *testing.T) {
 	path := SubtitlePath("/tmp/segments", 2)
 	assert.Equal(t, "/tmp/segments/subs/2.vtt", path)
 }
-

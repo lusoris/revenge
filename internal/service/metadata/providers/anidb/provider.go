@@ -36,13 +36,13 @@ func NewProvider(config Config) (*Provider, error) {
 	}, nil
 }
 
-func (p *Provider) ID() metadata.ProviderID       { return metadata.ProviderAniDB }
-func (p *Provider) Name() string                   { return "AniDB" }
-func (p *Provider) Priority() int                  { return p.priority }
-func (p *Provider) SupportsMovies() bool           { return false }
-func (p *Provider) SupportsTVShows() bool          { return true }
-func (p *Provider) SupportsPeople() bool           { return false }
-func (p *Provider) ClearCache()                    { p.client.clearCache() }
+func (p *Provider) ID() metadata.ProviderID { return metadata.ProviderAniDB }
+func (p *Provider) Name() string            { return "AniDB" }
+func (p *Provider) Priority() int           { return p.priority }
+func (p *Provider) SupportsMovies() bool    { return false }
+func (p *Provider) SupportsTVShows() bool   { return true }
+func (p *Provider) SupportsPeople() bool    { return false }
+func (p *Provider) ClearCache()             { p.client.clearCache() }
 
 // SupportsLanguage returns true for Japanese, English, and romaji content.
 func (p *Provider) SupportsLanguage(lang string) bool {
@@ -127,8 +127,6 @@ func (p *Provider) GetTVShowImages(ctx context.Context, id string) (*metadata.Im
 	return images, nil
 }
 
-
-
 func (p *Provider) GetTVShowExternalIDs(ctx context.Context, id string) (*metadata.ExternalIDs, error) {
 	aid, err := strconv.Atoi(id)
 	if err != nil {
@@ -183,8 +181,6 @@ func (p *Provider) GetSeason(ctx context.Context, showID string, seasonNum int, 
 	return sm, nil
 }
 
-
-
 func (p *Provider) GetEpisode(ctx context.Context, showID string, _, episodeNum int, _ string) (*metadata.EpisodeMetadata, error) {
 	aid, err := strconv.Atoi(showID)
 	if err != nil {
@@ -214,5 +210,3 @@ func (p *Provider) GetEpisode(ctx context.Context, showID string, _, episodeNum 
 
 	return nil, metadata.ErrNotFound
 }
-
-

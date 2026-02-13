@@ -463,8 +463,3 @@ func TestService_CleanupExpiredKeys(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, 0, count)
 }
-
-//go:fix inline
-func timePtr(t time.Time) *time.Time {
-	return new(t)
-}

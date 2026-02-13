@@ -219,13 +219,13 @@ type ImageSize string
 
 const (
 	// Poster sizes
-	ImageSizePosterW92       ImageSize = "w92"
-	ImageSizePosterW154      ImageSize = "w154"
-	ImageSizePosterW185      ImageSize = "w185"
-	ImageSizePosterW342      ImageSize = "w342"
-	ImageSizePosterW500      ImageSize = "w500"
-	ImageSizePosterW780      ImageSize = "w780"
-	ImageSizePosterOriginal  ImageSize = "original"
+	ImageSizePosterW92      ImageSize = "w92"
+	ImageSizePosterW154     ImageSize = "w154"
+	ImageSizePosterW185     ImageSize = "w185"
+	ImageSizePosterW342     ImageSize = "w342"
+	ImageSizePosterW500     ImageSize = "w500"
+	ImageSizePosterW780     ImageSize = "w780"
+	ImageSizePosterOriginal ImageSize = "original"
 
 	// Backdrop sizes
 	ImageSizeBackdropW300     ImageSize = "w300"
@@ -234,23 +234,23 @@ const (
 	ImageSizeBackdropOriginal ImageSize = "original"
 
 	// Profile sizes
-	ImageSizeProfileW45       ImageSize = "w45"
-	ImageSizeProfileW185      ImageSize = "w185"
-	ImageSizeProfileH632      ImageSize = "h632"
-	ImageSizeProfileOriginal  ImageSize = "original"
+	ImageSizeProfileW45      ImageSize = "w45"
+	ImageSizeProfileW185     ImageSize = "w185"
+	ImageSizeProfileH632     ImageSize = "h632"
+	ImageSizeProfileOriginal ImageSize = "original"
 
 	// Still (episode) sizes
-	ImageSizeStillW92       ImageSize = "w92"
-	ImageSizeStillW185      ImageSize = "w185"
-	ImageSizeStillW300      ImageSize = "w300"
-	ImageSizeStillOriginal  ImageSize = "original"
+	ImageSizeStillW92      ImageSize = "w92"
+	ImageSizeStillW185     ImageSize = "w185"
+	ImageSizeStillW300     ImageSize = "w300"
+	ImageSizeStillOriginal ImageSize = "original"
 
 	// Logo sizes
-	ImageSizeLogoW45       ImageSize = "w45"
-	ImageSizeLogoW92       ImageSize = "w92"
-	ImageSizeLogoW154      ImageSize = "w154"
-	ImageSizeLogoW185      ImageSize = "w185"
-	ImageSizeLogoW300      ImageSize = "w300"
-	ImageSizeLogoW500      ImageSize = "w500"
-	ImageSizeLogoOriginal  ImageSize = "original"
+	ImageSizeLogoW45      ImageSize = "w45"
+	ImageSizeLogoW92      ImageSize = "w92"
+	ImageSizeLogoW154     ImageSize = "w154"
+	ImageSizeLogoW185     ImageSize = "w185"
+	ImageSizeLogoW300     ImageSize = "w300"
+	ImageSizeLogoW500     ImageSize = "w500"
+	ImageSizeLogoOriginal ImageSize = "original"
 )

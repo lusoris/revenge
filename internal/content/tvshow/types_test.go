@@ -690,7 +690,7 @@ func TestEpisodeFile(t *testing.T) {
 		QualityProfile:    new("HDTV-1080p"),
 		VideoCodec:        new("h264"),
 		AudioCodec:        new("aac"),
-		BitrateKbps:       int32Ptr(5000),
+		BitrateKbps:       new(int32(5000)),
 		DurationSeconds:   new(decimal.MustNew(2700, 0)),
 		AudioLanguages:    []string{"en"},
 		SubtitleLanguages: []string{"en", "de", "es"},
@@ -1028,17 +1028,3 @@ func TestContinueWatchingItem_GetLastWatchedFormatted(t *testing.T) {
 
 // Helper functions for creating pointers in tests
 //
-//go:fix inline
-func strPtr(s string) *string {
-	return new(s)
-}
-
-//go:fix inline
-func int32Ptr(i int32) *int32 {
-	return new(i)
-}
-
-//go:fix inline
-func decimalPtr(d decimal.Decimal) *decimal.Decimal {
-	return new(d)
-}

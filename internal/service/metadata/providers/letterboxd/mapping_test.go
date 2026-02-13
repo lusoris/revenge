@@ -160,14 +160,14 @@ func TestMapFilmSummaryToSearchResult(t *testing.T) {
 func TestMapFilmToMetadata(t *testing.T) {
 	t.Run("full film", func(t *testing.T) {
 		film := &Film{
-			ID:              "abc123",
-			Name:            "Inception",
-			OriginalName:    "Inception Original",
-			Tagline:         "Your mind is the scene of the crime.",
-			Description:     "A thief who steals corporate secrets.",
-			ReleaseYear:     2010,
-			RunTime:         148,
-			Rating:          4.5,
+			ID:               "abc123",
+			Name:             "Inception",
+			OriginalName:     "Inception Original",
+			Tagline:          "Your mind is the scene of the crime.",
+			Description:      "A thief who steals corporate secrets.",
+			ReleaseYear:      2010,
+			RunTime:          148,
+			Rating:           4.5,
 			FilmCollectionID: "coll-1",
 			Poster: &Image{Sizes: []ImageSize{
 				{Width: 500, Height: 750, URL: "https://example.com/poster.jpg"},
@@ -175,10 +175,10 @@ func TestMapFilmToMetadata(t *testing.T) {
 			Backdrop: &Image{Sizes: []ImageSize{
 				{Width: 1920, Height: 1080, URL: "https://example.com/backdrop.jpg"},
 			}},
-			Trailer: &FilmTrailer{URL: "https://youtube.com/watch?v=abc"},
-			Genres:  []Genre{{Name: "Action"}, {Name: "Drama"}},
-			Countries: []Country{{Code: "US", Name: "United States"}},
-			Languages: []Language{{Code: "en", Name: "English"}},
+			Trailer:         &FilmTrailer{URL: "https://youtube.com/watch?v=abc"},
+			Genres:          []Genre{{Name: "Action"}, {Name: "Drama"}},
+			Countries:       []Country{{Code: "US", Name: "United States"}},
+			Languages:       []Language{{Code: "en", Name: "English"}},
 			PrimaryLanguage: &Language{Code: "en", Name: "English"},
 			Links: []Link{
 				{Type: "tmdb", ID: "27205"},

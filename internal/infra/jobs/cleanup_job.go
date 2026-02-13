@@ -218,5 +218,3 @@ func (w *CleanupWorker) validateArgs(args CleanupArgs) error {
 
 	return nil
 }
-
-

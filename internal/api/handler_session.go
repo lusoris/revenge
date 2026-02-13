@@ -22,7 +22,7 @@ func (h *Handler) ListSessions(ctx context.Context) (ogen.ListSessionsRes, error
 	if err != nil {
 		h.logger.Error("failed to list sessions",
 			slog.String("user_id", userID.String()),
-			slog.Any("error",err),
+			slog.Any("error", err),
 		)
 		return &ogen.Error{
 			Code:    500,
@@ -69,7 +69,7 @@ func (h *Handler) GetCurrentSession(ctx context.Context) (ogen.GetCurrentSession
 	if err != nil {
 		h.logger.Error("failed to list sessions",
 			slog.String("user_id", userID.String()),
-			slog.Any("error",err),
+			slog.Any("error", err),
 		)
 		return &ogen.GetCurrentSessionNotFound{
 			Code:    500,
@@ -119,7 +119,7 @@ func (h *Handler) LogoutCurrent(ctx context.Context) (ogen.LogoutCurrentRes, err
 		h.logger.Error("failed to revoke session",
 			slog.String("user_id", userID.String()),
 			slog.String("session_id", sessionID.String()),
-			slog.Any("error",err),
+			slog.Any("error", err),
 		)
 		return &ogen.Error{
 			Code:    500,
@@ -143,7 +143,7 @@ func (h *Handler) LogoutAll(ctx context.Context) (ogen.LogoutAllRes, error) {
 	if err := h.sessionService.RevokeAllUserSessions(ctx, userID); err != nil {
 		h.logger.Error("failed to revoke all sessions",
 			slog.String("user_id", userID.String()),
-			slog.Any("error",err),
+			slog.Any("error", err),
 		)
 		return &ogen.Error{
 			Code:    500,
@@ -159,7 +159,7 @@ func (h *Handler) RefreshSession(ctx context.Context, req *ogen.RefreshSessionRe
 	accessToken, refreshToken, err := h.sessionService.RefreshSession(ctx, req.RefreshToken)
 	if err != nil {
 		h.logger.Warn("failed to refresh session",
-			slog.Any("error",err),
+			slog.Any("error", err),
 		)
 		return &ogen.Error{
 			Code:    401,
@@ -191,7 +191,7 @@ func (h *Handler) RevokeSession(ctx context.Context, params ogen.RevokeSessionPa
 	if err != nil {
 		h.logger.Error("failed to list sessions",
 			slog.String("user_id", userID.String()),
-			slog.Any("error",err),
+			slog.Any("error", err),
 		)
 		return &ogen.RevokeSessionBadRequest{
 			Code:    500,
@@ -215,7 +215,7 @@ func (h *Handler) RevokeSession(ctx context.Context, params ogen.RevokeSessionPa
 		h.logger.Error("failed to revoke session",
 			slog.String("user_id", userID.String()),
 			slog.String("session_id", sessionID.String()),
-			slog.Any("error",err),
+			slog.Any("error", err),
 		)
 		return &ogen.RevokeSessionBadRequest{
 			Code:    500,

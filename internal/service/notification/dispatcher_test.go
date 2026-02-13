@@ -14,12 +14,12 @@ import (
 
 // mockAgent is a mock notification agent for testing
 type mockAgent struct {
-	name       string
-	agentType  AgentType
-	enabled    bool
-	sendFunc   func(ctx context.Context, event *Event) error
-	sendCalls  int
-	mu         sync.Mutex
+	name      string
+	agentType AgentType
+	enabled   bool
+	sendFunc  func(ctx context.Context, event *Event) error
+	sendCalls int
+	mu        sync.Mutex
 }
 
 func newMockAgent(name string, enabled bool) *mockAgent {
@@ -31,10 +31,10 @@ func newMockAgent(name string, enabled bool) *mockAgent {
 	}
 }
 
-func (m *mockAgent) Type() AgentType    { return m.agentType }
-func (m *mockAgent) Name() string       { return m.name }
-func (m *mockAgent) IsEnabled() bool    { return m.enabled }
-func (m *mockAgent) Validate() error    { return nil }
+func (m *mockAgent) Type() AgentType { return m.agentType }
+func (m *mockAgent) Name() string    { return m.name }
+func (m *mockAgent) IsEnabled() bool { return m.enabled }
+func (m *mockAgent) Validate() error { return nil }
 
 func (m *mockAgent) Send(ctx context.Context, event *Event) error {
 	m.mu.Lock()

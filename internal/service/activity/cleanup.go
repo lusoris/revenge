@@ -113,5 +113,3 @@ func (w *ActivityCleanupWorker) Work(ctx context.Context, job *river.Job[Activit
 
 	return nil
 }
-
-

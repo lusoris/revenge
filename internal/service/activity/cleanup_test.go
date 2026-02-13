@@ -1305,18 +1305,3 @@ func TestErrNotFound(t *testing.T) {
 // ============================================================================
 // Helpers
 // ============================================================================
-
-//go:fix inline
-func ptrStr(s string) *string {
-	return new(s)
-}
-
-//go:fix inline
-func ptrUUID(u uuid.UUID) *uuid.UUID {
-	return new(u)
-}
-
-//go:fix inline
-func ptrIP(ip net.IP) *net.IP {
-	return new(ip)
-}

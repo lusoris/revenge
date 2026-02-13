@@ -277,13 +277,3 @@ func TestISOToLanguage(t *testing.T) {
 }
 
 // Helper functions
-//
-//go:fix inline
-func intPtr(i int) *int {
-	return new(i)
-}
-
-//go:fix inline
-func timePtr(t time.Time) *time.Time {
-	return new(t)
-}

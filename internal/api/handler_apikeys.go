@@ -23,7 +23,7 @@ func (h *Handler) ListAPIKeys(ctx context.Context) (ogen.ListAPIKeysRes, error) 
 	if err != nil {
 		h.logger.Error("failed to list API keys",
 			slog.String("user_id", userID.String()),
-			slog.Any("error",err),
+			slog.Any("error", err),
 		)
 		return &ogen.Error{
 			Code:    500,
@@ -85,7 +85,7 @@ func (h *Handler) CreateAPIKey(ctx context.Context, req *ogen.CreateAPIKeyReques
 		h.logger.Error("failed to create API key",
 			slog.String("user_id", userID.String()),
 			slog.String("name", req.Name),
-			slog.Any("error",err),
+			slog.Any("error", err),
 		)
 
 		// Check for specific errors
@@ -136,7 +136,7 @@ func (h *Handler) GetAPIKey(ctx context.Context, params ogen.GetAPIKeyParams) (o
 		h.logger.Error("failed to get API key",
 			slog.String("user_id", userID.String()),
 			slog.String("key_id", params.KeyId.String()),
-			slog.Any("error",err),
+			slog.Any("error", err),
 		)
 		return &ogen.GetAPIKeyNotFound{
 			Code:    500,
@@ -169,7 +169,7 @@ func (h *Handler) RevokeAPIKey(ctx context.Context, params ogen.RevokeAPIKeyPara
 		h.logger.Error("failed to get API key for revocation",
 			slog.String("user_id", userID.String()),
 			slog.String("key_id", params.KeyId.String()),
-			slog.Any("error",err),
+			slog.Any("error", err),
 		)
 		return &ogen.RevokeAPIKeyNotFound{
 			Code:    500,
@@ -187,7 +187,7 @@ func (h *Handler) RevokeAPIKey(ctx context.Context, params ogen.RevokeAPIKeyPara
 		h.logger.Error("failed to revoke API key",
 			slog.String("user_id", userID.String()),
 			slog.String("key_id", params.KeyId.String()),
-			slog.Any("error",err),
+			slog.Any("error", err),
 		)
 		return &ogen.RevokeAPIKeyNotFound{
 			Code:    500,

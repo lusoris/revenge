@@ -13,8 +13,8 @@ import (
 // and Metacritic ratings plus basic metadata. It does NOT support images,
 // credits, translations, or detailed season/episode info.
 var (
-	_ metadata.Provider      = (*Provider)(nil)
-	_ metadata.MovieProvider = (*Provider)(nil)
+	_ metadata.Provider       = (*Provider)(nil)
+	_ metadata.MovieProvider  = (*Provider)(nil)
 	_ metadata.TVShowProvider = (*Provider)(nil)
 )
 
@@ -38,7 +38,7 @@ func NewProvider(config Config) (*Provider, error) {
 	}, nil
 }
 
-func (p *Provider) ID() metadata.ProviderID       { return metadata.ProviderOMDb }
+func (p *Provider) ID() metadata.ProviderID        { return metadata.ProviderOMDb }
 func (p *Provider) Name() string                   { return "OMDb" }
 func (p *Provider) Priority() int                  { return p.priority }
 func (p *Provider) SupportsMovies() bool           { return true }

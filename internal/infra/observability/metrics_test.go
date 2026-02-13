@@ -269,4 +269,3 @@ func TestExtractStatusFromResponse(t *testing.T) {
 		// but we verify the function handles various type names
 	})
 }
-

@@ -191,7 +191,7 @@ func (s *Service) UpdateProvider(ctx context.Context, id uuid.UUID, req UpdatePr
 func (s *Service) DeleteProvider(ctx context.Context, id uuid.UUID) error {
 	// Delete any pending states for this provider
 	if err := s.repo.DeleteStatesByProvider(ctx, id); err != nil {
-		s.logger.Warn("failed to delete states for provider", slog.String("provider_id", id.String()), slog.Any("error",err))
+		s.logger.Warn("failed to delete states for provider", slog.String("provider_id", id.String()), slog.Any("error", err))
 	}
 	return s.repo.DeleteProvider(ctx, id)
 }
@@ -205,7 +205,7 @@ func (s *Service) EnableProvider(ctx context.Context, id uuid.UUID) error {
 func (s *Service) DisableProvider(ctx context.Context, id uuid.UUID) error {
 	// Delete any pending states for this provider
 	if err := s.repo.DeleteStatesByProvider(ctx, id); err != nil {
-		s.logger.Warn("failed to delete states for disabled provider", slog.String("provider_id", id.String()), slog.Any("error",err))
+		s.logger.Warn("failed to delete states for disabled provider", slog.String("provider_id", id.String()), slog.Any("error", err))
 	}
 	return s.repo.DisableProvider(ctx, id)
 }
@@ -341,7 +341,7 @@ func (s *Service) HandleCallback(ctx context.Context, stateParam, code string) (
 	// Create OIDC provider and verifier (cached to avoid repeated discovery HTTP calls)
 	oidcProvider, err := s.getOrCreateOIDCProvider(ctx, provider.IssuerURL)
 	if err != nil {
-		s.logger.Error("failed to create OIDC provider", slog.String("issuer", provider.IssuerURL), slog.Any("error",err))
+		s.logger.Error("failed to create OIDC provider", slog.String("issuer", provider.IssuerURL), slog.Any("error", err))
 		return nil, ErrDiscoveryFailed
 	}
 
@@ -356,7 +356,7 @@ func (s *Service) HandleCallback(ctx context.Context, stateParam, code string) (
 
 	token, err := oauth2Config.Exchange(ctx, code, tokenOpts...)
 	if err != nil {
-		s.logger.Error("token exchange failed", slog.Any("error",err))
+		s.logger.Error("token exchange failed", slog.Any("error", err))
 		return nil, ErrTokenExchange
 	}
 
@@ -370,7 +370,7 @@ func (s *Service) HandleCallback(ctx context.Context, stateParam, code string) (
 	verifier := oidcProvider.Verifier(&oidc.Config{ClientID: provider.ClientID})
 	idToken, err := verifier.Verify(ctx, rawIDToken)
 	if err != nil {
-		s.logger.Error("ID token verification failed", slog.Any("error",err))
+		s.logger.Error("ID token verification failed", slog.Any("error", err))
 		return nil, fmt.Errorf("invalid id_token: %w", err)
 	}
 
@@ -433,7 +433,7 @@ func (s *Service) HandleCallback(ctx context.Context, stateParam, code string) (
 
 		updatedLink, err := s.repo.UpdateUserLink(ctx, link.ID, updateReq)
 		if err != nil {
-			s.logger.Warn("failed to update user link", slog.Any("error",err))
+			s.logger.Warn("failed to update user link", slog.Any("error", err))
 		} else {
 			result.UserLink = updatedLink
 		}
@@ -687,14 +687,14 @@ func (s *Service) decryptSecret(ciphertext []byte) []byte {
 	// Create AES cipher
 	block, err := aes.NewCipher(s.encryptKey)
 	if err != nil {
-		s.logger.Error("failed to create cipher for decryption", slog.Any("error",err))
+		s.logger.Error("failed to create cipher for decryption", slog.Any("error", err))
 		return ciphertext // Fallback to returning as-is
 	}
 
 	// Create GCM mode
 	gcm, err := cipher.NewGCM(block)
 	if err != nil {
-		s.logger.Error("failed to create GCM for decryption", slog.Any("error",err))
+		s.logger.Error("failed to create GCM for decryption", slog.Any("error", err))
 		return ciphertext
 	}
 
@@ -710,7 +710,7 @@ func (s *Service) decryptSecret(ciphertext []byte) []byte {
 	// Decrypt
 	plaintext, err := gcm.Open(nil, nonce, ciphertext, nil)
 	if err != nil {
-		s.logger.Error("failed to decrypt secret", slog.Any("error",err))
+		s.logger.Error("failed to decrypt secret", slog.Any("error", err))
 		return ciphertext // Fallback
 	}
 

@@ -88,7 +88,7 @@ type RegisterWorkersParams struct {
 	LibraryScanWorker     *LibraryScanWorker
 	MetadataRefreshWorker *MetadataRefreshWorker
 	FileMatchWorker       *FileMatchWorker
-	SearchIndexWorker     *SearchIndexWorker      `optional:"true"`
+	SearchIndexWorker     *SearchIndexWorker `optional:"true"`
 	SeriesRefreshWorker   *SeriesRefreshWorker
 	TVShowService         tvshow.Service
 	MetadataProvider      tvshow.MetadataProvider `optional:"true"`

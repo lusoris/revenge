@@ -19,9 +19,9 @@ func NewAgent(broker *Broker) *Agent {
 }
 
 func (a *Agent) Type() notification.AgentType { return AgentTypeSSE }
-func (a *Agent) Name() string                   { return "sse-broadcast" }
-func (a *Agent) Validate() error                { return nil }
-func (a *Agent) IsEnabled() bool                { return true }
+func (a *Agent) Name() string                 { return "sse-broadcast" }
+func (a *Agent) Validate() error              { return nil }
+func (a *Agent) IsEnabled() bool              { return true }
 
 // Send broadcasts an event to all connected SSE clients.
 func (a *Agent) Send(_ context.Context, event *notification.Event) error {

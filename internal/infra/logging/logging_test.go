@@ -59,10 +59,10 @@ func TestNewLogger_ProductionMode(t *testing.T) {
 
 func TestNewLogger_LogLevels(t *testing.T) {
 	tests := []struct {
-		level       string
-		logMessage  string
-		shouldShow  bool
-		logFunc     func(*slog.Logger)
+		level      string
+		logMessage string
+		shouldShow bool
+		logFunc    func(*slog.Logger)
 	}{
 		{"debug", "debug msg", true, func(l *slog.Logger) { l.Debug("debug msg") }},
 		{"info", "info msg", true, func(l *slog.Logger) { l.Info("info msg") }},

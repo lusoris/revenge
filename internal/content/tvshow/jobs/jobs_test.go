@@ -1491,7 +1491,7 @@ func TestMetadataRefreshWorker_Work_RefreshAll_DefaultBatchSize(t *testing.T) {
 
 	job := &river.Job[MetadataRefreshArgs]{
 		JobRow: &rivertype.JobRow{ID: 5, Kind: KindMetadataRefresh},
-		Args: MetadataRefreshArgs{
+		Args:   MetadataRefreshArgs{
 			// No BatchSize specified - should default to 50
 		},
 	}
@@ -1876,7 +1876,7 @@ func TestSearchIndexWorker_Work_NoArgs_SearchDisabled(t *testing.T) {
 
 	job := &river.Job[SearchIndexArgs]{
 		JobRow: &rivertype.JobRow{ID: 3, Kind: KindSearchIndex},
-		Args: SearchIndexArgs{
+		Args:   SearchIndexArgs{
 			// Neither SeriesID nor FullReindex
 		},
 	}

@@ -8,12 +8,12 @@ import (
 // seriesToOgen converts a series domain type to ogen TVSeries.
 func seriesToOgen(s *tvshow.Series) *ogen.TVSeries {
 	o := &ogen.TVSeries{
-		ID:           ogen.NewOptUUID(s.ID),
-		Title:        ogen.NewOptString(s.Title),
-		TotalSeasons: ogen.NewOptInt(int(s.TotalSeasons)),
+		ID:            ogen.NewOptUUID(s.ID),
+		Title:         ogen.NewOptString(s.Title),
+		TotalSeasons:  ogen.NewOptInt(int(s.TotalSeasons)),
 		TotalEpisodes: ogen.NewOptInt(int(s.TotalEpisodes)),
-		CreatedAt:    ogen.NewOptDateTime(s.CreatedAt),
-		UpdatedAt:    ogen.NewOptDateTime(s.UpdatedAt),
+		CreatedAt:     ogen.NewOptDateTime(s.CreatedAt),
+		UpdatedAt:     ogen.NewOptDateTime(s.UpdatedAt),
 	}
 
 	setOptConv(&o.TmdbID, s.TMDbID, int32ToInt)

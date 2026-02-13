@@ -20,9 +20,9 @@ import (
 
 func TestIsSafePathComponent(t *testing.T) {
 	tests := []struct {
-		name   string
-		input  string
-		safe   bool
+		name  string
+		input string
+		safe  bool
 	}{
 		// Unsafe
 		{name: "empty string", input: "", safe: false},

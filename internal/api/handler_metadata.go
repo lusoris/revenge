@@ -190,7 +190,7 @@ func (h *Handler) GetProxiedImage(ctx context.Context, params ogen.GetProxiedIma
 	// Fetch image
 	data, contentType, err := h.imageService.FetchImage(ctx, imageType, path, size)
 	if err != nil {
-		h.logger.Error("Image fetch failed", slog.Any("error",err))
+		h.logger.Error("Image fetch failed", slog.Any("error", err))
 		return &ogen.GetProxiedImageNotFound{}, nil
 	}
 

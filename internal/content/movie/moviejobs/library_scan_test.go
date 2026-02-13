@@ -40,12 +40,12 @@ func TestMovieLibraryScanArgs_Fields(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		name            string
-		args            MovieLibraryScanArgs
-		expectedScanID  string
-		expectedLibID   string
-		expectedPaths   []string
-		expectedForce   bool
+		name           string
+		args           MovieLibraryScanArgs
+		expectedScanID string
+		expectedLibID  string
+		expectedPaths  []string
+		expectedForce  bool
 	}{
 		{
 			name: "multiple paths with force and IDs",

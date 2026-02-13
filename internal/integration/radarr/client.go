@@ -18,7 +18,7 @@ type Client struct {
 	baseURL     string
 	apiKey      string
 	rateLimiter *rate.Limiter
-	cache *cache.L1Cache[string, any]
+	cache       *cache.L1Cache[string, any]
 }
 
 // Config contains configuration for the Radarr client.
@@ -351,11 +351,11 @@ func (c *Client) GetCalendar(ctx context.Context, start, end time.Time) ([]Calen
 	resp, err := c.client.R().
 		SetContext(ctx).
 		SetQueryParams(map[string]string{
-			"start":              start.Format(time.RFC3339),
-			"end":                end.Format(time.RFC3339),
-			"unmonitored":        "false",
-			"includeSeries":      "false",
-			"includeEpisodeFile": "false",
+			"start":                start.Format(time.RFC3339),
+			"end":                  end.Format(time.RFC3339),
+			"unmonitored":          "false",
+			"includeSeries":        "false",
+			"includeEpisodeFile":   "false",
 			"includeEpisodeImages": "false",
 		}).
 		SetSuccessResult(&result).

@@ -130,8 +130,8 @@ func newTestSonarrServer(t *testing.T) *httptest.Server {
 
 	mux.HandleFunc("/api/v3/series/", func(w http.ResponseWriter, r *http.Request) {
 		series := Series{
-			ID:    42,
-			Title: "Test Series",
+			ID:     42,
+			Title:  "Test Series",
 			TVDbID: 12345,
 			Status: StatusContinuing,
 			Year:   2020,
@@ -205,8 +205,8 @@ func newPayload(eventType string, series *WebhookSeries) *WebhookPayload {
 
 func defaultSeries() *WebhookSeries {
 	return &WebhookSeries{
-		ID:    42,
-		Title: "Test Series",
+		ID:     42,
+		Title:  "Test Series",
 		TVDbID: 12345,
 	}
 }

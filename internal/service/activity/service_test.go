@@ -593,8 +593,3 @@ func TestService_CountOldLogs(t *testing.T) {
 // ============================================================================
 // Helper Functions
 // ============================================================================
-
-//go:fix inline
-func stringPtr(s string) *string {
-	return new(s)
-}

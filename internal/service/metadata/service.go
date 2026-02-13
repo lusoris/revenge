@@ -91,12 +91,12 @@ type service struct {
 	config ServiceConfig
 
 	// Providers by type
-	movieProviders  []MovieProvider
-	tvProviders     []TVShowProvider
-	personProviders []PersonProvider
-	imageProviders  []ImageProvider
+	movieProviders      []MovieProvider
+	tvProviders         []TVShowProvider
+	personProviders     []PersonProvider
+	imageProviders      []ImageProvider
 	collectionProviders []CollectionProvider
-	allProviders    []Provider
+	allProviders        []Provider
 
 	mu sync.RWMutex
 

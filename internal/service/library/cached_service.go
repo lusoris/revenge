@@ -50,7 +50,7 @@ func (s *CachedService) Get(ctx context.Context, id uuid.UUID) (*Library, error)
 		cacheCtx, cancel := context.WithTimeout(context.Background(), cache.SessionTTL)
 		defer cancel()
 		if setErr := s.cache.SetJSON(cacheCtx, cacheKey, result, cache.LibraryStatsTTL); setErr != nil {
-			s.logger.Warn("failed to cache library", slog.Any("error",setErr))
+			s.logger.Warn("failed to cache library", slog.Any("error", setErr))
 		}
 	}()
 
@@ -80,7 +80,7 @@ func (s *CachedService) List(ctx context.Context) ([]Library, error) {
 		cacheCtx, cancel := context.WithTimeout(context.Background(), cache.SessionTTL)
 		defer cancel()
 		if setErr := s.cache.SetJSON(cacheCtx, cacheKey, result, cache.LibraryStatsTTL); setErr != nil {
-			s.logger.Warn("failed to cache library list", slog.Any("error",setErr))
+			s.logger.Warn("failed to cache library list", slog.Any("error", setErr))
 		}
 	}()
 
@@ -110,7 +110,7 @@ func (s *CachedService) Count(ctx context.Context) (int64, error) {
 		cacheCtx, cancel := context.WithTimeout(context.Background(), cache.SessionTTL)
 		defer cancel()
 		if setErr := s.cache.SetJSON(cacheCtx, cacheKey, result, cache.LibraryStatsTTL); setErr != nil {
-			s.logger.Warn("failed to cache library count", slog.Any("error",setErr))
+			s.logger.Warn("failed to cache library count", slog.Any("error", setErr))
 		}
 	}()
 
@@ -149,7 +149,7 @@ func (s *CachedService) Update(ctx context.Context, id uuid.UUID, update *Librar
 			cacheCtx, cancel := context.WithTimeout(context.Background(), cache.SessionTTL)
 			defer cancel()
 			if err := s.cache.InvalidateLibrary(cacheCtx, id.String()); err != nil {
-				s.logger.Warn("failed to invalidate library cache", slog.Any("error",err))
+				s.logger.Warn("failed to invalidate library cache", slog.Any("error", err))
 			}
 			s.invalidateLibraryLists(cacheCtx)
 		}()
@@ -170,7 +170,7 @@ func (s *CachedService) Delete(ctx context.Context, id uuid.UUID) error {
 			cacheCtx, cancel := context.WithTimeout(context.Background(), cache.SessionTTL)
 			defer cancel()
 			if err := s.cache.InvalidateLibrary(cacheCtx, id.String()); err != nil {
-				s.logger.Warn("failed to invalidate library cache", slog.Any("error",err))
+				s.logger.Warn("failed to invalidate library cache", slog.Any("error", err))
 			}
 			s.invalidateLibraryLists(cacheCtx)
 		}()
@@ -192,7 +192,7 @@ func (s *CachedService) CompleteScan(ctx context.Context, scanID uuid.UUID, prog
 			cacheCtx, cancel := context.WithTimeout(context.Background(), cache.SessionTTL)
 			defer cancel()
 			if err := s.cache.InvalidateLibrary(cacheCtx, result.LibraryID.String()); err != nil {
-				s.logger.Warn("failed to invalidate library cache after scan", slog.Any("error",err))
+				s.logger.Warn("failed to invalidate library cache after scan", slog.Any("error", err))
 			}
 		}()
 	}
@@ -208,7 +208,7 @@ func (s *CachedService) invalidateLibraryLists(ctx context.Context) {
 	}
 	for _, key := range patterns {
 		if err := s.cache.Delete(ctx, key); err != nil {
-			s.logger.Warn("failed to invalidate library list cache", slog.String("key", key), slog.Any("error",err))
+			s.logger.Warn("failed to invalidate library list cache", slog.String("key", key), slog.Any("error", err))
 		}
 	}
 }

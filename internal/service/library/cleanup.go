@@ -89,7 +89,7 @@ func (w *LibraryScanCleanupWorker) Work(ctx context.Context, job *river.Job[Libr
 	if err != nil {
 		w.logger.Error("failed to cleanup library scans",
 			slog.Int64("job_id", job.ID),
-			slog.Any("error",err),
+			slog.Any("error", err),
 		)
 		return fmt.Errorf("failed to cleanup scans: %w", err)
 	}
@@ -102,5 +102,3 @@ func (w *LibraryScanCleanupWorker) Work(ctx context.Context, job *river.Job[Libr
 
 	return nil
 }
-
-

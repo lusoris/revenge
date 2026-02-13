@@ -98,7 +98,7 @@ func (w *SonarrSyncWorker) Work(ctx context.Context, job *river.Job[SonarrSyncJo
 func (w *SonarrSyncWorker) fullSync(ctx context.Context) error {
 	result, err := w.syncService.SyncLibrary(ctx)
 	if err != nil {
-		w.logger.Error("full sync failed", slog.Any("error",err))
+		w.logger.Error("full sync failed", slog.Any("error", err))
 		return err
 	}
 
@@ -120,7 +120,7 @@ func (w *SonarrSyncWorker) singleSync(ctx context.Context, sonarrSeriesID int) e
 	if err := w.syncService.SyncSeries(ctx, sonarrSeriesID); err != nil {
 		w.logger.Error("single series sync failed",
 			slog.Int("sonarr_series_id", sonarrSeriesID),
-			slog.Any("error",err),
+			slog.Any("error", err),
 		)
 		return err
 	}
@@ -196,7 +196,7 @@ func (w *SonarrWebhookWorker) Work(ctx context.Context, job *river.Job[SonarrWeb
 	if err := w.webhookHandler.HandleWebhook(ctx, &args.Payload); err != nil {
 		w.logger.Error("webhook processing failed",
 			slog.String("event_type", args.Payload.EventType),
-			slog.Any("error",err),
+			slog.Any("error", err),
 		)
 		return err
 	}

@@ -29,7 +29,7 @@ func provideLeaderElection(cfg *config.Config, logger *slog.Logger) (*LeaderElec
 			nodeID = uuid.Must(uuid.NewV7()).String()
 			logger.Warn("Failed to get hostname, using UUID as node ID",
 				slog.String("node_id", nodeID),
-				slog.Any("error",err))
+				slog.Any("error", err))
 		} else {
 			nodeID = hostname
 		}

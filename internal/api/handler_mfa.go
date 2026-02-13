@@ -55,7 +55,7 @@ func (h *MFAHandler) GetMFAStatus(ctx context.Context) (ogen.GetMFAStatusRes, er
 	if err != nil {
 		h.logger.Error("failed to get MFA status",
 			slog.String("user_id", userID.String()),
-			slog.Any("error",err))
+			slog.Any("error", err))
 		return &ogen.Error{
 			Code:    500,
 			Message: "Failed to retrieve MFA status",
@@ -86,7 +86,7 @@ func (h *MFAHandler) SetupTOTP(ctx context.Context, req *ogen.SetupTOTPReq) (oge
 	if err != nil {
 		h.logger.Error("failed to generate TOTP secret",
 			slog.String("user_id", userID.String()),
-			slog.Any("error",err))
+			slog.Any("error", err))
 		return &ogen.Error{
 			Code:    500,
 			Message: "Failed to generate TOTP secret",
@@ -98,7 +98,7 @@ func (h *MFAHandler) SetupTOTP(ctx context.Context, req *ogen.SetupTOTPReq) (oge
 	if err != nil {
 		h.logger.Error("failed to parse TOTP URL",
 			slog.String("user_id", userID.String()),
-			slog.Any("error",err))
+			slog.Any("error", err))
 		return &ogen.Error{
 			Code:    500,
 			Message: "Internal server error",
@@ -126,7 +126,7 @@ func (h *MFAHandler) VerifyTOTP(ctx context.Context, req *ogen.VerifyTOTPReq) (o
 	if err != nil {
 		h.logger.Error("failed to verify TOTP code",
 			slog.String("user_id", userID.String()),
-			slog.Any("error",err))
+			slog.Any("error", err))
 		return (*ogen.VerifyTOTPBadRequest)(&ogen.Error{
 			Code:    500,
 			Message: "Failed to verify TOTP code",
@@ -144,7 +144,7 @@ func (h *MFAHandler) VerifyTOTP(ctx context.Context, req *ogen.VerifyTOTPReq) (o
 	if err := h.totpService.EnableTOTP(ctx, userID); err != nil {
 		h.logger.Error("failed to enable TOTP",
 			slog.String("user_id", userID.String()),
-			slog.Any("error",err))
+			slog.Any("error", err))
 		return (*ogen.VerifyTOTPBadRequest)(&ogen.Error{
 			Code:    500,
 			Message: "Failed to enable TOTP",
@@ -170,7 +170,7 @@ func (h *MFAHandler) DisableTOTP(ctx context.Context) (ogen.DisableTOTPRes, erro
 	if err := h.totpService.DeleteTOTP(ctx, userID); err != nil {
 		h.logger.Error("failed to disable TOTP",
 			slog.String("user_id", userID.String()),
-			slog.Any("error",err))
+			slog.Any("error", err))
 		return &ogen.Error{
 			Code:    500,
 			Message: "Failed to disable TOTP",
@@ -194,7 +194,7 @@ func (h *MFAHandler) GenerateBackupCodes(ctx context.Context) (ogen.GenerateBack
 	if err != nil {
 		h.logger.Error("failed to generate backup codes",
 			slog.String("user_id", userID.String()),
-			slog.Any("error",err))
+			slog.Any("error", err))
 		return &ogen.Error{
 			Code:    500,
 			Message: "Failed to generate backup codes",
@@ -221,7 +221,7 @@ func (h *MFAHandler) RegenerateBackupCodes(ctx context.Context) (ogen.Regenerate
 	if err != nil {
 		h.logger.Error("failed to regenerate backup codes",
 			slog.String("user_id", userID.String()),
-			slog.Any("error",err))
+			slog.Any("error", err))
 		return &ogen.Error{
 			Code:    500,
 			Message: "Failed to regenerate backup codes",
@@ -247,7 +247,7 @@ func (h *MFAHandler) EnableMFA(ctx context.Context) (ogen.EnableMFARes, error) {
 	if err := h.mfaManager.EnableMFA(ctx, userID); err != nil {
 		h.logger.Error("failed to enable MFA",
 			slog.String("user_id", userID.String()),
-			slog.Any("error",err))
+			slog.Any("error", err))
 
 		// Check if error is due to no MFA methods configured
 		if err == mfa.ErrNoMFAMethod {
@@ -281,7 +281,7 @@ func (h *MFAHandler) DisableMFA(ctx context.Context) (ogen.DisableMFARes, error)
 	if err := h.mfaManager.DisableMFA(ctx, userID); err != nil {
 		h.logger.Error("failed to disable MFA",
 			slog.String("user_id", userID.String()),
-			slog.Any("error",err))
+			slog.Any("error", err))
 		return &ogen.Error{
 			Code:    500,
 			Message: "Failed to disable MFA requirement",
@@ -319,7 +319,7 @@ func (h *MFAHandler) BeginWebAuthnRegistration(ctx context.Context, req ogen.Opt
 	if err != nil {
 		h.logger.Error("failed to begin WebAuthn registration",
 			slog.String("user_id", userID.String()),
-			slog.Any("error",err))
+			slog.Any("error", err))
 		return &ogen.Error{
 			Code:    500,
 			Message: "Failed to begin WebAuthn registration",
@@ -330,7 +330,7 @@ func (h *MFAHandler) BeginWebAuthnRegistration(ctx context.Context, req ogen.Opt
 	if err != nil {
 		h.logger.Error("failed to serialize WebAuthn options",
 			slog.String("user_id", userID.String()),
-			slog.Any("error",err))
+			slog.Any("error", err))
 		return &ogen.Error{
 			Code:    500,
 			Message: "Internal server error",
@@ -378,7 +378,7 @@ func (h *MFAHandler) FinishWebAuthnRegistration(ctx context.Context, req *ogen.W
 	if err != nil {
 		h.logger.Error("failed to retrieve registration session",
 			slog.String("user_id", userID.String()),
-			slog.Any("error",err))
+			slog.Any("error", err))
 		return (*ogen.FinishWebAuthnRegistrationBadRequest)(&ogen.Error{
 			Code:    400,
 			Message: "Registration session expired or not found",
@@ -391,7 +391,7 @@ func (h *MFAHandler) FinishWebAuthnRegistration(ctx context.Context, req *ogen.W
 	if err != nil {
 		h.logger.Error("failed to serialize credential response",
 			slog.String("user_id", userID.String()),
-			slog.Any("error",err))
+			slog.Any("error", err))
 		return (*ogen.FinishWebAuthnRegistrationBadRequest)(&ogen.Error{
 			Code:    400,
 			Message: "Invalid credential response",
@@ -403,7 +403,7 @@ func (h *MFAHandler) FinishWebAuthnRegistration(ctx context.Context, req *ogen.W
 	if err != nil {
 		h.logger.Error("failed to parse credential creation response",
 			slog.String("user_id", userID.String()),
-			slog.Any("error",err))
+			slog.Any("error", err))
 		return (*ogen.FinishWebAuthnRegistrationBadRequest)(&ogen.Error{
 			Code:    400,
 			Message: "Invalid credential response format",
@@ -420,7 +420,7 @@ func (h *MFAHandler) FinishWebAuthnRegistration(ctx context.Context, req *ogen.W
 	if err := h.webauthnService.FinishRegistration(ctx, userID, username, username, parsedResponse, *sessionData, credentialName); err != nil {
 		h.logger.Error("failed to finish WebAuthn registration",
 			slog.String("user_id", userID.String()),
-			slog.Any("error",err))
+			slog.Any("error", err))
 		return (*ogen.FinishWebAuthnRegistrationBadRequest)(&ogen.Error{
 			Code:    400,
 			Message: "Failed to complete registration",
@@ -459,7 +459,7 @@ func (h *MFAHandler) BeginWebAuthnLogin(ctx context.Context) (ogen.BeginWebAuthn
 	if err != nil {
 		h.logger.Error("failed to begin WebAuthn login",
 			slog.String("user_id", userID.String()),
-			slog.Any("error",err))
+			slog.Any("error", err))
 		return (*ogen.BeginWebAuthnLoginBadRequest)(&ogen.Error{
 			Code:    400,
 			Message: "Failed to begin WebAuthn login",
@@ -470,7 +470,7 @@ func (h *MFAHandler) BeginWebAuthnLogin(ctx context.Context) (ogen.BeginWebAuthn
 	if err != nil {
 		h.logger.Error("failed to serialize WebAuthn options",
 			slog.String("user_id", userID.String()),
-			slog.Any("error",err))
+			slog.Any("error", err))
 		return (*ogen.BeginWebAuthnLoginBadRequest)(&ogen.Error{
 			Code:    500,
 			Message: "Internal server error",
@@ -512,7 +512,7 @@ func (h *MFAHandler) FinishWebAuthnLogin(ctx context.Context, req *ogen.WebAuthn
 	if err != nil {
 		h.logger.Error("failed to retrieve login session",
 			slog.String("user_id", userID.String()),
-			slog.Any("error",err))
+			slog.Any("error", err))
 		return (*ogen.FinishWebAuthnLoginBadRequest)(&ogen.Error{
 			Code:    400,
 			Message: "Login session expired or not found",
@@ -525,7 +525,7 @@ func (h *MFAHandler) FinishWebAuthnLogin(ctx context.Context, req *ogen.WebAuthn
 	if err != nil {
 		h.logger.Error("failed to serialize credential response",
 			slog.String("user_id", userID.String()),
-			slog.Any("error",err))
+			slog.Any("error", err))
 		return (*ogen.FinishWebAuthnLoginBadRequest)(&ogen.Error{
 			Code:    400,
 			Message: "Invalid credential response",
@@ -537,7 +537,7 @@ func (h *MFAHandler) FinishWebAuthnLogin(ctx context.Context, req *ogen.WebAuthn
 	if err != nil {
 		h.logger.Error("failed to parse credential request response",
 			slog.String("user_id", userID.String()),
-			slog.Any("error",err))
+			slog.Any("error", err))
 		return (*ogen.FinishWebAuthnLoginBadRequest)(&ogen.Error{
 			Code:    400,
 			Message: "Invalid credential response format",
@@ -548,7 +548,7 @@ func (h *MFAHandler) FinishWebAuthnLogin(ctx context.Context, req *ogen.WebAuthn
 	if err := h.webauthnService.FinishLogin(ctx, userID, username, username, parsedResponse, *sessionData); err != nil {
 		h.logger.Error("failed to finish WebAuthn login",
 			slog.String("user_id", userID.String()),
-			slog.Any("error",err))
+			slog.Any("error", err))
 		return (*ogen.FinishWebAuthnLoginBadRequest)(&ogen.Error{
 			Code:    400,
 			Message: "WebAuthn authentication failed",
@@ -582,7 +582,7 @@ func (h *MFAHandler) ListWebAuthnCredentials(ctx context.Context) (ogen.ListWebA
 	if err != nil {
 		h.logger.Error("failed to list WebAuthn credentials",
 			slog.String("user_id", userID.String()),
-			slog.Any("error",err))
+			slog.Any("error", err))
 		return &ogen.Error{
 			Code:    500,
 			Message: "Failed to list credentials",
@@ -634,7 +634,7 @@ func (h *MFAHandler) DeleteWebAuthnCredential(ctx context.Context, params ogen.D
 		h.logger.Error("failed to delete WebAuthn credential",
 			slog.String("user_id", userID.String()),
 			slog.String("credential_id", params.CredentialId.String()),
-			slog.Any("error",err))
+			slog.Any("error", err))
 		return (*ogen.DeleteWebAuthnCredentialNotFound)(&ogen.Error{
 			Code:    404,
 			Message: "Credential not found",
@@ -664,7 +664,7 @@ func (h *MFAHandler) RenameWebAuthnCredential(ctx context.Context, req *ogen.Ren
 	if err := h.webauthnService.RenameCredential(ctx, params.CredentialId, req.Name); err != nil {
 		h.logger.Error("failed to rename WebAuthn credential",
 			slog.String("credential_id", params.CredentialId.String()),
-			slog.Any("error",err))
+			slog.Any("error", err))
 		return (*ogen.RenameWebAuthnCredentialNotFound)(&ogen.Error{
 			Code:    404,
 			Message: "Credential not found",

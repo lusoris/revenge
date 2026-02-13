@@ -66,7 +66,7 @@ func (w *MovieMetadataRefreshWorker) Work(ctx context.Context, job *river.Job[me
 	if err := w.service.RefreshMovieMetadata(ctx, args.MovieID, opts); err != nil {
 		w.logger.Error("movie metadata refresh failed",
 			slog.String("movie_id", args.MovieID.String()),
-			slog.Any("error",err),
+			slog.Any("error", err),
 		)
 		return fmt.Errorf("movie metadata refresh failed: %w", err)
 	}

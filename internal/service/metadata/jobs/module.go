@@ -45,5 +45,3 @@ func RegisterWorkers(
 func WireJobQueue(svc metadata.Service, queue *Queue) {
 	svc.SetJobQueue(queue)
 }
-
-

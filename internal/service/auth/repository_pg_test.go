@@ -1248,7 +1248,3 @@ func TestRepositoryPG_GetAuthTokensByDeviceFingerprint(t *testing.T) {
 
 // Helper function
 //
-//go:fix inline
-func stringPtr(s string) *string {
-	return new(s)
-}

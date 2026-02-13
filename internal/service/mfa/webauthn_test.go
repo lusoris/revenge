@@ -17,8 +17,8 @@ import (
 	"github.com/lusoris/revenge/internal/config"
 	"github.com/lusoris/revenge/internal/crypto"
 	"github.com/lusoris/revenge/internal/infra/cache"
-	"github.com/lusoris/revenge/internal/infra/logging"
 	db "github.com/lusoris/revenge/internal/infra/database/db"
+	"github.com/lusoris/revenge/internal/infra/logging"
 	"github.com/lusoris/revenge/internal/testutil"
 	"github.com/lusoris/revenge/internal/util"
 )
@@ -986,4 +986,3 @@ func TestNewWebAuthnServiceFromConfig(t *testing.T) {
 		assert.True(t, service.HasCache(), "should have session cache when cacheClient is provided")
 	})
 }
-

@@ -73,7 +73,7 @@ func TestMapMovieImages(t *testing.T) {
 		}
 		result := mapMovieImages(resp)
 		require.NotNil(t, result)
-		assert.Len(t, result.Logos, 2)   // HD + standard
+		assert.Len(t, result.Logos, 2) // HD + standard
 		assert.Len(t, result.Posters, 1)
 		assert.Len(t, result.Backdrops, 2) // backgrounds + banners
 		assert.Len(t, result.Stills, 1)    // thumbs
@@ -95,19 +95,19 @@ func TestMapTVShowImages(t *testing.T) {
 
 	t.Run("full TV response", func(t *testing.T) {
 		resp := &TVShowResponse{
-			HDTVLogos:    []FanartImage{{URL: "https://example.com/hdlogo.jpg", Likes: "5"}},
-			ClearLogos:   []FanartImage{{URL: "https://example.com/clearlogo.jpg", Likes: "3"}},
-			TVPosters:    []FanartImage{{URL: "https://example.com/poster.jpg", Likes: "10"}},
+			HDTVLogos:     []FanartImage{{URL: "https://example.com/hdlogo.jpg", Likes: "5"}},
+			ClearLogos:    []FanartImage{{URL: "https://example.com/clearlogo.jpg", Likes: "3"}},
+			TVPosters:     []FanartImage{{URL: "https://example.com/poster.jpg", Likes: "10"}},
 			ShowBackdrops: []FanartImage{{URL: "https://example.com/bg.jpg", Likes: "7"}},
-			TVBanners:    []FanartImage{{URL: "https://example.com/banner.jpg", Likes: "2"}},
-			TVThumbs:     []FanartImage{{URL: "https://example.com/thumb.jpg", Likes: "1"}},
-			HDClearArt:   []FanartImage{{URL: "https://example.com/hdclearart.jpg", Likes: "4"}},
-			ClearArt:     []FanartImage{{URL: "https://example.com/clearart.jpg", Likes: "2"}},
-			CharacterArt: []FanartImage{{URL: "https://example.com/charart.jpg", Likes: "1"}},
+			TVBanners:     []FanartImage{{URL: "https://example.com/banner.jpg", Likes: "2"}},
+			TVThumbs:      []FanartImage{{URL: "https://example.com/thumb.jpg", Likes: "1"}},
+			HDClearArt:    []FanartImage{{URL: "https://example.com/hdclearart.jpg", Likes: "4"}},
+			ClearArt:      []FanartImage{{URL: "https://example.com/clearart.jpg", Likes: "2"}},
+			CharacterArt:  []FanartImage{{URL: "https://example.com/charart.jpg", Likes: "1"}},
 		}
 		result := mapTVShowImages(resp)
 		require.NotNil(t, result)
-		assert.Len(t, result.Logos, 2)     // HD + clear logos
+		assert.Len(t, result.Logos, 2) // HD + clear logos
 		assert.Len(t, result.Posters, 1)
 		assert.Len(t, result.Backdrops, 2) // backgrounds + banners
 		assert.Len(t, result.Stills, 1)    // thumbs

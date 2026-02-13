@@ -369,8 +369,3 @@ func TestRepositoryPg_DeleteExpiredAPIKeys(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, 0, count)
 }
-
-//go:fix inline
-func stringPtr(s string) *string {
-	return new(s)
-}

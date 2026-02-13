@@ -65,7 +65,7 @@ func NewS3Storage(cfg config.S3Config, logger *slog.Logger) (*S3Storage, error) 
 
 	// Verify bucket exists (optional health check)
 	if err := storage.verifyBucket(context.Background()); err != nil {
-		logger.Warn("Failed to verify S3 bucket", slog.Any("error",err))
+		logger.Warn("Failed to verify S3 bucket", slog.Any("error", err))
 	}
 
 	return storage, nil

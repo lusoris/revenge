@@ -20,15 +20,15 @@ import (
 
 // Service manages playback sessions and streaming pipelines.
 type Service struct {
-	cfg       *config.Config
-	sessions  *SessionManager
-	pipeline  *transcode.PipelineManager
-	prober    movie.Prober
-	movieSvc  movie.Service
-	tvSvc     tvshow.Service
-	profiles  []transcode.QualityProfile
+	cfg        *config.Config
+	sessions   *SessionManager
+	pipeline   *transcode.PipelineManager
+	prober     movie.Prober
+	movieSvc   movie.Service
+	tvSvc      tvshow.Service
+	profiles   []transcode.QualityProfile
 	probeCache *cache.L1Cache[uuid.UUID, *movie.MediaInfo]
-	logger    *slog.Logger
+	logger     *slog.Logger
 }
 
 // NewService creates a new playback service.

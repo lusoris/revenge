@@ -292,11 +292,11 @@ func TestSimpleGlobPrefix(t *testing.T) {
 		{"user:*", "user:", true},
 		{"rbac:*", "rbac:", true},
 		{"*", "", true},
-		{"user:1", "", false},            // no trailing *
-		{"user:*:detail:*", "", false},    // multiple wildcards
-		{"user:?:*", "", false},           // ? in prefix
-		{"user:[abc]:*", "", false},       // [ in prefix
-		{"", "", false},                   // empty
+		{"user:1", "", false},          // no trailing *
+		{"user:*:detail:*", "", false}, // multiple wildcards
+		{"user:?:*", "", false},        // ? in prefix
+		{"user:[abc]:*", "", false},    // [ in prefix
+		{"", "", false},                // empty
 	}
 
 	for _, tt := range tests {

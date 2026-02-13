@@ -25,9 +25,9 @@ type EmailConfig struct {
 	Password string `json:"password"`
 
 	// TLS configuration
-	UseTLS      bool `json:"use_tls"`       // Use TLS from the start (port 465)
-	UseStartTLS bool `json:"use_starttls"`  // Use STARTTLS upgrade (port 587)
-	SkipVerify  bool `json:"skip_verify"`   // Skip TLS certificate verification
+	UseTLS      bool `json:"use_tls"`      // Use TLS from the start (port 465)
+	UseStartTLS bool `json:"use_starttls"` // Use STARTTLS upgrade (port 587)
+	SkipVerify  bool `json:"skip_verify"`  // Skip TLS certificate verification
 
 	// Email configuration
 	FromAddress string `json:"from_address"`

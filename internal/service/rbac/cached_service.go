@@ -67,7 +67,7 @@ func (s *CachedService) Enforce(ctx context.Context, sub, obj, act string) (bool
 		cacheCtx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
 		defer cancel()
 		if setErr := s.cache.SetJSON(cacheCtx, cacheKey, cachedBool{Value: allowed}, cache.RBACEnforceTTL); setErr != nil {
-			s.logger.Warn("failed to cache RBAC enforce result", slog.Any("error",setErr))
+			s.logger.Warn("failed to cache RBAC enforce result", slog.Any("error", setErr))
 		}
 	}()
 
@@ -110,7 +110,7 @@ func (s *CachedService) GetUserRoles(ctx context.Context, userID uuid.UUID) ([]s
 		cacheCtx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
 		defer cancel()
 		if setErr := s.cache.SetJSON(cacheCtx, cacheKey, cachedStringSlice{Values: roles}, cache.RBACPolicyTTL); setErr != nil {
-			s.logger.Warn("failed to cache RBAC roles", slog.Any("error",setErr))
+			s.logger.Warn("failed to cache RBAC roles", slog.Any("error", setErr))
 		}
 	}()
 
@@ -148,7 +148,7 @@ func (s *CachedService) HasRole(ctx context.Context, userID uuid.UUID, role stri
 		cacheCtx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
 		defer cancel()
 		if setErr := s.cache.SetJSON(cacheCtx, cacheKey, cachedBool{Value: hasRole}, cache.RBACPolicyTTL); setErr != nil {
-			s.logger.Warn("failed to cache RBAC has role result", slog.Any("error",setErr))
+			s.logger.Warn("failed to cache RBAC has role result", slog.Any("error", setErr))
 		}
 	}()
 
@@ -219,7 +219,7 @@ func (s *CachedService) invalidateUserCache(ctx context.Context, userID uuid.UUI
 	if err := s.cache.InvalidateRBACForUser(ctx, userID.String()); err != nil {
 		s.logger.Warn("failed to invalidate RBAC cache for user",
 			slog.String("user_id", userID.String()),
-			slog.Any("error",err))
+			slog.Any("error", err))
 	}
 }
 
@@ -230,6 +230,6 @@ func (s *CachedService) invalidateAllRBAC(ctx context.Context) {
 	}
 
 	if err := s.cache.InvalidateAllRBAC(ctx); err != nil {
-		s.logger.Warn("failed to invalidate all RBAC cache", slog.Any("error",err))
+		s.logger.Warn("failed to invalidate all RBAC cache", slog.Any("error", err))
 	}
 }

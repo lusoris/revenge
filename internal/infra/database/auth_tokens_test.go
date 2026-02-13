@@ -13,13 +13,13 @@ func TestAuthTokensTableStructure(t *testing.T) {
 	defer cleanup()
 
 	assertColumnsExist(t, db, "shared", "auth_tokens", map[string]columnSpec{
-		"id":           {"uuid", "NO"},
-		"user_id":      {"uuid", "NO"},
-		"token_hash":   {"text", "NO"},
-		"token_type":   {"character varying", "NO"},
-		"expires_at":   {"timestamp with time zone", "NO"},
-		"created_at":   {"timestamp with time zone", "NO"},
-		"updated_at":   {"timestamp with time zone", "NO"},
+		"id":         {"uuid", "NO"},
+		"user_id":    {"uuid", "NO"},
+		"token_hash": {"text", "NO"},
+		"token_type": {"character varying", "NO"},
+		"expires_at": {"timestamp with time zone", "NO"},
+		"created_at": {"timestamp with time zone", "NO"},
+		"updated_at": {"timestamp with time zone", "NO"},
 	})
 }
 

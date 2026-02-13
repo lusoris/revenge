@@ -45,11 +45,11 @@ const (
 
 // Request permissions (media requests)
 const (
-	PermRequestsList   = "requests:list"
-	PermRequestsGet    = "requests:get"
-	PermRequestsCreate = "requests:create"
+	PermRequestsList    = "requests:list"
+	PermRequestsGet     = "requests:get"
+	PermRequestsCreate  = "requests:create"
 	PermRequestsApprove = "requests:approve"
-	PermRequestsDelete = "requests:delete"
+	PermRequestsDelete  = "requests:delete"
 )
 
 // Settings permissions

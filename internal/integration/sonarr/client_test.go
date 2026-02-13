@@ -103,12 +103,12 @@ func TestErrors(t *testing.T) {
 
 func TestSeriesTypes(t *testing.T) {
 	series := Series{
-		ID:       1,
-		Title:    "Breaking Bad",
-		TVDbID:   81189,
-		Status:   StatusEnded,
-		Ended:    true,
-		Year:     2008,
+		ID:     1,
+		Title:  "Breaking Bad",
+		TVDbID: 81189,
+		Status: StatusEnded,
+		Ended:  true,
+		Year:   2008,
 		Seasons: []SeasonInfo{
 			{SeasonNumber: 1, Monitored: true},
 			{SeasonNumber: 2, Monitored: true},

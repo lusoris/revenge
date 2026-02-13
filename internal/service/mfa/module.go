@@ -58,7 +58,7 @@ func NewWebAuthnServiceFromConfig(
 		var err error
 		sessionCache, err = cache.NewNamedCache(cacheClient, 1000, 5*time.Minute, "webauthn")
 		if err != nil {
-			logger.Warn("failed to create webauthn session cache, sessions will not be cached", slog.Any("error",err))
+			logger.Warn("failed to create webauthn session cache, sessions will not be cached", slog.Any("error", err))
 		}
 	}
 

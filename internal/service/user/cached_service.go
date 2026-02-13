@@ -52,7 +52,7 @@ func (s *CachedService) GetUser(ctx context.Context, userID uuid.UUID) (*db.Shar
 		cacheCtx, cancel := context.WithTimeout(context.Background(), cache.SessionTTL)
 		defer cancel()
 		if setErr := s.cache.SetJSON(cacheCtx, cacheKey, result, cache.UserTTL); setErr != nil {
-			s.logger.Warn("failed to cache user", slog.Any("error",setErr))
+			s.logger.Warn("failed to cache user", slog.Any("error", setErr))
 		}
 	}()
 
@@ -83,7 +83,7 @@ func (s *CachedService) GetUserByUsername(ctx context.Context, username string) 
 		cacheCtx, cancel := context.WithTimeout(context.Background(), cache.SessionTTL)
 		defer cancel()
 		if setErr := s.cache.SetJSON(cacheCtx, cacheKey, result, cache.UserTTL); setErr != nil {
-			s.logger.Warn("failed to cache user by name", slog.Any("error",setErr))
+			s.logger.Warn("failed to cache user by name", slog.Any("error", setErr))
 		}
 	}()
 
@@ -105,7 +105,7 @@ func (s *CachedService) UpdateUser(ctx context.Context, userID uuid.UUID, params
 			cacheCtx, cancel := context.WithTimeout(context.Background(), cache.SessionTTL)
 			defer cancel()
 			if err := s.cache.InvalidateUser(cacheCtx, userID.String()); err != nil {
-				s.logger.Warn("failed to invalidate user cache", slog.Any("error",err))
+				s.logger.Warn("failed to invalidate user cache", slog.Any("error", err))
 			}
 		}()
 	}
@@ -129,11 +129,11 @@ func (s *CachedService) DeleteUser(ctx context.Context, userID uuid.UUID) error 
 			cacheCtx, cancel := context.WithTimeout(context.Background(), cache.SessionTTL)
 			defer cancel()
 			if err := s.cache.InvalidateUser(cacheCtx, userID.String()); err != nil {
-				s.logger.Warn("failed to invalidate user cache", slog.Any("error",err))
+				s.logger.Warn("failed to invalidate user cache", slog.Any("error", err))
 			}
 			if user != nil {
 				if err := s.cache.Delete(cacheCtx, cache.UserByNameKey(user.Username)); err != nil {
-					s.logger.Warn("failed to invalidate user by name cache", slog.Any("error",err))
+					s.logger.Warn("failed to invalidate user by name cache", slog.Any("error", err))
 				}
 			}
 		}()

@@ -41,7 +41,7 @@ func NewWebhookHandlerFromDeps(deps WebhookHandlerDeps) *WebhookHandler {
 type WorkerDeps struct {
 	fx.In
 
-	SyncService    *SyncService    `optional:"true"`
+	SyncService    *SyncService `optional:"true"`
 	WebhookHandler *WebhookHandler
 	Logger         *slog.Logger
 }
@@ -97,7 +97,7 @@ func NewClientFromConfig(cfg *config.Config, logger *slog.Logger) *Client {
 type SyncServiceDeps struct {
 	fx.In
 
-	Client    *Client           `optional:"true"`
+	Client    *Client `optional:"true"`
 	Mapper    *Mapper
 	MovieRepo movie.Repository
 	Logger    *slog.Logger

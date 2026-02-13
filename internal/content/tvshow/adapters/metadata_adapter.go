@@ -43,14 +43,14 @@ func NewTVShowImageURLBuilder() *metadata.ImageURLBuilder {
 // TVShowTMDbEndpoints contains the TMDb API endpoints for TV shows.
 var TVShowTMDbEndpoints = struct {
 	// Series endpoints
-	SearchTV        string
-	TVDetails       string
-	TVCredits       string
-	TVImages        string
-	TVAlternative   string
+	SearchTV         string
+	TVDetails        string
+	TVCredits        string
+	TVImages         string
+	TVAlternative    string
 	TVContentRatings string
-	TVTranslations  string
-	TVExternalIDs   string
+	TVTranslations   string
+	TVExternalIDs    string
 
 	// Season endpoints
 	SeasonDetails      string
@@ -66,13 +66,13 @@ var TVShowTMDbEndpoints = struct {
 }{
 	// Series endpoints
 	SearchTV:         "/search/tv",
-	TVDetails:        "/tv/%d",                   // tv_id
-	TVCredits:        "/tv/%d/credits",           // tv_id
-	TVImages:         "/tv/%d/images",            // tv_id
+	TVDetails:        "/tv/%d",                    // tv_id
+	TVCredits:        "/tv/%d/credits",            // tv_id
+	TVImages:         "/tv/%d/images",             // tv_id
 	TVAlternative:    "/tv/%d/alternative_titles", // tv_id
-	TVContentRatings: "/tv/%d/content_ratings",   // tv_id
-	TVTranslations:   "/tv/%d/translations",      // tv_id
-	TVExternalIDs:    "/tv/%d/external_ids",      // tv_id
+	TVContentRatings: "/tv/%d/content_ratings",    // tv_id
+	TVTranslations:   "/tv/%d/translations",       // tv_id
+	TVExternalIDs:    "/tv/%d/external_ids",       // tv_id
 
 	// Season endpoints
 	SeasonDetails:      "/tv/%d/season/%d",              // tv_id, season_number
@@ -90,10 +90,10 @@ var TVShowTMDbEndpoints = struct {
 // TVShowTMDbAppendToResponse contains common append_to_response values for TV shows.
 var TVShowTMDbAppendToResponse = struct {
 	// Series append options
-	SeriesFull     string
-	SeriesBasic    string
-	SeriesImages   string
-	SeriesCredits  string
+	SeriesFull    string
+	SeriesBasic   string
+	SeriesImages  string
+	SeriesCredits string
 
 	// Season append options
 	SeasonFull   string
@@ -104,9 +104,9 @@ var TVShowTMDbAppendToResponse = struct {
 	EpisodeImages string
 }{
 	// Series: Get everything in one request
-	SeriesFull:   "credits,images,content_ratings,external_ids,translations,alternative_titles",
-	SeriesBasic:  "credits,content_ratings,external_ids",
-	SeriesImages: "images",
+	SeriesFull:    "credits,images,content_ratings,external_ids,translations,alternative_titles",
+	SeriesBasic:   "credits,content_ratings,external_ids",
+	SeriesImages:  "images",
 	SeriesCredits: "credits",
 
 	// Season

@@ -222,4 +222,3 @@ func (c *BaseClient) GetRootFolders(ctx context.Context) ([]RootFolder, error) {
 func (c *BaseClient) GetTags(ctx context.Context) ([]Tag, error) {
 	return CachedGetList[Tag](ctx, c, "tags:all", "/tag")
 }
-

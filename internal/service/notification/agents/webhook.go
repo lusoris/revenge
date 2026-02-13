@@ -217,7 +217,7 @@ func (a *WebhookAgent) Send(ctx context.Context, event *notification.Event) erro
 		if attempt > 0 {
 			// Exponential backoff: 1s, 2s, 4s... capped at 64s
 			// Safe conversion: cap attempt to prevent overflow
-			safeAttempt := min(attempt-1, 6) // Max 2^6 = 64s
+			safeAttempt := min(attempt-1, 6)         // Max 2^6 = 64s
 			backoffSeconds := 1 << uint(safeAttempt) // #nosec G115 -- safeAttempt is capped at 6
 			backoff := time.Duration(backoffSeconds) * time.Second
 			select {

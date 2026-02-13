@@ -31,7 +31,7 @@ func NewServiceForTesting(
 		logger:           slog.Default().With("service", "auth"),
 		jwtExpiry:        jwtExpiry,
 		refreshExpiry:    refreshExpiry,
-		lockoutThreshold: 5,     // Default threshold
+		lockoutThreshold: 5, // Default threshold
 		lockoutWindow:    15 * time.Minute,
 		lockoutEnabled:   false, // Disabled in tests by default
 	}

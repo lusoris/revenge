@@ -87,11 +87,11 @@ func TestReadMediaPlaylist_FileNotFound(t *testing.T) {
 
 func TestSegmentPath_DefenseInDepth(t *testing.T) {
 	tests := []struct {
-		name        string
-		segDir      string
-		profile     string
-		segFile     string
-		expected    string
+		name     string
+		segDir   string
+		profile  string
+		segFile  string
+		expected string
 	}{
 		{
 			name:     "normal path",

@@ -68,14 +68,14 @@ func NewEnforcer(pool *pgxpool.Pool, cfg *config.Config, logger *slog.Logger) (*
 	if err != nil {
 		logger.Error("failed to create Casbin enforcer",
 			slog.String("model_path", modelPath),
-			slog.Any("error",err),
+			slog.Any("error", err),
 		)
 		return nil, fmt.Errorf("failed to create Casbin enforcer: %w", err)
 	}
 
 	// Load policy from database
 	if err := enforcer.LoadPolicy(); err != nil {
-		logger.Error("failed to load policy", slog.Any("error",err))
+		logger.Error("failed to load policy", slog.Any("error", err))
 		return nil, fmt.Errorf("failed to load policy: %w", err)
 	}
 

@@ -38,8 +38,8 @@ func setupMockService(t *testing.T) (
 		mockRepo,
 		mockTokenMgr,
 		activityLogger,
-		15*time.Minute,  // jwtExpiry
-		7*24*time.Hour,  // refreshExpiry
+		15*time.Minute, // jwtExpiry
+		7*24*time.Hour, // refreshExpiry
 	)
 
 	return service, mockRepo, mockTokenMgr

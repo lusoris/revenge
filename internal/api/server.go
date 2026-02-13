@@ -65,28 +65,29 @@ type Server struct {
 	redisAuthLimiter   *middleware.RedisRateLimiter
 	redisGlobalLimiter *middleware.RedisRateLimiter
 }
+
 // ServerParams defines the dependencies required to create the API server.
 type ServerParams struct {
 	fx.In
 
-	Config          *config.Config
-	Logger          *slog.Logger
-	HealthService   *health.Service
-	SettingsService settings.Service
-	UserService     *user.Service
-	AuthService     *auth.Service
-	SessionService  *session.Service
-	RBACService     *rbac.Service
-	APIKeyService   apikeys.Service
-	OIDCService     *oidc.Service
-	ActivityService *activity.Service
-	LibraryService  *library.Service
-	SearchService       *search.MovieSearchService   `optional:"true"`
-	TVShowSearchService *search.TVShowSearchService `optional:"true"`
+	Config               *config.Config
+	Logger               *slog.Logger
+	HealthService        *health.Service
+	SettingsService      settings.Service
+	UserService          *user.Service
+	AuthService          *auth.Service
+	SessionService       *session.Service
+	RBACService          *rbac.Service
+	APIKeyService        apikeys.Service
+	OIDCService          *oidc.Service
+	ActivityService      *activity.Service
+	LibraryService       *library.Service
+	SearchService        *search.MovieSearchService   `optional:"true"`
+	TVShowSearchService  *search.TVShowSearchService  `optional:"true"`
 	EpisodeSearchService *search.EpisodeSearchService `optional:"true"`
 	SeasonSearchService  *search.SeasonSearchService  `optional:"true"`
 	PersonSearchService  *search.PersonSearchService  `optional:"true"`
-	TokenManager    auth.TokenManager
+	TokenManager         auth.TokenManager
 	// Cache client for Redis-based rate limiting
 	CacheClient *cache.Client `optional:"true"`
 	// MFA services
@@ -98,18 +99,18 @@ type ServerParams struct {
 	MovieHandler    *movie.Handler
 	MetadataService metadata.Service `optional:"true"`
 	ImageService    *image.Service
-	TVShowService   tvshow.Service         `optional:"true"`
+	TVShowService   tvshow.Service `optional:"true"`
 	// Playback / HLS streaming (optional)
-	PlaybackService *playback.Service      `optional:"true"`
-	StreamHandler   *hls.StreamHandler     `optional:"true"`
+	PlaybackService *playback.Service  `optional:"true"`
+	StreamHandler   *hls.StreamHandler `optional:"true"`
 	// SSE real-time events (optional)
-	SSEHandler      *sse.Handler           `optional:"true"`
+	SSEHandler *sse.Handler `optional:"true"`
 	// Integration services (optional)
-	RadarrService *radarr.SyncService `optional:"true"`
-	SonarrService *sonarr.SyncService `optional:"true"`
-	RiverClient   *jobs.Client        `optional:"true"`
+	RadarrService       *radarr.SyncService  `optional:"true"`
+	SonarrService       *sonarr.SyncService  `optional:"true"`
+	RiverClient         *jobs.Client         `optional:"true"`
 	NotificationService notification.Service `optional:"true"`
-	Lifecycle     fx.Lifecycle
+	Lifecycle           fx.Lifecycle
 }
 
 // NewServer creates a new HTTP API server with ogen-generated handlers.
@@ -125,29 +126,29 @@ func NewServer(p ServerParams) (*Server, error) {
 
 	// Create the handler implementation
 	handler := &Handler{
-		logger:          p.Logger.With("component", "api"),
-		cfg:             p.Config,
-		healthService:   p.HealthService,
-		userService:     p.UserService,
-		settingsService: p.SettingsService,
-		authService:     p.AuthService,
-		sessionService:  p.SessionService,
-		rbacService:     p.RBACService,
-		apikeyService:   p.APIKeyService,
-		oidcService:     p.OIDCService,
-		activityService: p.ActivityService,
-		libraryService:  p.LibraryService,
-		searchService:       p.SearchService,
-		tvshowSearchService: p.TVShowSearchService,
+		logger:               p.Logger.With("component", "api"),
+		cfg:                  p.Config,
+		healthService:        p.HealthService,
+		userService:          p.UserService,
+		settingsService:      p.SettingsService,
+		authService:          p.AuthService,
+		sessionService:       p.SessionService,
+		rbacService:          p.RBACService,
+		apikeyService:        p.APIKeyService,
+		oidcService:          p.OIDCService,
+		activityService:      p.ActivityService,
+		libraryService:       p.LibraryService,
+		searchService:        p.SearchService,
+		tvshowSearchService:  p.TVShowSearchService,
 		episodeSearchService: p.EpisodeSearchService,
 		seasonSearchService:  p.SeasonSearchService,
 		personSearchService:  p.PersonSearchService,
-		tokenManager:    p.TokenManager,
-		mfaHandler:      mfaHandler,
-		movieHandler:    p.MovieHandler,
-		metadataService: p.MetadataService,
-		imageService:    p.ImageService,
-		tvshowService:   p.TVShowService,
+		tokenManager:         p.TokenManager,
+		mfaHandler:           mfaHandler,
+		movieHandler:         p.MovieHandler,
+		metadataService:      p.MetadataService,
+		imageService:         p.ImageService,
+		tvshowService:        p.TVShowService,
 	}
 
 	// Wire up optional playback service

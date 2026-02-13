@@ -58,7 +58,7 @@ func (h *Handler) StartPlaybackSession(ctx context.Context, req *ogen.StartPlayb
 	sess, err := h.playbackService.StartSession(ctx, userID, pbReq)
 	if err != nil {
 		h.logger.Error("failed to start playback session",
-			slog.Any("error",err),
+			slog.Any("error", err),
 			slog.String("user_id", userID.String()),
 		)
 		return &ogen.StartPlaybackSessionNotFound{

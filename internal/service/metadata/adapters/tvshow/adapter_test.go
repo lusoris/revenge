@@ -12,9 +12,6 @@ import (
 	"github.com/lusoris/revenge/internal/service/metadata"
 )
 
-//go:fix inline
-func ptr[T any](v T) *T { return new(v) }
-
 func TestPtrString(t *testing.T) {
 	assert.Nil(t, ptrString(""))
 	result := ptrString("hello")

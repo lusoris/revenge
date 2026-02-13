@@ -12,10 +12,10 @@ import (
 // (logos, clearart, disc art, banners) but does NOT support search, credits,
 // or detailed metadata. Non-image methods return ErrNotFound.
 var (
-	_ metadata.Provider      = (*Provider)(nil)
-	_ metadata.MovieProvider = (*Provider)(nil)
+	_ metadata.Provider       = (*Provider)(nil)
+	_ metadata.MovieProvider  = (*Provider)(nil)
 	_ metadata.TVShowProvider = (*Provider)(nil)
-	_ metadata.ImageProvider = (*Provider)(nil)
+	_ metadata.ImageProvider  = (*Provider)(nil)
 )
 
 // Provider implements the metadata provider interface for Fanart.tv.
@@ -38,14 +38,14 @@ func NewProvider(config Config) (*Provider, error) {
 	}, nil
 }
 
-func (p *Provider) ID() metadata.ProviderID     { return metadata.ProviderFanartTV }
-func (p *Provider) Name() string                 { return "Fanart.tv" }
-func (p *Provider) Priority() int                { return p.priority }
-func (p *Provider) SupportsMovies() bool         { return true }
-func (p *Provider) SupportsTVShows() bool        { return true }
-func (p *Provider) SupportsPeople() bool         { return false }
+func (p *Provider) ID() metadata.ProviderID        { return metadata.ProviderFanartTV }
+func (p *Provider) Name() string                   { return "Fanart.tv" }
+func (p *Provider) Priority() int                  { return p.priority }
+func (p *Provider) SupportsMovies() bool           { return true }
+func (p *Provider) SupportsTVShows() bool          { return true }
+func (p *Provider) SupportsPeople() bool           { return false }
 func (p *Provider) SupportsLanguage(_ string) bool { return true }
-func (p *Provider) ClearCache()                  { p.client.clearCache() }
+func (p *Provider) ClearCache()                    { p.client.clearCache() }
 
 // --- ImageProvider ---
 
@@ -64,9 +64,6 @@ func (p *Provider) DownloadImage(_ context.Context, _ string, _ metadata.ImageSi
 
 // --- MovieProvider (image methods only) ---
 
-
-
-
 func (p *Provider) GetMovieImages(ctx context.Context, id string) (*metadata.Images, error) {
 	resp, err := p.client.GetMovieImages(ctx, id)
 	if err != nil {
@@ -79,17 +76,9 @@ func (p *Provider) GetMovieImages(ctx context.Context, id string) (*metadata.Ima
 	return images, nil
 }
 
-
-
-
-
-
 // --- TVShowProvider (image methods only) ---
 // NOTE: Fanart.tv uses TVDb IDs for TV shows. When the service passes TMDb IDs,
 // this may return 404. A TMDb→TVDb ID mapping at the service layer would fix this.
-
-
-
 
 func (p *Provider) GetTVShowImages(ctx context.Context, id string) (*metadata.Images, error) {
 	resp, err := p.client.GetTVShowImages(ctx, id)
@@ -103,11 +92,6 @@ func (p *Provider) GetTVShowImages(ctx context.Context, id string) (*metadata.Im
 	return images, nil
 }
 
-
-
-
-
-
 func (p *Provider) GetSeasonImages(ctx context.Context, showID string, seasonNum int) (*metadata.Images, error) {
 	resp, err := p.client.GetTVShowImages(ctx, showID)
 	if err != nil {
@@ -119,8 +103,6 @@ func (p *Provider) GetSeasonImages(ctx context.Context, showID string, seasonNum
 	}
 	return images, nil
 }
-
-
 
 func (p *Provider) GetEpisodeImages(_ context.Context, _ string, _, _ int) (*metadata.Images, error) {
 	// Fanart.tv doesn't have per-episode images

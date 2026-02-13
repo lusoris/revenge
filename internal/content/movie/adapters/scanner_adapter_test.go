@@ -126,8 +126,3 @@ func TestMovieFileParser_ContentType(t *testing.T) {
 	parser := NewMovieFileParser()
 	assert.Equal(t, "movie", parser.ContentType())
 }
-
-//go:fix inline
-func intPtr(i int) *int {
-	return new(i)
-}

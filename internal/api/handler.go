@@ -39,34 +39,34 @@ import (
 
 // Handler implements the ogen.Handler interface for health check endpoints.
 type Handler struct {
-	logger          *slog.Logger
-	cfg             *config.Config
-	healthService   *health.Service
-	settingsService settings.Service
-	userService     *user.Service
-	authService     *auth.Service
-	sessionService  *session.Service
-	rbacService     *rbac.Service
-	apikeyService   apikeys.Service
-	oidcService     *oidc.Service
-	activityService *activity.Service
-	libraryService  *library.Service
-	searchService       *search.MovieSearchService
-	tvshowSearchService *search.TVShowSearchService
+	logger               *slog.Logger
+	cfg                  *config.Config
+	healthService        *health.Service
+	settingsService      settings.Service
+	userService          *user.Service
+	authService          *auth.Service
+	sessionService       *session.Service
+	rbacService          *rbac.Service
+	apikeyService        apikeys.Service
+	oidcService          *oidc.Service
+	activityService      *activity.Service
+	libraryService       *library.Service
+	searchService        *search.MovieSearchService
+	tvshowSearchService  *search.TVShowSearchService
 	episodeSearchService *search.EpisodeSearchService
 	seasonSearchService  *search.SeasonSearchService
 	personSearchService  *search.PersonSearchService
-	tokenManager    auth.TokenManager
-	mfaHandler      *MFAHandler
-	movieHandler    *movie.Handler
-	metadataService metadata.Service
-	imageService    *image.Service
-	tvshowService   tvshow.Service // TV show service
-	radarrService   radarrService        // Optional: Radarr sync service
-	sonarrService   sonarrService        // Optional: Sonarr sync service
-	riverClient     riverClient          // Optional: River job queue client
-	playbackService *playback.Service    // Optional: HLS streaming service
-	notificationService notification.Service // Optional: Notification dispatcher
+	tokenManager         auth.TokenManager
+	mfaHandler           *MFAHandler
+	movieHandler         *movie.Handler
+	metadataService      metadata.Service
+	imageService         *image.Service
+	tvshowService        tvshow.Service       // TV show service
+	radarrService        radarrService        // Optional: Radarr sync service
+	sonarrService        sonarrService        // Optional: Sonarr sync service
+	riverClient          riverClient          // Optional: River job queue client
+	playbackService      *playback.Service    // Optional: HLS streaming service
+	notificationService  notification.Service // Optional: Notification dispatcher
 }
 
 // riverClient is an interface for the River job queue client.
@@ -81,7 +81,7 @@ func (h *Handler) HandleApiKeyAuth(ctx context.Context, operationName ogen.Opera
 
 	key, err := h.apikeyService.ValidateKey(ctx, t.APIKey)
 	if err != nil {
-		h.logger.Warn("Invalid API key", slog.Any("error",err))
+		h.logger.Warn("Invalid API key", slog.Any("error", err))
 		return nil, errors.Wrap(err, "invalid API key")
 	}
 
@@ -102,7 +102,7 @@ func (h *Handler) HandleBearerAuth(ctx context.Context, operationName ogen.Opera
 	// Validate JWT token
 	claims, err := h.tokenManager.ValidateAccessToken(t.Token)
 	if err != nil {
-		h.logger.Warn("Invalid JWT token", slog.Any("error",err))
+		h.logger.Warn("Invalid JWT token", slog.Any("error", err))
 		return nil, errors.Wrap(err, "invalid token")
 	}
 
@@ -630,7 +630,7 @@ func (h *Handler) GetCurrentUser(ctx context.Context) (ogen.GetCurrentUserRes, e
 	// Get user ID from JWT token in context
 	userID, err := GetUserID(ctx)
 	if err != nil {
-		h.logger.Warn("No user ID in context", slog.Any("error",err))
+		h.logger.Warn("No user ID in context", slog.Any("error", err))
 		return &ogen.Error{
 			Code:    401,
 			Message: "Unauthorized",
@@ -892,7 +892,7 @@ func (h *Handler) UploadAvatar(ctx context.Context, req *ogen.UploadAvatarReq) (
 	// Upload avatar via service (using the new reader since original was consumed)
 	avatar, err := h.userService.UploadAvatar(ctx, userID, fileReader, metadata)
 	if err != nil {
-		h.logger.Error("Failed to upload avatar", slog.Any("error",err), slog.String("user_id", userID.String()))
+		h.logger.Error("Failed to upload avatar", slog.Any("error", err), slog.String("user_id", userID.String()))
 		return &ogen.UploadAvatarBadRequest{}, fmt.Errorf("failed to upload avatar: %w", err)
 	}
 
@@ -940,7 +940,7 @@ func (h *Handler) Register(ctx context.Context, req *ogen.RegisterRequest) (ogen
 		DisplayName: displayName,
 	})
 	if err != nil {
-		h.logger.Warn("Registration failed", slog.Any("error",err))
+		h.logger.Warn("Registration failed", slog.Any("error", err))
 		return &ogen.Error{
 			Code:    400,
 			Message: fmt.Sprintf("Registration failed: %v", err),
@@ -985,7 +985,7 @@ func (h *Handler) Login(ctx context.Context, req *ogen.LoginRequest) (ogen.Login
 
 	loginResp, err := h.authService.Login(ctx, req.Username, req.Password, ipAddr, userAgent, deviceName, nil)
 	if err != nil {
-		h.logger.Warn("Login failed", slog.Any("error",err), slog.String("username", req.Username))
+		h.logger.Warn("Login failed", slog.Any("error", err), slog.String("username", req.Username))
 		return &ogen.LoginUnauthorized{
 			Code:    401,
 			Message: "Invalid username or password",
@@ -1038,7 +1038,7 @@ func (h *Handler) Login(ctx context.Context, req *ogen.LoginRequest) (ogen.Login
 func (h *Handler) Logout(ctx context.Context, req *ogen.LogoutRequest) (ogen.LogoutRes, error) {
 	userID, err := GetUserID(ctx)
 	if err != nil {
-		h.logger.Warn("Logout: no user in context", slog.Any("error",err))
+		h.logger.Warn("Logout: no user in context", slog.Any("error", err))
 		return &ogen.Error{Code: 401, Message: "Unauthorized"}, nil
 	}
 
@@ -1048,13 +1048,13 @@ func (h *Handler) Logout(ctx context.Context, req *ogen.LogoutRequest) (ogen.Log
 	if req.LogoutAll.Value {
 		// Logout from all devices
 		if err := h.authService.LogoutAll(ctx, userID); err != nil {
-			h.logger.Error("Logout all failed", slog.Any("error",err))
+			h.logger.Error("Logout all failed", slog.Any("error", err))
 			return &ogen.Error{}, fmt.Errorf("logout failed: %w", err)
 		}
 	} else {
 		// Logout from current device only
 		if err := h.authService.Logout(ctx, req.RefreshToken); err != nil {
-			h.logger.Error("Logout failed", slog.Any("error",err))
+			h.logger.Error("Logout failed", slog.Any("error", err))
 			return &ogen.Error{}, fmt.Errorf("logout failed: %w", err)
 		}
 	}
@@ -1076,7 +1076,7 @@ func (h *Handler) RefreshToken(ctx context.Context, req *ogen.RefreshRequest) (o
 	// Refresh access token
 	loginResp, err := h.authService.RefreshToken(ctx, req.RefreshToken)
 	if err != nil {
-		h.logger.Warn("Token refresh failed", slog.Any("error",err))
+		h.logger.Warn("Token refresh failed", slog.Any("error", err))
 		return &ogen.RefreshTokenUnauthorized{
 			Code:    401,
 			Message: "Invalid or expired refresh token",
@@ -1120,7 +1120,7 @@ func (h *Handler) VerifyEmail(ctx context.Context, req *ogen.VerifyEmailRequest)
 func (h *Handler) ResendVerification(ctx context.Context) (ogen.ResendVerificationRes, error) {
 	userID, err := GetUserID(ctx)
 	if err != nil {
-		h.logger.Warn("Resend verification: no user in context", slog.Any("error",err))
+		h.logger.Warn("Resend verification: no user in context", slog.Any("error", err))
 		return &ogen.Error{Code: 401, Message: "Unauthorized"}, nil
 	}
 
@@ -1159,7 +1159,7 @@ func (h *Handler) ForgotPassword(ctx context.Context, req *ogen.ForgotPasswordRe
 	// Token is never returned - only sent via email to prevent information disclosure
 	err := h.authService.RequestPasswordReset(ctx, req.Email, ipAddr, userAgent)
 	if err != nil {
-		h.logger.Error("Password reset request failed", slog.Any("error",err))
+		h.logger.Error("Password reset request failed", slog.Any("error", err))
 		// Still return success to avoid email enumeration
 	}
 
@@ -1172,7 +1172,7 @@ func (h *Handler) ResetPassword(ctx context.Context, req *ogen.ResetPasswordRequ
 
 	// Reset password using token
 	if err := h.authService.ResetPassword(ctx, req.Token, req.NewPassword); err != nil {
-		h.logger.Warn("Password reset failed", slog.Any("error",err))
+		h.logger.Warn("Password reset failed", slog.Any("error", err))
 		return &ogen.Error{}, fmt.Errorf("reset failed: %w", err)
 	}
 
@@ -1184,7 +1184,7 @@ func (h *Handler) ResetPassword(ctx context.Context, req *ogen.ResetPasswordRequ
 func (h *Handler) ChangePassword(ctx context.Context, req *ogen.ChangePasswordRequest) (ogen.ChangePasswordRes, error) {
 	userID, err := GetUserID(ctx)
 	if err != nil {
-		h.logger.Warn("Change password: no user in context", slog.Any("error",err))
+		h.logger.Warn("Change password: no user in context", slog.Any("error", err))
 		return &ogen.ChangePasswordUnauthorized{
 			Code:    401,
 			Message: "Unauthorized",
@@ -1195,7 +1195,7 @@ func (h *Handler) ChangePassword(ctx context.Context, req *ogen.ChangePasswordRe
 
 	// Change password
 	if err := h.authService.ChangePassword(ctx, userID, req.OldPassword, req.NewPassword); err != nil {
-		h.logger.Warn("Password change failed", slog.Any("error",err))
+		h.logger.Warn("Password change failed", slog.Any("error", err))
 		return &ogen.ChangePasswordBadRequest{
 			Code:    400,
 			Message: fmt.Sprintf("Password change failed: %v", err),

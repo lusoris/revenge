@@ -35,11 +35,6 @@ func createTestUser(t *testing.T, testDB testutil.DB) uuid.UUID {
 	return testutil.CreateUser(t, testDB.Pool(), testutil.UniqueUser()).ID
 }
 
-//go:fix inline
-func stringPtr(s string) *string {
-	return new(s)
-}
-
 func TestRepositoryPG_CreateSession(t *testing.T) {
 	t.Parallel()
 	repo, testDB := setupTestRepository(t)

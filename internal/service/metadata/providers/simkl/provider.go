@@ -39,7 +39,7 @@ func NewProvider(config Config) (*Provider, error) {
 	}, nil
 }
 
-func (p *Provider) ID() metadata.ProviderID       { return metadata.ProviderSimkl }
+func (p *Provider) ID() metadata.ProviderID        { return metadata.ProviderSimkl }
 func (p *Provider) Name() string                   { return "Simkl" }
 func (p *Provider) Priority() int                  { return p.priority }
 func (p *Provider) SupportsMovies() bool           { return true }
@@ -83,9 +83,6 @@ func (p *Provider) GetMovieCredits(_ context.Context, _ string) (*metadata.Credi
 	return nil, metadata.ErrNotFound
 }
 
-
-
-
 func (p *Provider) GetMovieExternalIDs(ctx context.Context, id string) (*metadata.ExternalIDs, error) {
 	movie, err := p.client.GetMovie(ctx, id)
 	if err != nil {
@@ -93,8 +90,6 @@ func (p *Provider) GetMovieExternalIDs(ctx context.Context, id string) (*metadat
 	}
 	return mapExternalIDs(movie.IDs), nil
 }
-
-
 
 // --- TVShowProvider ---
 
@@ -153,10 +148,6 @@ func (p *Provider) GetTVShow(ctx context.Context, id string, _ string) (*metadat
 	return md, nil
 }
 
-
-
-
-
 func (p *Provider) GetTVShowExternalIDs(ctx context.Context, id string) (*metadata.ExternalIDs, error) {
 	show, err := p.client.GetShow(ctx, id)
 	if err != nil {
@@ -198,8 +189,3 @@ func (p *Provider) GetSeason(ctx context.Context, showID string, seasonNum int, 
 
 	return sm, nil
 }
-
-
-
-
-

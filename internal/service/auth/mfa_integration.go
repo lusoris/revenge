@@ -44,12 +44,12 @@ type MFALoginResponse struct {
 
 // MFAVerifyRequest contains MFA verification data
 type MFAVerifyRequest struct {
-	UserID            uuid.UUID                                  `json:"user_id"`
-	Method            string                                     `json:"method"`                       // "totp", "webauthn", "backup_code"
-	Code              string                                     `json:"code,omitempty"`               // For TOTP or backup code
-	ClientIP          *netip.Addr                                `json:"-"`                            // For backup code IP tracking
-	Username          string                                     `json:"-"`                            // For WebAuthn user lookup
-	WebAuthnAssertion *protocol.ParsedCredentialAssertionData    `json:"-"`                            // For WebAuthn
+	UserID            uuid.UUID                               `json:"user_id"`
+	Method            string                                  `json:"method"`         // "totp", "webauthn", "backup_code"
+	Code              string                                  `json:"code,omitempty"` // For TOTP or backup code
+	ClientIP          *netip.Addr                             `json:"-"`              // For backup code IP tracking
+	Username          string                                  `json:"-"`              // For WebAuthn user lookup
+	WebAuthnAssertion *protocol.ParsedCredentialAssertionData `json:"-"`              // For WebAuthn
 }
 
 // CheckMFARequired checks if the user requires MFA verification

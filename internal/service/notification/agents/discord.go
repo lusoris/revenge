@@ -31,16 +31,16 @@ type DiscordConfig struct {
 
 // DiscordEmbed represents a Discord embed object
 type DiscordEmbed struct {
-	Title       string               `json:"title,omitempty"`
-	Description string               `json:"description,omitempty"`
-	URL         string               `json:"url,omitempty"`
-	Color       int                  `json:"color,omitempty"`
-	Timestamp   string               `json:"timestamp,omitempty"`
-	Footer      *DiscordEmbedFooter  `json:"footer,omitempty"`
-	Thumbnail   *DiscordEmbedMedia   `json:"thumbnail,omitempty"`
-	Image       *DiscordEmbedMedia   `json:"image,omitempty"`
-	Author      *DiscordEmbedAuthor  `json:"author,omitempty"`
-	Fields      []DiscordEmbedField  `json:"fields,omitempty"`
+	Title       string              `json:"title,omitempty"`
+	Description string              `json:"description,omitempty"`
+	URL         string              `json:"url,omitempty"`
+	Color       int                 `json:"color,omitempty"`
+	Timestamp   string              `json:"timestamp,omitempty"`
+	Footer      *DiscordEmbedFooter `json:"footer,omitempty"`
+	Thumbnail   *DiscordEmbedMedia  `json:"thumbnail,omitempty"`
+	Image       *DiscordEmbedMedia  `json:"image,omitempty"`
+	Author      *DiscordEmbedAuthor `json:"author,omitempty"`
+	Fields      []DiscordEmbedField `json:"fields,omitempty"`
 }
 
 // DiscordEmbedFooter represents a Discord embed footer

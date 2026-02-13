@@ -311,7 +311,7 @@ func (m *MFAManager) RemoveAllMethods(ctx context.Context, userID uuid.UUID) err
 	// Delete TOTP
 	err := m.totp.DeleteTOTP(ctx, userID)
 	if err != nil {
-		m.logger.Warn("failed to delete totp", slog.Any("error",err))
+		m.logger.Warn("failed to delete totp", slog.Any("error", err))
 	}
 
 	// Delete all WebAuthn credentials
@@ -322,7 +322,7 @@ func (m *MFAManager) RemoveAllMethods(ctx context.Context, userID uuid.UUID) err
 			if err != nil {
 				m.logger.Warn("failed to delete webauthn credential",
 					slog.String("credential_id", cred.ID.String()),
-					slog.Any("error",err))
+					slog.Any("error", err))
 			}
 		}
 	}
@@ -330,13 +330,13 @@ func (m *MFAManager) RemoveAllMethods(ctx context.Context, userID uuid.UUID) err
 	// Delete all backup codes
 	err = m.backupCodes.DeleteAllCodes(ctx, userID)
 	if err != nil {
-		m.logger.Warn("failed to delete backup codes", slog.Any("error",err))
+		m.logger.Warn("failed to delete backup codes", slog.Any("error", err))
 	}
 
 	// Delete MFA settings
 	err = m.queries.DeleteUserMFASettings(ctx, userID)
 	if err != nil {
-		m.logger.Warn("failed to delete mfa settings", slog.Any("error",err))
+		m.logger.Warn("failed to delete mfa settings", slog.Any("error", err))
 	}
 
 	m.logger.Info("removed all mfa methods", slog.String("user_id", userID.String()))

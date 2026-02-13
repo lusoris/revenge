@@ -98,7 +98,7 @@ func (w *RadarrSyncWorker) Work(ctx context.Context, job *river.Job[RadarrSyncJo
 func (w *RadarrSyncWorker) fullSync(ctx context.Context) error {
 	result, err := w.syncService.SyncLibrary(ctx)
 	if err != nil {
-		w.logger.Error("full sync failed", slog.Any("error",err))
+		w.logger.Error("full sync failed", slog.Any("error", err))
 		return err
 	}
 
@@ -118,7 +118,7 @@ func (w *RadarrSyncWorker) singleSync(ctx context.Context, radarrMovieID int) er
 	if err := w.syncService.SyncMovie(ctx, radarrMovieID); err != nil {
 		w.logger.Error("single movie sync failed",
 			slog.Int("radarr_movie_id", radarrMovieID),
-			slog.Any("error",err),
+			slog.Any("error", err),
 		)
 		return err
 	}
@@ -193,7 +193,7 @@ func (w *RadarrWebhookWorker) Work(ctx context.Context, job *river.Job[RadarrWeb
 	if err := w.webhookHandler.HandleWebhook(ctx, &args.Payload); err != nil {
 		w.logger.Error("webhook processing failed",
 			slog.String("event_type", args.Payload.EventType),
-			slog.Any("error",err),
+			slog.Any("error", err),
 		)
 		return err
 	}

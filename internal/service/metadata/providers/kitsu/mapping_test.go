@@ -9,9 +9,6 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-//go:fix inline
-func ptr[T any](v T) *T { return new(v) }
-
 func TestBestImage(t *testing.T) {
 	tests := []struct {
 		name string

@@ -71,10 +71,10 @@ func TestOIDCService_AddProvider_Short(t *testing.T) {
 
 		req := oidc.CreateProviderRequest{
 			Name:                  "test-provider",
-			DisplayName:          "Test Provider",
-			ProviderType:         oidc.ProviderTypeGeneric,
-			IssuerURL:            "https://auth.example.com",
-			ClientID:             "test-client-id",
+			DisplayName:           "Test Provider",
+			ProviderType:          oidc.ProviderTypeGeneric,
+			IssuerURL:             "https://auth.example.com",
+			ClientID:              "test-client-id",
 			ClientSecretEncrypted: []byte("secret"),
 		}
 
@@ -616,9 +616,9 @@ func TestOIDCService_AddProvider_Extended_Short(t *testing.T) {
 
 		req := oidc.CreateProviderRequest{
 			Name:                  "test-provider",
-			ProviderType:         oidc.ProviderTypeGeneric,
-			IssuerURL:            "https://auth.example.com",
-			ClientID:             "test-client-id",
+			ProviderType:          oidc.ProviderTypeGeneric,
+			IssuerURL:             "https://auth.example.com",
+			ClientID:              "test-client-id",
 			ClientSecretEncrypted: []byte("secret"),
 		}
 
@@ -644,11 +644,11 @@ func TestOIDCService_AddProvider_Extended_Short(t *testing.T) {
 
 		req := oidc.CreateProviderRequest{
 			Name:                  "test-provider",
-			ProviderType:         oidc.ProviderTypeGeneric,
-			IssuerURL:            "https://auth.example.com",
-			ClientID:             "test-client-id",
+			ProviderType:          oidc.ProviderTypeGeneric,
+			IssuerURL:             "https://auth.example.com",
+			ClientID:              "test-client-id",
 			ClientSecretEncrypted: []byte("secret"),
-			Scopes:               []string{}, // Empty scopes
+			Scopes:                []string{}, // Empty scopes
 		}
 
 		provider, err := svc.AddProvider(context.Background(), req)
@@ -674,9 +674,9 @@ func TestOIDCService_AddProvider_Extended_Short(t *testing.T) {
 
 		req := oidc.CreateProviderRequest{
 			Name:                  "test-provider",
-			ProviderType:         oidc.ProviderTypeGeneric,
-			IssuerURL:            "https://auth.example.com",
-			ClientID:             "test-client-id",
+			ProviderType:          oidc.ProviderTypeGeneric,
+			IssuerURL:             "https://auth.example.com",
+			ClientID:              "test-client-id",
 			ClientSecretEncrypted: []byte("secret"),
 			// No ClaimMappings set - should use defaults
 		}
@@ -705,9 +705,9 @@ func TestOIDCService_AddProvider_Extended_Short(t *testing.T) {
 
 				req := oidc.CreateProviderRequest{
 					Name:                  "test-provider",
-					ProviderType:         pt,
-					IssuerURL:            "https://auth.example.com",
-					ClientID:             "test-client-id",
+					ProviderType:          pt,
+					IssuerURL:             "https://auth.example.com",
+					ClientID:              "test-client-id",
 					ClientSecretEncrypted: []byte("secret"),
 				}
 
@@ -943,9 +943,9 @@ func TestOIDCService_WithEncryption_Short(t *testing.T) {
 
 		req := oidc.CreateProviderRequest{
 			Name:                  "test-provider",
-			ProviderType:         oidc.ProviderTypeGeneric,
-			IssuerURL:            "https://auth.example.com",
-			ClientID:             "test-client-id",
+			ProviderType:          oidc.ProviderTypeGeneric,
+			IssuerURL:             "https://auth.example.com",
+			ClientID:              "test-client-id",
 			ClientSecretEncrypted: []byte("my-secret"),
 		}
 

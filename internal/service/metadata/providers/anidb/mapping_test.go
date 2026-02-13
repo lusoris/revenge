@@ -162,15 +162,15 @@ func TestMapAnimeToTVShowMetadata(t *testing.T) {
 
 	t.Run("full anime", func(t *testing.T) {
 		a := &AnimeResponse{
-			ID:         12345,
-			Restricted: false,
-			Type:       "TV Series",
-			EpCount:    25,
-			StartDate:  "2013-04-07",
-			EndDate:    "2013-09-28",
+			ID:          12345,
+			Restricted:  false,
+			Type:        "TV Series",
+			EpCount:     25,
+			StartDate:   "2013-04-07",
+			EndDate:     "2013-09-28",
 			Description: "[b]Synopsis[/b]: Humanity fights for survival.",
-			Picture:    "12345.jpg",
-			URL:        "https://anidb.net/anime/12345",
+			Picture:     "12345.jpg",
+			URL:         "https://anidb.net/anime/12345",
 			Titles: Titles{
 				Title: []Title{
 					{Lang: "en", Type: "official", Text: "Attack on Titan"},
@@ -189,7 +189,7 @@ func TestMapAnimeToTVShowMetadata(t *testing.T) {
 			Tags: Tags{
 				Tag: []Tag{
 					{ID: 1, Weight: 600, Name: "action"},
-					{ID: 2, Weight: 100, Name: "low-weight"},        // filtered
+					{ID: 2, Weight: 100, Name: "low-weight"},                   // filtered
 					{ID: 3, Weight: 300, GlobalSpoiler: true, Name: "spoiler"}, // filtered
 				},
 			},

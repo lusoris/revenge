@@ -56,7 +56,6 @@ func NewLogger(cfg Config) *slog.Logger {
 	return slog.New(handler)
 }
 
-
 // parseLevel converts a string log level to slog.Level.
 func parseLevel(levelStr string) slog.Level {
 	switch strings.ToLower(levelStr) {

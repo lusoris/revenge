@@ -74,7 +74,7 @@ func NewServer(p ServerParams) *Server {
 					slog.String("address", addr),
 				)
 				if err := httpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-					server.logger.Error("Observability server error", slog.Any("error",err))
+					server.logger.Error("Observability server error", slog.Any("error", err))
 				}
 			}()
 			return nil

@@ -135,7 +135,7 @@ func (s *WebAuthnService) deleteSession(ctx context.Context, keyPrefix string, u
 
 	key := keyPrefix + userID.String()
 	if err := s.cache.Delete(ctx, key); err != nil {
-		s.logger.Warn("failed to delete session from cache", slog.String("key", key), slog.Any("error",err))
+		s.logger.Warn("failed to delete session from cache", slog.String("key", key), slog.Any("error", err))
 	}
 }
 
@@ -185,7 +185,7 @@ func (s *WebAuthnService) BeginRegistration(
 	if err != nil {
 		s.logger.Error("failed to list existing credentials",
 			slog.String("user_id", userID.String()),
-			slog.Any("error",err))
+			slog.Any("error", err))
 		// Continue without exclusions
 		existingCreds = []db.WebauthnCredential{}
 	}
@@ -227,7 +227,7 @@ func (s *WebAuthnService) BeginRegistration(
 	if err := s.storeSession(ctx, webAuthnRegistrationKeyPrefix, userID, session); err != nil {
 		s.logger.Warn("failed to cache registration session, client must provide session data",
 			slog.String("user_id", userID.String()),
-			slog.Any("error",err))
+			slog.Any("error", err))
 	}
 
 	s.logger.Info("webauthn registration started",
@@ -392,7 +392,7 @@ func (s *WebAuthnService) BeginLogin(
 	if err := s.storeSession(ctx, webAuthnLoginKeyPrefix, userID, session); err != nil {
 		s.logger.Warn("failed to cache login session, client must provide session data",
 			slog.String("user_id", userID.String()),
-			slog.Any("error",err))
+			slog.Any("error", err))
 	}
 
 	s.logger.Info("webauthn login started",
@@ -473,7 +473,7 @@ func (s *WebAuthnService) FinishLogin(
 		// Mark credential as cloned
 		err = s.queries.MarkWebAuthnCloneDetected(ctx, credential.ID)
 		if err != nil {
-			s.logger.Error("failed to mark credential as cloned", slog.Any("error",err))
+			s.logger.Error("failed to mark credential as cloned", slog.Any("error", err))
 		}
 
 		return ErrCloneDetected

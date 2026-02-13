@@ -2194,11 +2194,6 @@ func TestNewServiceForTestingWithEmail(t *testing.T) {
 // Helpers
 // ============================================================================
 
-//go:fix inline
-func strPtr(s string) *string {
-	return new(s)
-}
-
 func testLogger() *slog.Logger {
 	return slog.Default()
 }

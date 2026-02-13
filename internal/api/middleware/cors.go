@@ -31,8 +31,8 @@ func CORSMiddleware(cfg config.CORSConfig) func(http.Handler) http.Handler {
 	}
 
 	const (
-		allowMethods = "GET, POST, PUT, PATCH, DELETE, OPTIONS"
-		allowHeaders = "Authorization, Content-Type, X-API-Key, X-Request-ID, Accept, Accept-Language"
+		allowMethods  = "GET, POST, PUT, PATCH, DELETE, OPTIONS"
+		allowHeaders  = "Authorization, Content-Type, X-API-Key, X-Request-ID, Accept, Accept-Language"
 		exposeHeaders = "X-Request-ID, Retry-After, Content-Disposition"
 	)
 

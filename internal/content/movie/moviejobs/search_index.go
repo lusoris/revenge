@@ -123,19 +123,19 @@ func (w *MovieSearchIndexWorker) indexMovie(ctx context.Context, movieID uuid.UU
 	// Get related data
 	genres, err := w.movieRepo.ListMovieGenres(ctx, movieID)
 	if err != nil {
-		w.logger.Warn("failed to get genres", slog.Any("error",err))
+		w.logger.Warn("failed to get genres", slog.Any("error", err))
 		genres = nil
 	}
 
 	cast, err := w.movieRepo.ListMovieCast(ctx, movieID, 1000, 0)
 	if err != nil {
-		w.logger.Warn("failed to get cast", slog.Any("error",err))
+		w.logger.Warn("failed to get cast", slog.Any("error", err))
 		cast = nil
 	}
 
 	crew, err := w.movieRepo.ListMovieCrew(ctx, movieID, 1000, 0)
 	if err != nil {
-		w.logger.Warn("failed to get crew", slog.Any("error",err))
+		w.logger.Warn("failed to get crew", slog.Any("error", err))
 		crew = nil
 	}
 
@@ -146,7 +146,7 @@ func (w *MovieSearchIndexWorker) indexMovie(ctx context.Context, movieID uuid.UU
 	var file *movie.MovieFile
 	files, err := w.movieRepo.ListMovieFilesByMovieID(ctx, movieID)
 	if err != nil {
-		w.logger.Warn("failed to get files", slog.Any("error",err))
+		w.logger.Warn("failed to get files", slog.Any("error", err))
 	} else if len(files) > 0 {
 		file = &files[0]
 	}

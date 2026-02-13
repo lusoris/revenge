@@ -37,7 +37,7 @@ func NewProvider(config Config) (*Provider, error) {
 	}, nil
 }
 
-func (p *Provider) ID() metadata.ProviderID       { return metadata.ProviderTrakt }
+func (p *Provider) ID() metadata.ProviderID        { return metadata.ProviderTrakt }
 func (p *Provider) Name() string                   { return "Trakt" }
 func (p *Provider) Priority() int                  { return p.priority }
 func (p *Provider) SupportsMovies() bool           { return true }
@@ -93,7 +93,6 @@ func (p *Provider) GetMovieCredits(ctx context.Context, id string) (*metadata.Cr
 	return result, nil
 }
 
-
 func (p *Provider) GetMovieReleaseDates(_ context.Context, _ string) ([]metadata.ReleaseDate, error) {
 	// Trakt does not provide detailed release dates
 	return nil, metadata.ErrNotFound
@@ -118,8 +117,6 @@ func (p *Provider) GetMovieExternalIDs(ctx context.Context, id string) (*metadat
 	}
 	return mapExternalIDs(movie.IDs), nil
 }
-
-
 
 // --- TVShowProvider ---
 
@@ -182,8 +179,6 @@ func (p *Provider) GetTVShowCredits(ctx context.Context, id string) (*metadata.C
 	return result, nil
 }
 
-
-
 func (p *Provider) GetTVShowTranslations(ctx context.Context, id string) ([]metadata.Translation, error) {
 	translations, err := p.client.GetShowTranslations(ctx, id)
 	if err != nil {
@@ -242,8 +237,3 @@ func (p *Provider) GetSeason(ctx context.Context, showID string, seasonNum int, 
 	sm.Episodes = mapEpisodesToSummaries(episodes)
 	return sm, nil
 }
-
-
-
-
-
