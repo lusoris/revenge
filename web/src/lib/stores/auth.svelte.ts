@@ -49,11 +49,11 @@ onAuthChange((authenticated) => {
 
 // ─── Actions ─────────────────────────────────────────────────────────────────
 
-export async function login(email: string, password: string, totpCode?: string): Promise<User> {
+export async function login(username: string, password: string, totpCode?: string): Promise<User> {
 	error = null;
 	loading = true;
 	try {
-		const res = await authApi.login({ email, password, totp_code: totpCode });
+		const res = await authApi.login({ username, password, totp_code: totpCode });
 		user = res.user;
 		return res.user;
 	} catch (e: unknown) {

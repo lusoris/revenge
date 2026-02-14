@@ -4,7 +4,7 @@
 
 	const auth = getAuth();
 
-	let email = $state('');
+	let username = $state('');
 	let password = $state('');
 	let totpCode = $state('');
 	let showTotp = $state(false);
@@ -17,7 +17,7 @@
 		errorMsg = '';
 
 		try {
-			await login(email, password, showTotp ? totpCode : undefined);
+			await login(username, password, showTotp ? totpCode : undefined);
 			goto('/');
 		} catch (err: unknown) {
 			const msg = err instanceof Error ? err.message : 'Login failed';
@@ -43,15 +43,15 @@
 	{/if}
 
 	<div>
-		<label for="email" class="mb-1 block text-sm font-medium text-neutral-300">Email</label>
+		<label for="username" class="mb-1 block text-sm font-medium text-neutral-300">Username or Email</label>
 		<input
-			id="email"
-			type="email"
-			bind:value={email}
+			id="username"
+			type="text"
+			bind:value={username}
 			required
-			autocomplete="email"
+			autocomplete="username"
 			class="w-full rounded-lg border border-neutral-800 bg-neutral-900 px-3 py-2 text-sm text-white placeholder-neutral-600 outline-none focus:border-neutral-600 focus:ring-1 focus:ring-neutral-600"
-			placeholder="you@example.com"
+			placeholder="username or email"
 		/>
 	</div>
 
