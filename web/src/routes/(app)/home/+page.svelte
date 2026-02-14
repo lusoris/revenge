@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { createQuery } from '@tanstack/svelte-query';
-	import { getAuth } from '$lib/stores/auth.svelte';
-	import MediaRow from '$components/media/MediaRow.svelte';
-	import MediaCard from '$components/media/MediaCard.svelte';
 	import * as moviesApi from '$api/endpoints/movies';
 	import * as tvshowsApi from '$api/endpoints/tvshows';
+	import MediaCard from '$components/media/MediaCard.svelte';
+	import MediaRow from '$components/media/MediaRow.svelte';
+	import { getAuth } from '$lib/stores/auth.svelte';
+	import { createQuery } from '@tanstack/svelte-query';
 
 	const auth = getAuth();
 

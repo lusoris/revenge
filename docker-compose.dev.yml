@@ -36,11 +36,11 @@ services:
       # Radarr integration
       - REVENGE_INTEGRATIONS_RADARR_ENABLED=true
       - REVENGE_INTEGRATIONS_RADARR_BASE_URL=http://radarr:7878
-      - REVENGE_INTEGRATIONS_RADARR_API_KEY=dev_radarr_api_key
+      - REVENGE_INTEGRATIONS_RADARR_API_KEY=39314e5cb02942a49ee73eb474ba6f9c
       # Sonarr integration
       - REVENGE_INTEGRATIONS_SONARR_ENABLED=true
       - REVENGE_INTEGRATIONS_SONARR_BASE_URL=http://sonarr:8989
-      - REVENGE_INTEGRATIONS_SONARR_API_KEY=dev_sonarr_api_key
+      - REVENGE_INTEGRATIONS_SONARR_API_KEY=31f3baf2872f4769921ba2bdd29f9457
     volumes:
       # ./:/app - Disabled for Docker-based testing (overwrites binary)
       - revenge-data:/data

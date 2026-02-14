@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { page } from '$app/state';
-	import { createQuery } from '@tanstack/svelte-query';
-	import { derived, writable } from 'svelte/store';
 	import * as searchApi from '$api/endpoints/search';
+	import { page } from '$app/state';
 	import MediaCard from '$components/media/MediaCard.svelte';
 	import MediaGrid from '$components/media/MediaGrid.svelte';
+	import { createQuery } from '@tanstack/svelte-query';
+	import { derived, writable } from 'svelte/store';
 
 	let query = $state(page.url.searchParams.get('q') ?? '');
 	let debounced = $state(page.url.searchParams.get('q') ?? '');

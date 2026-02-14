@@ -166,12 +166,7 @@ async function request<T>(path: string, opts: RequestOptions = {}): Promise<T> {
 	const res = await fetch(url, {
 		method,
 		headers,
-		body:
-			body === undefined
-				? undefined
-				: body instanceof FormData
-					? body
-					: JSON.stringify(body)
+		body: body === undefined ? undefined : body instanceof FormData ? body : JSON.stringify(body)
 	});
 
 	// Handle 204 No Content
@@ -211,15 +206,27 @@ export function get<T>(path: string, opts?: Omit<RequestOptions, 'method'>) {
 	return request<T>(path, { ...opts, method: 'GET' });
 }
 
-export function post<T>(path: string, body?: unknown, opts?: Omit<RequestOptions, 'method' | 'body'>) {
+export function post<T>(
+	path: string,
+	body?: unknown,
+	opts?: Omit<RequestOptions, 'method' | 'body'>
+) {
 	return request<T>(path, { ...opts, method: 'POST', body });
 }
 
-export function put<T>(path: string, body?: unknown, opts?: Omit<RequestOptions, 'method' | 'body'>) {
+export function put<T>(
+	path: string,
+	body?: unknown,
+	opts?: Omit<RequestOptions, 'method' | 'body'>
+) {
 	return request<T>(path, { ...opts, method: 'PUT', body });
 }
 
-export function patch<T>(path: string, body?: unknown, opts?: Omit<RequestOptions, 'method' | 'body'>) {
+export function patch<T>(
+	path: string,
+	body?: unknown,
+	opts?: Omit<RequestOptions, 'method' | 'body'>
+) {
 	return request<T>(path, { ...opts, method: 'PATCH', body });
 }
 

@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { createInfiniteQuery } from '@tanstack/svelte-query';
-	import { derived, writable } from 'svelte/store';
-	import MediaCard from '$components/media/MediaCard.svelte';
-	import MediaGrid from '$components/media/MediaGrid.svelte';
 	import * as tvshowsApi from '$api/endpoints/tvshows';
 	import type { TVShowListResponse } from '$api/types';
+	import MediaCard from '$components/media/MediaCard.svelte';
+	import MediaGrid from '$components/media/MediaGrid.svelte';
+	import { createInfiniteQuery } from '@tanstack/svelte-query';
+	import { derived, writable } from 'svelte/store';
 
 	const PAGE_SIZE = 30;
 

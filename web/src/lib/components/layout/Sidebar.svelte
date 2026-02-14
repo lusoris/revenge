@@ -2,7 +2,6 @@
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
 	import { getAuth, logout } from '$lib/stores/auth.svelte';
-	import { imageUrl } from '$api/client';
 
 	const auth = getAuth();
 
@@ -19,7 +18,16 @@
 		{ href: '/search', label: 'Search', icon: '🔍' }
 	];
 
-	const adminNav: NavItem[] = [{ href: '/admin', label: 'Admin', icon: '⚙️' }];
+	const settingsNav: NavItem[] = [{ href: '/settings', label: 'Settings', icon: '👤' }];
+
+	const adminNav: NavItem[] = [
+		{ href: '/admin', label: 'Dashboard', icon: '📊' },
+		{ href: '/admin/users', label: 'Users', icon: '👥' },
+		{ href: '/admin/integrations', label: 'Integrations', icon: '🔗' },
+		{ href: '/admin/roles', label: 'Roles', icon: '🔐' },
+		{ href: '/admin/activity', label: 'Activity', icon: '📋' },
+		{ href: '/admin/settings', label: 'Settings', icon: '⚙️' }
+	];
 
 	function isActive(href: string): boolean {
 		if (href === '/') return page.url.pathname === '/';
@@ -57,6 +65,9 @@
 
 		{#if auth.isAdmin}
 			<div class="my-3 border-t border-neutral-800"></div>
+			<p class="mb-1 px-3 text-[10px] font-semibold uppercase tracking-wider text-neutral-600">
+				Admin
+			</p>
 			{#each adminNav as item}
 				<a
 					href={item.href}
@@ -69,6 +80,19 @@
 				</a>
 			{/each}
 		{/if}
+
+		<div class="my-3 border-t border-neutral-800"></div>
+		{#each settingsNav as item}
+			<a
+				href={item.href}
+				class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors {isActive(item.href)
+					? 'bg-neutral-800 text-white'
+					: 'text-neutral-400 hover:bg-neutral-900 hover:text-white'}"
+			>
+				<span class="text-base">{item.icon}</span>
+				{item.label}
+			</a>
+		{/each}
 	</nav>
 
 	<!-- User section -->
