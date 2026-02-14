@@ -38,6 +38,7 @@ import (
 	"github.com/lusoris/revenge/internal/service/session"
 	"github.com/lusoris/revenge/internal/service/settings"
 	"github.com/lusoris/revenge/internal/service/user"
+	"github.com/lusoris/revenge/web"
 	"go.uber.org/fx"
 )
 
@@ -74,14 +75,14 @@ type ServerParams struct {
 	Logger               *slog.Logger
 	HealthService        *health.Service
 	SettingsService      settings.Service
-	UserService          *user.Service
+	UserService          *user.CachedService
 	AuthService          *auth.Service
 	SessionService       *session.Service
 	RBACService          *rbac.Service
 	APIKeyService        apikeys.Service
 	OIDCService          *oidc.Service
 	ActivityService      *activity.Service
-	LibraryService       *library.Service
+	LibraryService       *library.CachedService
 	SearchService        *search.MovieSearchService   `optional:"true"`
 	TVShowSearchService  *search.TVShowSearchService  `optional:"true"`
 	EpisodeSearchService *search.EpisodeSearchService `optional:"true"`
@@ -320,7 +321,18 @@ func NewServer(p ServerParams) (*Server, error) {
 	if p.SSEHandler != nil {
 		mux.Handle("GET /api/v1/events", p.SSEHandler)
 	}
-	mux.Handle("/", rootHandler)
+	// SvelteKit SPA: serve embedded frontend assets for non-API paths.
+	// Only active when built with -tags frontend (otherwise web.NewSPAHandler returns nil).
+	if spaHandler := web.NewSPAHandler(); spaHandler != nil {
+		// ogen handles all /api/ routes
+		mux.Handle("/api/", rootHandler)
+		// SPA handles everything else (HTML pages, JS, CSS, images, SPA fallback)
+		mux.Handle("/", spaHandler)
+		p.Logger.Info("Serving embedded SvelteKit frontend")
+	} else {
+		// No frontend embedded — ogen handles all routes.
+		mux.Handle("/", rootHandler)
+	}
 	rootHandler = mux
 
 	// Inject ResponseWriter into context so ogen handlers can set cookies
