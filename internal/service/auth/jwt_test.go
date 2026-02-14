@@ -22,7 +22,7 @@ func TestJWTManager_GenerateAccessToken(t *testing.T) {
 	userID := uuid.Must(uuid.NewV7())
 	username := "testuser"
 
-	token, err := manager.GenerateAccessToken(userID, username)
+	token, err := manager.GenerateAccessToken(userID, username, uuid.Nil)
 	require.NoError(t, err)
 	assert.NotEmpty(t, token)
 
@@ -45,7 +45,7 @@ func TestJWTManager_ValidateAccessToken(t *testing.T) {
 	userID := uuid.Must(uuid.NewV7())
 
 	t.Run("valid token", func(t *testing.T) {
-		token, err := manager.GenerateAccessToken(userID, "user1")
+		token, err := manager.GenerateAccessToken(userID, "user1", uuid.Nil)
 		require.NoError(t, err)
 
 		claims, err := manager.ValidateAccessToken(token)
@@ -56,7 +56,7 @@ func TestJWTManager_ValidateAccessToken(t *testing.T) {
 
 	t.Run("expired token", func(t *testing.T) {
 		expiredManager := NewTokenManager("test-secret-key", -1*time.Hour) // Already expired
-		token, err := expiredManager.GenerateAccessToken(userID, "user2")
+		token, err := expiredManager.GenerateAccessToken(userID, "user2", uuid.Nil)
 		require.NoError(t, err)
 
 		_, err = expiredManager.ValidateAccessToken(token)
@@ -65,7 +65,7 @@ func TestJWTManager_ValidateAccessToken(t *testing.T) {
 	})
 
 	t.Run("invalid signature", func(t *testing.T) {
-		token, err := manager.GenerateAccessToken(userID, "user3")
+		token, err := manager.GenerateAccessToken(userID, "user3", uuid.Nil)
 		require.NoError(t, err)
 
 		// Tamper with signature
@@ -92,7 +92,7 @@ func TestJWTManager_ValidateAccessToken(t *testing.T) {
 		manager1 := NewTokenManager("secret1", 15*time.Minute)
 		manager2 := NewTokenManager("secret2", 15*time.Minute)
 
-		token, err := manager1.GenerateAccessToken(userID, "user4")
+		token, err := manager1.GenerateAccessToken(userID, "user4", uuid.Nil)
 		require.NoError(t, err)
 
 		// Try to validate with different secret
@@ -176,7 +176,7 @@ func TestJWTManager_ExtractClaims(t *testing.T) {
 	userID := uuid.Must(uuid.NewV7())
 
 	t.Run("extracts claims from valid token", func(t *testing.T) {
-		token, err := manager.GenerateAccessToken(userID, "testuser")
+		token, err := manager.GenerateAccessToken(userID, "testuser", uuid.Nil)
 		require.NoError(t, err)
 
 		claims, err := manager.ExtractClaims(token)
@@ -187,7 +187,7 @@ func TestJWTManager_ExtractClaims(t *testing.T) {
 
 	t.Run("extracts claims from expired token", func(t *testing.T) {
 		expiredManager := NewTokenManager("test-secret-key", -1*time.Hour)
-		token, err := expiredManager.GenerateAccessToken(userID, "expireduser")
+		token, err := expiredManager.GenerateAccessToken(userID, "expireduser", uuid.Nil)
 		require.NoError(t, err)
 
 		// ExtractClaims should work even for expired tokens
@@ -209,7 +209,7 @@ func TestJWTManager_TokenExpiry(t *testing.T) {
 
 	t.Run("short expiry", func(t *testing.T) {
 		manager := NewTokenManager("test-secret-key", 1*time.Second)
-		token, err := manager.GenerateAccessToken(userID, "user")
+		token, err := manager.GenerateAccessToken(userID, "user", uuid.Nil)
 		require.NoError(t, err)
 
 		// Should be valid immediately
@@ -227,7 +227,7 @@ func TestJWTManager_TokenExpiry(t *testing.T) {
 
 	t.Run("long expiry", func(t *testing.T) {
 		manager := NewTokenManager("test-secret-key", 24*time.Hour)
-		token, err := manager.GenerateAccessToken(userID, "user")
+		token, err := manager.GenerateAccessToken(userID, "user", uuid.Nil)
 		require.NoError(t, err)
 
 		claims, err := manager.ValidateAccessToken(token)
@@ -246,7 +246,7 @@ func TestJWTManager_ClaimsFields(t *testing.T) {
 	userID := uuid.Must(uuid.NewV7())
 	username := "testuser"
 
-	token, err := manager.GenerateAccessToken(userID, username)
+	token, err := manager.GenerateAccessToken(userID, username, uuid.Nil)
 	require.NoError(t, err)
 
 	claims, err := manager.ValidateAccessToken(token)
@@ -255,6 +255,7 @@ func TestJWTManager_ClaimsFields(t *testing.T) {
 	// Check all fields are populated
 	assert.NotEqual(t, uuid.Nil, claims.UserID)
 	assert.NotEmpty(t, claims.Username)
+	assert.Equal(t, uuid.Nil, claims.SessionID)
 	assert.Greater(t, claims.IssuedAt, int64(0))
 	assert.Greater(t, claims.ExpiresAt, claims.IssuedAt)
 

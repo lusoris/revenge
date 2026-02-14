@@ -1131,7 +1131,7 @@ func TestService_CreateSessionForUser_Integration(t *testing.T) {
 	userAgent := "TestAgent/1.0"
 	deviceName := "Test Device"
 
-	resp, err := svc.CreateSessionForUser(ctx, user.ID, &ipAddr, &userAgent, &deviceName)
+	resp, err := svc.CreateSessionForUser(ctx, user.ID, uuid.Nil, &ipAddr, &userAgent, &deviceName)
 	require.NoError(t, err)
 	require.NotNil(t, resp)
 

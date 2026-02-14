@@ -73,6 +73,7 @@ type CreateAuthTokenParams struct {
 	IPAddress         *netip.Addr
 	UserAgent         *string
 	ExpiresAt         time.Time
+	SessionID         *uuid.UUID
 }
 
 // AuthToken represents a stored refresh token
@@ -90,6 +91,7 @@ type AuthToken struct {
 	LastUsedAt        *time.Time
 	CreatedAt         time.Time
 	UpdatedAt         time.Time
+	SessionID         *uuid.UUID
 }
 
 // CreatePasswordResetTokenParams parameters for creating a password reset token

@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const clearFailedLoginAttemptsByUsername = `-- name: ClearFailedLoginAttemptsByUsername :exec
@@ -82,21 +83,23 @@ INSERT INTO shared.auth_tokens (
     device_fingerprint,
     ip_address,
     user_agent,
-    expires_at
+    expires_at,
+    session_id
 ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7, $8
-) RETURNING id, user_id, token_hash, token_type, device_name, device_fingerprint, ip_address, user_agent, expires_at, revoked_at, last_used_at, created_at, updated_at
+    $1, $2, $3, $4, $5, $6, $7, $8, $9
+) RETURNING id, user_id, token_hash, token_type, device_name, device_fingerprint, ip_address, user_agent, expires_at, revoked_at, last_used_at, created_at, updated_at, session_id
 `
 
 type CreateAuthTokenParams struct {
-	UserID            uuid.UUID  `json:"userId"`
-	TokenHash         string     `json:"tokenHash"`
-	TokenType         string     `json:"tokenType"`
-	DeviceName        *string    `json:"deviceName"`
-	DeviceFingerprint *string    `json:"deviceFingerprint"`
-	IpAddress         netip.Addr `json:"ipAddress"`
-	UserAgent         *string    `json:"userAgent"`
-	ExpiresAt         time.Time  `json:"expiresAt"`
+	UserID            uuid.UUID   `json:"userId"`
+	TokenHash         string      `json:"tokenHash"`
+	TokenType         string      `json:"tokenType"`
+	DeviceName        *string     `json:"deviceName"`
+	DeviceFingerprint *string     `json:"deviceFingerprint"`
+	IpAddress         netip.Addr  `json:"ipAddress"`
+	UserAgent         *string     `json:"userAgent"`
+	ExpiresAt         time.Time   `json:"expiresAt"`
+	SessionID         pgtype.UUID `json:"sessionId"`
 }
 
 func (q *Queries) CreateAuthToken(ctx context.Context, arg CreateAuthTokenParams) (SharedAuthToken, error) {
@@ -109,6 +112,7 @@ func (q *Queries) CreateAuthToken(ctx context.Context, arg CreateAuthTokenParams
 		arg.IpAddress,
 		arg.UserAgent,
 		arg.ExpiresAt,
+		arg.SessionID,
 	)
 	var i SharedAuthToken
 	err := row.Scan(
@@ -125,6 +129,7 @@ func (q *Queries) CreateAuthToken(ctx context.Context, arg CreateAuthTokenParams
 		&i.LastUsedAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.SessionID,
 	)
 	return i, err
 }
@@ -295,7 +300,7 @@ func (q *Queries) DeleteVerifiedEmailTokens(ctx context.Context) error {
 }
 
 const getAuthTokenByHash = `-- name: GetAuthTokenByHash :one
-SELECT id, user_id, token_hash, token_type, device_name, device_fingerprint, ip_address, user_agent, expires_at, revoked_at, last_used_at, created_at, updated_at FROM shared.auth_tokens
+SELECT id, user_id, token_hash, token_type, device_name, device_fingerprint, ip_address, user_agent, expires_at, revoked_at, last_used_at, created_at, updated_at, session_id FROM shared.auth_tokens
 WHERE token_hash = $1
   AND revoked_at IS NULL
   AND expires_at > NOW()
@@ -319,12 +324,13 @@ func (q *Queries) GetAuthTokenByHash(ctx context.Context, tokenHash string) (Sha
 		&i.LastUsedAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.SessionID,
 	)
 	return i, err
 }
 
 const getAuthTokensByDeviceFingerprint = `-- name: GetAuthTokensByDeviceFingerprint :many
-SELECT id, user_id, token_hash, token_type, device_name, device_fingerprint, ip_address, user_agent, expires_at, revoked_at, last_used_at, created_at, updated_at FROM shared.auth_tokens
+SELECT id, user_id, token_hash, token_type, device_name, device_fingerprint, ip_address, user_agent, expires_at, revoked_at, last_used_at, created_at, updated_at, session_id FROM shared.auth_tokens
 WHERE user_id = $1
   AND device_fingerprint = $2
   AND revoked_at IS NULL
@@ -360,6 +366,7 @@ func (q *Queries) GetAuthTokensByDeviceFingerprint(ctx context.Context, arg GetA
 			&i.LastUsedAt,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.SessionID,
 		); err != nil {
 			return nil, err
 		}
@@ -372,7 +379,7 @@ func (q *Queries) GetAuthTokensByDeviceFingerprint(ctx context.Context, arg GetA
 }
 
 const getAuthTokensByUserID = `-- name: GetAuthTokensByUserID :many
-SELECT id, user_id, token_hash, token_type, device_name, device_fingerprint, ip_address, user_agent, expires_at, revoked_at, last_used_at, created_at, updated_at FROM shared.auth_tokens
+SELECT id, user_id, token_hash, token_type, device_name, device_fingerprint, ip_address, user_agent, expires_at, revoked_at, last_used_at, created_at, updated_at, session_id FROM shared.auth_tokens
 WHERE user_id = $1
   AND revoked_at IS NULL
   AND expires_at > NOW()
@@ -402,6 +409,7 @@ func (q *Queries) GetAuthTokensByUserID(ctx context.Context, userID uuid.UUID) (
 			&i.LastUsedAt,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.SessionID,
 		); err != nil {
 			return nil, err
 		}

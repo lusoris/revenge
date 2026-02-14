@@ -109,11 +109,13 @@ func (s *Service) Register(ctx context.Context, req RegisterRequest) (*db.Shared
 	txQueries := db.New(tx)
 
 	// Create user in database
+	isActive := true
 	user, err := txQueries.CreateUser(ctx, db.CreateUserParams{
 		Username:     req.Username,
 		Email:        req.Email,
 		PasswordHash: passwordHash,
 		DisplayName:  req.DisplayName,
+		IsActive:     &isActive,
 	})
 	if err != nil {
 		observability.RecordAuthAttempt("register", "failure")
@@ -282,8 +284,10 @@ func (s *Service) RegisterFromOIDC(ctx context.Context, req RegisterFromOIDCRequ
 // Login & Logout
 // ============================================================================
 
-// Login authenticates a user and returns tokens
-func (s *Service) Login(ctx context.Context, username, password string, ipAddress *netip.Addr, userAgent, deviceName, deviceFingerprint *string) (*LoginResponse, error) {
+// ValidateLogin authenticates a user's credentials without generating tokens.
+// Returns the validated user on success, or an error on failure.
+// This allows the caller to create a session record before generating the JWT.
+func (s *Service) ValidateLogin(ctx context.Context, username, password string, ipAddress *netip.Addr, userAgent *string) (*db.SharedUser, error) {
 	// Helper to convert netip.Addr to net.IP for activity logging
 	var activityIP net.IP
 	if ipAddress != nil {
@@ -376,8 +380,20 @@ func (s *Service) Login(ctx context.Context, username, password string, ipAddres
 		return nil, errors.New("account is disabled")
 	}
 
-	// Generate JWT access token
-	accessToken, err := s.tokenManager.GenerateAccessToken(user.ID, user.Username)
+	return user, nil
+}
+
+// GenerateLoginTokens creates JWT access token and refresh token for a validated user.
+// sessionID is embedded in the JWT claims so downstream handlers can identify the session.
+func (s *Service) GenerateLoginTokens(ctx context.Context, user *db.SharedUser, sessionID uuid.UUID, ipAddress *netip.Addr, userAgent, deviceName, deviceFingerprint *string) (*LoginResponse, error) {
+	// Helper to convert netip.Addr to net.IP for activity logging
+	var activityIP net.IP
+	if ipAddress != nil {
+		activityIP = ipAddress.AsSlice()
+	}
+
+	// Generate JWT access token with session ID
+	accessToken, err := s.tokenManager.GenerateAccessToken(user.ID, user.Username, sessionID)
 	if err != nil {
 		return nil, fmt.Errorf("failed to generate access token: %w", err)
 	}
@@ -388,8 +404,12 @@ func (s *Service) Login(ctx context.Context, username, password string, ipAddres
 		return nil, fmt.Errorf("failed to generate refresh token: %w", err)
 	}
 
-	// Store refresh token in database (hashed with SHA-256)
+	// Store refresh token in database (hashed with SHA-256), linked to session
 	tokenHash := s.tokenManager.HashRefreshToken(refreshToken)
+	var sessIDPtr *uuid.UUID
+	if sessionID != uuid.Nil {
+		sessIDPtr = &sessionID
+	}
 	_, err = s.repo.CreateAuthToken(ctx, CreateAuthTokenParams{
 		UserID:            user.ID,
 		TokenHash:         tokenHash,
@@ -399,6 +419,7 @@ func (s *Service) Login(ctx context.Context, username, password string, ipAddres
 		IPAddress:         ipAddress,
 		UserAgent:         userAgent,
 		ExpiresAt:         time.Now().Add(s.refreshExpiry),
+		SessionID:         sessIDPtr,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("failed to store refresh token: %w", err)
@@ -406,9 +427,9 @@ func (s *Service) Login(ctx context.Context, username, password string, ipAddres
 
 	// A7.5: Clear failed login attempts on successful login (if lockout enabled)
 	if s.lockoutEnabled {
-		if err := s.repo.ClearFailedLoginAttemptsByUsername(ctx, username); err != nil {
+		if err := s.repo.ClearFailedLoginAttemptsByUsername(ctx, user.Username); err != nil {
 			// Log error but don't fail login
-			s.logger.Error("failed to clear failed login attempts", "username", username, "error", err)
+			s.logger.Error("failed to clear failed login attempts", "username", user.Username, "error", err)
 		}
 	}
 
@@ -442,6 +463,17 @@ func (s *Service) Login(ctx context.Context, username, password string, ipAddres
 	}, nil
 }
 
+// Login authenticates a user and returns tokens (convenience wrapper).
+// When the caller does not need to embed a session ID in the JWT, use this method.
+// For flows that need session tracking, use ValidateLogin + GenerateLoginTokens instead.
+func (s *Service) Login(ctx context.Context, username, password string, ipAddress *netip.Addr, userAgent, deviceName, deviceFingerprint *string) (*LoginResponse, error) {
+	user, err := s.ValidateLogin(ctx, username, password, ipAddress, userAgent)
+	if err != nil {
+		return nil, err
+	}
+	return s.GenerateLoginTokens(ctx, user, uuid.Nil, ipAddress, userAgent, deviceName, deviceFingerprint)
+}
+
 // Logout invalidates a refresh token
 func (s *Service) Logout(ctx context.Context, refreshToken string) error {
 	tokenHash := s.tokenManager.HashRefreshToken(refreshToken)
@@ -469,8 +501,14 @@ func (s *Service) RefreshToken(ctx context.Context, refreshToken string) (*Login
 		return nil, fmt.Errorf("user not found: %w", err)
 	}
 
-	// Generate new JWT access token
-	accessToken, err := s.tokenManager.GenerateAccessToken(user.ID, user.Username)
+	// Carry forward session ID from the auth token record (linked at login time)
+	var sessionID uuid.UUID
+	if authToken.SessionID != nil {
+		sessionID = *authToken.SessionID
+	}
+
+	// Generate new JWT access token with the same session ID
+	accessToken, err := s.tokenManager.GenerateAccessToken(user.ID, user.Username, sessionID)
 	if err != nil {
 		return nil, fmt.Errorf("failed to generate access token: %w", err)
 	}
@@ -491,7 +529,8 @@ func (s *Service) RefreshToken(ctx context.Context, refreshToken string) (*Login
 
 // CreateSessionForUser creates a new session for an authenticated user.
 // This is used for OIDC login where the user has already been verified by the OIDC provider.
-func (s *Service) CreateSessionForUser(ctx context.Context, userID uuid.UUID, ipAddress *netip.Addr, userAgent, deviceName *string) (*LoginResponse, error) {
+// sessionID is embedded in the JWT claims so downstream handlers can identify the session.
+func (s *Service) CreateSessionForUser(ctx context.Context, userID uuid.UUID, sessionID uuid.UUID, ipAddress *netip.Addr, userAgent, deviceName *string) (*LoginResponse, error) {
 	// Helper to convert netip.Addr to net.IP for activity logging
 	var activityIP net.IP
 	if ipAddress != nil {
@@ -509,8 +548,8 @@ func (s *Service) CreateSessionForUser(ctx context.Context, userID uuid.UUID, ip
 		return nil, errors.New("account is disabled")
 	}
 
-	// Generate JWT access token
-	accessToken, err := s.tokenManager.GenerateAccessToken(user.ID, user.Username)
+	// Generate JWT access token with session ID
+	accessToken, err := s.tokenManager.GenerateAccessToken(user.ID, user.Username, sessionID)
 	if err != nil {
 		return nil, fmt.Errorf("failed to generate access token: %w", err)
 	}
@@ -524,10 +563,15 @@ func (s *Service) CreateSessionForUser(ctx context.Context, userID uuid.UUID, ip
 	// Hash refresh token for storage
 	tokenHash := s.tokenManager.HashRefreshToken(refreshToken)
 
-	// Store refresh token in database
+	// Store refresh token in database, linked to session
 	var ipForStorage *netip.Addr
 	if ipAddress != nil {
 		ipForStorage = ipAddress
+	}
+
+	var sessIDPtr *uuid.UUID
+	if sessionID != uuid.Nil {
+		sessIDPtr = &sessionID
 	}
 
 	_, err = s.repo.CreateAuthToken(ctx, CreateAuthTokenParams{
@@ -538,6 +582,7 @@ func (s *Service) CreateSessionForUser(ctx context.Context, userID uuid.UUID, ip
 		DeviceName:        deviceName,
 		DeviceFingerprint: nil,
 		IPAddress:         ipForStorage,
+		SessionID:         sessIDPtr,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("failed to store refresh token: %w", err)

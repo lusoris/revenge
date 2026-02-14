@@ -17,8 +17,9 @@ import (
 
 // TokenManager handles JWT access tokens and refresh tokens
 type TokenManager interface {
-	// GenerateAccessToken creates a signed JWT access token
-	GenerateAccessToken(userID uuid.UUID, username string) (string, error)
+	// GenerateAccessToken creates a signed JWT access token.
+	// sessionID may be uuid.Nil when no session is associated (e.g. API-key flows).
+	GenerateAccessToken(userID uuid.UUID, username string, sessionID uuid.UUID) (string, error)
 
 	// GenerateRefreshToken creates a cryptographically secure refresh token
 	GenerateRefreshToken() (string, error)
@@ -37,6 +38,7 @@ type TokenManager interface {
 type Claims struct {
 	UserID    uuid.UUID `json:"user_id"`
 	Username  string    `json:"username"`
+	SessionID uuid.UUID `json:"session_id,omitempty"`
 	IssuedAt  int64     `json:"iat"`
 	ExpiresAt int64     `json:"exp"`
 }
@@ -57,7 +59,7 @@ func NewTokenManager(secret string, jwtExpiry time.Duration) TokenManager {
 
 // GenerateAccessToken creates a JWT access token
 // Format: header.payload.signature (all base64url encoded)
-func (m *jwtManager) GenerateAccessToken(userID uuid.UUID, username string) (string, error) {
+func (m *jwtManager) GenerateAccessToken(userID uuid.UUID, username string, sessionID uuid.UUID) (string, error) {
 	now := time.Now()
 	issuedAt := now.UnixNano() / int64(time.Millisecond) // Millisecond precision
 	expiresAt := now.Add(m.jwtExpiry).UnixNano() / int64(time.Millisecond)
@@ -77,6 +79,7 @@ func (m *jwtManager) GenerateAccessToken(userID uuid.UUID, username string) (str
 	payload := Claims{
 		UserID:    userID,
 		Username:  username,
+		SessionID: sessionID,
 		IssuedAt:  issuedAt,
 		ExpiresAt: expiresAt,
 	}

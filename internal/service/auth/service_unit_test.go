@@ -255,8 +255,8 @@ func newMockTokenMgr(t *testing.T) *mockTokenMgr {
 	return m
 }
 
-func (m *mockTokenMgr) GenerateAccessToken(userID uuid.UUID, username string) (string, error) {
-	args := m.Called(userID, username)
+func (m *mockTokenMgr) GenerateAccessToken(userID uuid.UUID, username string, sessionID uuid.UUID) (string, error) {
+	args := m.Called(userID, username, sessionID)
 	return args.String(0), args.Error(1)
 }
 
@@ -581,7 +581,7 @@ func TestLogin_Success(t *testing.T) {
 	h.repo.On("GetUserByUsername", ctx, username).
 		Return(user, nil).Once()
 
-	h.tokenMgr.On("GenerateAccessToken", userID, username).
+	h.tokenMgr.On("GenerateAccessToken", userID, username, mock.AnythingOfType("uuid.UUID")).
 		Return("access-token-123", nil).Once()
 	h.tokenMgr.On("GenerateRefreshToken").
 		Return("refresh-token-456", nil).Once()
@@ -628,7 +628,7 @@ func TestLogin_SuccessWithIPAndUserAgent(t *testing.T) {
 
 	h.repo.On("GetUserByUsername", ctx, username).
 		Return(user, nil).Once()
-	h.tokenMgr.On("GenerateAccessToken", userID, username).
+	h.tokenMgr.On("GenerateAccessToken", userID, username, mock.AnythingOfType("uuid.UUID")).
 		Return("at", nil).Once()
 	h.tokenMgr.On("GenerateRefreshToken").
 		Return("rt", nil).Once()
@@ -670,7 +670,7 @@ func TestLogin_SuccessWithLockout_ClearsAttempts(t *testing.T) {
 		Return(int64(0), nil).Once()
 	h.repo.On("GetUserByUsername", ctx, username).
 		Return(user, nil).Once()
-	h.tokenMgr.On("GenerateAccessToken", userID, username).
+	h.tokenMgr.On("GenerateAccessToken", userID, username, mock.AnythingOfType("uuid.UUID")).
 		Return("at", nil).Once()
 	h.tokenMgr.On("GenerateRefreshToken").
 		Return("rt", nil).Once()
@@ -713,7 +713,7 @@ func TestLogin_SuccessWithLockout_ClearAttemptsError(t *testing.T) {
 		Return(int64(0), nil).Once()
 	h.repo.On("GetUserByUsername", ctx, username).
 		Return(user, nil).Once()
-	h.tokenMgr.On("GenerateAccessToken", userID, username).
+	h.tokenMgr.On("GenerateAccessToken", userID, username, mock.AnythingOfType("uuid.UUID")).
 		Return("at", nil).Once()
 	h.tokenMgr.On("GenerateRefreshToken").
 		Return("rt", nil).Once()
@@ -759,7 +759,7 @@ func TestLogin_FoundByEmail(t *testing.T) {
 		Return(nil, fmt.Errorf("not found")).Once()
 	h.repo.On("GetUserByEmail", ctx, email).
 		Return(user, nil).Once()
-	h.tokenMgr.On("GenerateAccessToken", userID, "testuser").
+	h.tokenMgr.On("GenerateAccessToken", userID, "testuser", mock.AnythingOfType("uuid.UUID")).
 		Return("at", nil).Once()
 	h.tokenMgr.On("GenerateRefreshToken").
 		Return("rt", nil).Once()
@@ -829,7 +829,7 @@ func TestLogin_GenerateAccessTokenError(t *testing.T) {
 
 	h.repo.On("GetUserByUsername", ctx, username).
 		Return(user, nil).Once()
-	h.tokenMgr.On("GenerateAccessToken", userID, username).
+	h.tokenMgr.On("GenerateAccessToken", userID, username, mock.AnythingOfType("uuid.UUID")).
 		Return("", fmt.Errorf("signing error")).Once()
 
 	resp, err := h.svc.Login(ctx, username, password, nil, nil, nil, nil)
@@ -861,7 +861,7 @@ func TestLogin_GenerateRefreshTokenError(t *testing.T) {
 
 	h.repo.On("GetUserByUsername", ctx, username).
 		Return(user, nil).Once()
-	h.tokenMgr.On("GenerateAccessToken", userID, username).
+	h.tokenMgr.On("GenerateAccessToken", userID, username, mock.AnythingOfType("uuid.UUID")).
 		Return("at", nil).Once()
 	h.tokenMgr.On("GenerateRefreshToken").
 		Return("", fmt.Errorf("random gen error")).Once()
@@ -895,7 +895,7 @@ func TestLogin_StoreRefreshTokenError(t *testing.T) {
 
 	h.repo.On("GetUserByUsername", ctx, username).
 		Return(user, nil).Once()
-	h.tokenMgr.On("GenerateAccessToken", userID, username).
+	h.tokenMgr.On("GenerateAccessToken", userID, username, mock.AnythingOfType("uuid.UUID")).
 		Return("at", nil).Once()
 	h.tokenMgr.On("GenerateRefreshToken").
 		Return("rt", nil).Once()
@@ -933,7 +933,7 @@ func TestLogin_UpdateLastLoginError_StillSucceeds(t *testing.T) {
 
 	h.repo.On("GetUserByUsername", ctx, username).
 		Return(user, nil).Once()
-	h.tokenMgr.On("GenerateAccessToken", userID, username).
+	h.tokenMgr.On("GenerateAccessToken", userID, username, mock.AnythingOfType("uuid.UUID")).
 		Return("at", nil).Once()
 	h.tokenMgr.On("GenerateRefreshToken").
 		Return("rt", nil).Once()
@@ -973,7 +973,7 @@ func TestLogin_NilIsActive_TreatedAsActive(t *testing.T) {
 
 	h.repo.On("GetUserByUsername", ctx, username).
 		Return(user, nil).Once()
-	h.tokenMgr.On("GenerateAccessToken", userID, username).
+	h.tokenMgr.On("GenerateAccessToken", userID, username, mock.AnythingOfType("uuid.UUID")).
 		Return("at", nil).Once()
 	h.tokenMgr.On("GenerateRefreshToken").
 		Return("rt", nil).Once()
@@ -1063,7 +1063,7 @@ func TestRefreshToken_Success(t *testing.T) {
 	h.tokenMgr.On("HashRefreshToken", "rt").Return("rth").Once()
 	h.repo.On("GetAuthTokenByHash", ctx, "rth").Return(authToken, nil).Once()
 	h.repo.On("GetUserByID", ctx, userID).Return(user, nil).Once()
-	h.tokenMgr.On("GenerateAccessToken", userID, "testuser").Return("new-at", nil).Once()
+	h.tokenMgr.On("GenerateAccessToken", userID, "testuser", mock.AnythingOfType("uuid.UUID")).Return("new-at", nil).Once()
 	h.repo.On("UpdateAuthTokenLastUsed", ctx, tokenID).Return(nil).Once()
 
 	resp, err := h.svc.RefreshToken(ctx, "rt")
@@ -1121,7 +1121,7 @@ func TestRefreshToken_GenerateAccessTokenError(t *testing.T) {
 	h.tokenMgr.On("HashRefreshToken", "rt").Return("rth").Once()
 	h.repo.On("GetAuthTokenByHash", ctx, "rth").Return(authToken, nil).Once()
 	h.repo.On("GetUserByID", ctx, userID).Return(user, nil).Once()
-	h.tokenMgr.On("GenerateAccessToken", userID, "testuser").Return("", fmt.Errorf("err")).Once()
+	h.tokenMgr.On("GenerateAccessToken", userID, "testuser", mock.AnythingOfType("uuid.UUID")).Return("", fmt.Errorf("err")).Once()
 
 	resp, err := h.svc.RefreshToken(ctx, "rt")
 
@@ -1143,7 +1143,7 @@ func TestRefreshToken_UpdateLastUsedError_StillSucceeds(t *testing.T) {
 	h.tokenMgr.On("HashRefreshToken", "rt").Return("rth").Once()
 	h.repo.On("GetAuthTokenByHash", ctx, "rth").Return(authToken, nil).Once()
 	h.repo.On("GetUserByID", ctx, userID).Return(user, nil).Once()
-	h.tokenMgr.On("GenerateAccessToken", userID, "testuser").Return("new-at", nil).Once()
+	h.tokenMgr.On("GenerateAccessToken", userID, "testuser", mock.AnythingOfType("uuid.UUID")).Return("new-at", nil).Once()
 	h.repo.On("UpdateAuthTokenLastUsed", ctx, tokenID).Return(fmt.Errorf("db err")).Once()
 
 	resp, err := h.svc.RefreshToken(ctx, "rt")
@@ -1363,7 +1363,7 @@ func TestCreateSessionForUser_UserNotFound(t *testing.T) {
 	h.repo.On("GetUserByID", ctx, userID).
 		Return(nil, fmt.Errorf("not found")).Once()
 
-	resp, err := h.svc.CreateSessionForUser(ctx, userID, nil, nil, nil)
+	resp, err := h.svc.CreateSessionForUser(ctx, userID, uuid.Nil, nil, nil, nil)
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), "user not found")
 	assert.Nil(t, resp)
@@ -1379,7 +1379,7 @@ func TestCreateSessionForUser_AccountDisabled(t *testing.T) {
 	h.repo.On("GetUserByID", ctx, userID).
 		Return(&db.SharedUser{ID: userID, Username: "u", IsActive: &isActive}, nil).Once()
 
-	resp, err := h.svc.CreateSessionForUser(ctx, userID, nil, nil, nil)
+	resp, err := h.svc.CreateSessionForUser(ctx, userID, uuid.Nil, nil, nil, nil)
 	require.Error(t, err)
 	assert.Equal(t, "account is disabled", err.Error())
 	assert.Nil(t, resp)
@@ -1394,10 +1394,10 @@ func TestCreateSessionForUser_GenerateAccessTokenError(t *testing.T) {
 
 	h.repo.On("GetUserByID", ctx, userID).
 		Return(&db.SharedUser{ID: userID, Username: "u", IsActive: &isActive}, nil).Once()
-	h.tokenMgr.On("GenerateAccessToken", userID, "u").
+	h.tokenMgr.On("GenerateAccessToken", userID, "u", mock.AnythingOfType("uuid.UUID")).
 		Return("", fmt.Errorf("err")).Once()
 
-	resp, err := h.svc.CreateSessionForUser(ctx, userID, nil, nil, nil)
+	resp, err := h.svc.CreateSessionForUser(ctx, userID, uuid.Nil, nil, nil, nil)
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), "failed to generate access token")
 	assert.Nil(t, resp)
@@ -1412,12 +1412,12 @@ func TestCreateSessionForUser_GenerateRefreshTokenError(t *testing.T) {
 
 	h.repo.On("GetUserByID", ctx, userID).
 		Return(&db.SharedUser{ID: userID, Username: "u", IsActive: &isActive}, nil).Once()
-	h.tokenMgr.On("GenerateAccessToken", userID, "u").
+	h.tokenMgr.On("GenerateAccessToken", userID, "u", mock.AnythingOfType("uuid.UUID")).
 		Return("at", nil).Once()
 	h.tokenMgr.On("GenerateRefreshToken").
 		Return("", fmt.Errorf("err")).Once()
 
-	resp, err := h.svc.CreateSessionForUser(ctx, userID, nil, nil, nil)
+	resp, err := h.svc.CreateSessionForUser(ctx, userID, uuid.Nil, nil, nil, nil)
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), "failed to generate refresh token")
 	assert.Nil(t, resp)
@@ -1432,7 +1432,7 @@ func TestCreateSessionForUser_StoreTokenError(t *testing.T) {
 
 	h.repo.On("GetUserByID", ctx, userID).
 		Return(&db.SharedUser{ID: userID, Username: "u", IsActive: &isActive}, nil).Once()
-	h.tokenMgr.On("GenerateAccessToken", userID, "u").
+	h.tokenMgr.On("GenerateAccessToken", userID, "u", mock.AnythingOfType("uuid.UUID")).
 		Return("at", nil).Once()
 	h.tokenMgr.On("GenerateRefreshToken").
 		Return("rt", nil).Once()
@@ -1441,7 +1441,7 @@ func TestCreateSessionForUser_StoreTokenError(t *testing.T) {
 	h.repo.On("CreateAuthToken", ctx, mock.AnythingOfType("auth.CreateAuthTokenParams")).
 		Return(AuthToken{}, fmt.Errorf("db error")).Once()
 
-	resp, err := h.svc.CreateSessionForUser(ctx, userID, nil, nil, nil)
+	resp, err := h.svc.CreateSessionForUser(ctx, userID, uuid.Nil, nil, nil, nil)
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), "failed to store refresh token")
 	assert.Nil(t, resp)
@@ -1456,7 +1456,7 @@ func TestCreateSessionForUser_Success(t *testing.T) {
 
 	h.repo.On("GetUserByID", ctx, userID).
 		Return(&db.SharedUser{ID: userID, Username: "u", IsActive: &isActive}, nil).Once()
-	h.tokenMgr.On("GenerateAccessToken", userID, "u").
+	h.tokenMgr.On("GenerateAccessToken", userID, "u", mock.AnythingOfType("uuid.UUID")).
 		Return("at", nil).Once()
 	h.tokenMgr.On("GenerateRefreshToken").
 		Return("rt", nil).Once()
@@ -1467,7 +1467,7 @@ func TestCreateSessionForUser_Success(t *testing.T) {
 	h.repo.On("UpdateUserLastLogin", ctx, userID).
 		Return(nil).Once()
 
-	resp, err := h.svc.CreateSessionForUser(ctx, userID, nil, nil, nil)
+	resp, err := h.svc.CreateSessionForUser(ctx, userID, uuid.Nil, nil, nil, nil)
 	require.NoError(t, err)
 	require.NotNil(t, resp)
 	assert.Equal(t, "at", resp.AccessToken)
@@ -1486,7 +1486,7 @@ func TestCreateSessionForUser_WithIPAddress(t *testing.T) {
 
 	h.repo.On("GetUserByID", ctx, userID).
 		Return(&db.SharedUser{ID: userID, Username: "u", IsActive: &isActive}, nil).Once()
-	h.tokenMgr.On("GenerateAccessToken", userID, "u").
+	h.tokenMgr.On("GenerateAccessToken", userID, "u", mock.AnythingOfType("uuid.UUID")).
 		Return("at", nil).Once()
 	h.tokenMgr.On("GenerateRefreshToken").
 		Return("rt", nil).Once()
@@ -1497,7 +1497,7 @@ func TestCreateSessionForUser_WithIPAddress(t *testing.T) {
 	h.repo.On("UpdateUserLastLogin", ctx, userID).
 		Return(nil).Once()
 
-	resp, err := h.svc.CreateSessionForUser(ctx, userID, &ip, &ua, &device)
+	resp, err := h.svc.CreateSessionForUser(ctx, userID, uuid.Nil, &ip, &ua, &device)
 	require.NoError(t, err)
 	require.NotNil(t, resp)
 }
@@ -1511,7 +1511,7 @@ func TestCreateSessionForUser_LastLoginError_StillSucceeds(t *testing.T) {
 
 	h.repo.On("GetUserByID", ctx, userID).
 		Return(&db.SharedUser{ID: userID, Username: "u", IsActive: &isActive}, nil).Once()
-	h.tokenMgr.On("GenerateAccessToken", userID, "u").
+	h.tokenMgr.On("GenerateAccessToken", userID, "u", mock.AnythingOfType("uuid.UUID")).
 		Return("at", nil).Once()
 	h.tokenMgr.On("GenerateRefreshToken").
 		Return("rt", nil).Once()
@@ -1522,7 +1522,7 @@ func TestCreateSessionForUser_LastLoginError_StillSucceeds(t *testing.T) {
 	h.repo.On("UpdateUserLastLogin", ctx, userID).
 		Return(fmt.Errorf("db err")).Once()
 
-	resp, err := h.svc.CreateSessionForUser(ctx, userID, nil, nil, nil)
+	resp, err := h.svc.CreateSessionForUser(ctx, userID, uuid.Nil, nil, nil, nil)
 	require.NoError(t, err)
 	require.NotNil(t, resp)
 }
@@ -1930,7 +1930,7 @@ func TestLoginWithMFA_NilAuthenticator_ReturnsLoginResponse(t *testing.T) {
 	}
 
 	h.repo.On("GetUserByUsername", ctx, username).Return(user, nil).Once()
-	h.tokenMgr.On("GenerateAccessToken", userID, username).Return("at", nil).Once()
+	h.tokenMgr.On("GenerateAccessToken", userID, username, mock.AnythingOfType("uuid.UUID")).Return("at", nil).Once()
 	h.tokenMgr.On("GenerateRefreshToken").Return("rt", nil).Once()
 	h.tokenMgr.On("HashRefreshToken", "rt").Return("rth").Once()
 	h.repo.On("CreateAuthToken", ctx, mock.AnythingOfType("auth.CreateAuthTokenParams")).

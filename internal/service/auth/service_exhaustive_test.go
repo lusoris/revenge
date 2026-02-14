@@ -252,7 +252,7 @@ func TestService_RefreshToken_ErrorGeneratingAccessToken(t *testing.T) {
 
 	expectedErr := fmt.Errorf("JWT signing error")
 	mockTokenMgr.EXPECT().
-		GenerateAccessToken(userID, user.Username).
+		GenerateAccessToken(userID, user.Username, mock.AnythingOfType("uuid.UUID")).
 		Return("", expectedErr).
 		Once()
 
@@ -594,7 +594,7 @@ func TestService_CreateSessionForUser_UserNotFound(t *testing.T) {
 		Return(nil, fmt.Errorf("not found")).
 		Once()
 
-	resp, err := svc.CreateSessionForUser(ctx, userID, nil, nil, nil)
+	resp, err := svc.CreateSessionForUser(ctx, userID, uuid.Nil, nil, nil, nil)
 
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), "user not found")
@@ -619,7 +619,7 @@ func TestService_CreateSessionForUser_AccountDisabled(t *testing.T) {
 		Return(user, nil).
 		Once()
 
-	resp, err := svc.CreateSessionForUser(ctx, userID, nil, nil, nil)
+	resp, err := svc.CreateSessionForUser(ctx, userID, uuid.Nil, nil, nil, nil)
 
 	require.Error(t, err)
 	assert.Equal(t, "account is disabled", err.Error())
@@ -646,11 +646,11 @@ func TestService_CreateSessionForUser_ErrorGeneratingAccessToken(t *testing.T) {
 
 	expectedErr := fmt.Errorf("JWT signing error")
 	mockTokenMgr.EXPECT().
-		GenerateAccessToken(userID, user.Username).
+		GenerateAccessToken(userID, user.Username, mock.AnythingOfType("uuid.UUID")).
 		Return("", expectedErr).
 		Once()
 
-	resp, err := svc.CreateSessionForUser(ctx, userID, nil, nil, nil)
+	resp, err := svc.CreateSessionForUser(ctx, userID, uuid.Nil, nil, nil, nil)
 
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), "failed to generate access token")
@@ -676,7 +676,7 @@ func TestService_CreateSessionForUser_ErrorGeneratingRefreshToken(t *testing.T) 
 		Once()
 
 	mockTokenMgr.EXPECT().
-		GenerateAccessToken(userID, user.Username).
+		GenerateAccessToken(userID, user.Username, mock.AnythingOfType("uuid.UUID")).
 		Return("access_token", nil).
 		Once()
 
@@ -686,7 +686,7 @@ func TestService_CreateSessionForUser_ErrorGeneratingRefreshToken(t *testing.T) 
 		Return("", expectedErr).
 		Once()
 
-	resp, err := svc.CreateSessionForUser(ctx, userID, nil, nil, nil)
+	resp, err := svc.CreateSessionForUser(ctx, userID, uuid.Nil, nil, nil, nil)
 
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), "failed to generate refresh token")
@@ -712,7 +712,7 @@ func TestService_CreateSessionForUser_ErrorStoringToken(t *testing.T) {
 		Once()
 
 	mockTokenMgr.EXPECT().
-		GenerateAccessToken(userID, user.Username).
+		GenerateAccessToken(userID, user.Username, mock.AnythingOfType("uuid.UUID")).
 		Return("access_token", nil).
 		Once()
 
@@ -732,7 +732,7 @@ func TestService_CreateSessionForUser_ErrorStoringToken(t *testing.T) {
 		Return(auth.AuthToken{}, expectedErr).
 		Once()
 
-	resp, err := svc.CreateSessionForUser(ctx, userID, nil, nil, nil)
+	resp, err := svc.CreateSessionForUser(ctx, userID, uuid.Nil, nil, nil, nil)
 
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), "failed to store refresh token")
@@ -759,7 +759,7 @@ func TestService_CreateSessionForUser_Success(t *testing.T) {
 		Once()
 
 	mockTokenMgr.EXPECT().
-		GenerateAccessToken(userID, user.Username).
+		GenerateAccessToken(userID, user.Username, mock.AnythingOfType("uuid.UUID")).
 		Return("access_token", nil).
 		Once()
 
@@ -787,7 +787,7 @@ func TestService_CreateSessionForUser_Success(t *testing.T) {
 		Return(nil).
 		Once()
 
-	resp, err := svc.CreateSessionForUser(ctx, userID, nil, nil, nil)
+	resp, err := svc.CreateSessionForUser(ctx, userID, uuid.Nil, nil, nil, nil)
 
 	require.NoError(t, err)
 	assert.NotNil(t, resp)
@@ -819,7 +819,7 @@ func TestService_CreateSessionForUser_SuccessWithIPAndUserAgent(t *testing.T) {
 		Once()
 
 	mockTokenMgr.EXPECT().
-		GenerateAccessToken(userID, user.Username).
+		GenerateAccessToken(userID, user.Username, mock.AnythingOfType("uuid.UUID")).
 		Return("access_token", nil).
 		Once()
 
@@ -847,7 +847,7 @@ func TestService_CreateSessionForUser_SuccessWithIPAndUserAgent(t *testing.T) {
 		Return(nil).
 		Once()
 
-	resp, err := svc.CreateSessionForUser(ctx, userID, nil, &userAgent, &deviceName)
+	resp, err := svc.CreateSessionForUser(ctx, userID, uuid.Nil, nil, &userAgent, &deviceName)
 
 	require.NoError(t, err)
 	assert.NotNil(t, resp)
@@ -921,7 +921,7 @@ func TestService_RefreshToken_Success(t *testing.T) {
 		Once()
 
 	mockTokenMgr.EXPECT().
-		GenerateAccessToken(userID, user.Username).
+		GenerateAccessToken(userID, user.Username, mock.AnythingOfType("uuid.UUID")).
 		Return("new_access_token", nil).
 		Once()
 
@@ -972,7 +972,7 @@ func TestService_RefreshToken_UpdateLastUsedFails(t *testing.T) {
 		Once()
 
 	mockTokenMgr.EXPECT().
-		GenerateAccessToken(userID, user.Username).
+		GenerateAccessToken(userID, user.Username, mock.AnythingOfType("uuid.UUID")).
 		Return("new_access_token", nil).
 		Once()
 
@@ -1185,7 +1185,7 @@ func TestService_CreateSessionForUser_LastLoginFails(t *testing.T) {
 		Once()
 
 	mockTokenMgr.EXPECT().
-		GenerateAccessToken(userID, user.Username).
+		GenerateAccessToken(userID, user.Username, mock.AnythingOfType("uuid.UUID")).
 		Return("access_token", nil).
 		Once()
 
@@ -1214,7 +1214,7 @@ func TestService_CreateSessionForUser_LastLoginFails(t *testing.T) {
 		Return(fmt.Errorf("database error")).
 		Once()
 
-	resp, err := svc.CreateSessionForUser(ctx, userID, nil, nil, nil)
+	resp, err := svc.CreateSessionForUser(ctx, userID, uuid.Nil, nil, nil, nil)
 
 	// Should still succeed
 	require.NoError(t, err)

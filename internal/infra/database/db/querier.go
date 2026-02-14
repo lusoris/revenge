@@ -33,6 +33,7 @@ type Querier interface {
 	CountActiveUsersLast24h(ctx context.Context) (int64, error)
 	// Count total activity logs
 	CountActivityLogs(ctx context.Context) (int64, error)
+	CountAllActiveSessions(ctx context.Context) (int64, error)
 	CountFailedLoginAttemptsByIP(ctx context.Context, arg CountFailedLoginAttemptsByIPParams) (int64, error)
 	CountFailedLoginAttemptsByUsername(ctx context.Context, arg CountFailedLoginAttemptsByUsernameParams) (int64, error)
 	// Counts total libraries

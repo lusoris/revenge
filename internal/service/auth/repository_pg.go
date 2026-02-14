@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/lusoris/revenge/internal/infra/database/db"
 )
 
@@ -82,6 +83,12 @@ func (r *RepositoryPG) CreateAuthToken(ctx context.Context, params CreateAuthTok
 		ipAddr = *params.IPAddress
 	}
 
+	// Convert *uuid.UUID to pgtype.UUID for sqlc
+	var sessionID pgtype.UUID
+	if params.SessionID != nil {
+		sessionID = pgtype.UUID{Bytes: *params.SessionID, Valid: true}
+	}
+
 	row, err := r.queries.CreateAuthToken(ctx, db.CreateAuthTokenParams{
 		UserID:            params.UserID,
 		TokenHash:         params.TokenHash,
@@ -91,6 +98,7 @@ func (r *RepositoryPG) CreateAuthToken(ctx context.Context, params CreateAuthTok
 		IpAddress:         ipAddr,
 		UserAgent:         params.UserAgent,
 		ExpiresAt:         params.ExpiresAt,
+		SessionID:         sessionID,
 	})
 	if err != nil {
 		return AuthToken{}, fmt.Errorf("failed to create auth token: %w", err)
@@ -340,6 +348,12 @@ func authTokenFromDB(row db.SharedAuthToken) AuthToken {
 		lastUsedAt = &t
 	}
 
+	var sessionID *uuid.UUID
+	if row.SessionID.Valid {
+		id := uuid.UUID(row.SessionID.Bytes)
+		sessionID = &id
+	}
+
 	return AuthToken{
 		ID:                row.ID,
 		UserID:            row.UserID,
@@ -354,6 +368,7 @@ func authTokenFromDB(row db.SharedAuthToken) AuthToken {
 		LastUsedAt:        lastUsedAt,
 		CreatedAt:         row.CreatedAt,
 		UpdatedAt:         row.UpdatedAt,
+		SessionID:         sessionID,
 	}
 }
 
