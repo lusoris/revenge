@@ -46,7 +46,7 @@ func setupSessionTestHandler(t *testing.T) (*Handler, testutil.DB, uuid.UUID, uu
 		IPAddress:  &ipAddr,
 		UserAgent:  stringPtr("Test Agent"),
 	}
-	accessToken, refreshToken, err := sessionService.CreateSession(context.Background(), user.ID, deviceInfo, []string{"read", "write"})
+	_, accessToken, refreshToken, err := sessionService.CreateSession(context.Background(), user.ID, deviceInfo, []string{"read", "write"})
 	require.NoError(t, err)
 
 	// Validate the session to get session ID
@@ -108,7 +108,7 @@ func TestHandler_ListSessions_MultipleSessions(t *testing.T) {
 		IPAddress:  &ipAddr,
 		UserAgent:  stringPtr("Agent 2"),
 	}
-	_, _, err := handler.sessionService.CreateSession(context.Background(), userID, deviceInfo, []string{"read"})
+	_, _, _, err := handler.sessionService.CreateSession(context.Background(), userID, deviceInfo, []string{"read"})
 	require.NoError(t, err)
 
 	ctx := contextWithUserID(context.Background(), userID)
@@ -247,7 +247,7 @@ func TestHandler_LogoutAll_Success(t *testing.T) {
 		IPAddress:  &ipAddr,
 		UserAgent:  stringPtr("Agent 2"),
 	}
-	_, _, err := handler.sessionService.CreateSession(context.Background(), userID, deviceInfo, []string{"read"})
+	_, _, _, err := handler.sessionService.CreateSession(context.Background(), userID, deviceInfo, []string{"read"})
 	require.NoError(t, err)
 
 	ctx := contextWithUserID(context.Background(), userID)
@@ -356,7 +356,7 @@ func TestHandler_RevokeSession_Success(t *testing.T) {
 		IPAddress:  &ipAddr,
 		UserAgent:  stringPtr("Revoke Test"),
 	}
-	token, _, err := handler.sessionService.CreateSession(context.Background(), userID, deviceInfo, []string{"read"})
+	_, token, _, err := handler.sessionService.CreateSession(context.Background(), userID, deviceInfo, []string{"read"})
 	require.NoError(t, err)
 
 	// Validate to get session ID

@@ -12,6 +12,7 @@ import (
 	"github.com/lusoris/revenge/internal/service/activity"
 	"github.com/lusoris/revenge/internal/service/analytics"
 	"github.com/lusoris/revenge/internal/service/library"
+	"github.com/lusoris/revenge/internal/service/session"
 )
 
 // providePeriodicJobs builds the list of periodic jobs for the River client.
@@ -72,6 +73,15 @@ func providePeriodicJobs(cfg *config.Config) []*river.PeriodicJob {
 				return analytics.StatsAggregationArgs{}, nil
 			},
 			&river.PeriodicJobOpts{ID: "stats_aggregation_hourly", RunOnStart: true},
+		),
+
+		// Session maintenance: clean up expired/revoked sessions + reconcile gauge (hourly)
+		river.NewPeriodicJob(
+			river.PeriodicInterval(1*time.Hour),
+			func() (river.JobArgs, *river.InsertOpts) {
+				return session.MaintenanceArgs{}, nil
+			},
+			&river.PeriodicJobOpts{ID: "session_maintenance_hourly", RunOnStart: true},
 		),
 	}
 

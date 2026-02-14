@@ -31,7 +31,11 @@ func setupAdminUserTestHandler(t *testing.T) (*Handler, testutil.DB, uuid.UUID) 
 
 	// Set up services
 	userRepo := user.NewPostgresRepository(queries)
-	userService := user.NewService(pool, userRepo, activity.NewNoopLogger(), &storage.MockStorage{}, config.AvatarConfig{})
+	userService := user.NewCachedService(
+		user.NewService(pool, userRepo, activity.NewNoopLogger(), &storage.MockStorage{}, config.AvatarConfig{}),
+		nil, // nil cache = pass-through mode
+		logging.NewTestLogger(),
+	)
 
 	adapter := rbac.NewAdapter(pool)
 	enforcer, err := casbin.NewSyncedEnforcer("../../config/casbin_model.conf", adapter)

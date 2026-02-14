@@ -278,7 +278,11 @@ func setupLibraryTestHandler(t *testing.T) (*Handler, testutil.DB, uuid.UUID) {
 	// Create library service with real repository
 	queries := db.New(testDB.Pool())
 	repo := library.NewRepositoryPg(queries)
-	libService := library.NewService(repo, logging.NewTestLogger(), activity.NewNoopLogger())
+	libService := library.NewCachedService(
+		library.NewService(repo, logging.NewTestLogger(), activity.NewNoopLogger()),
+		nil, // nil cache = pass-through mode
+		logging.NewTestLogger(),
+	)
 
 	cfg := &config.Config{
 		Auth: config.AuthConfig{

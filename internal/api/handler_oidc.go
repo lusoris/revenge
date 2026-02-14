@@ -11,6 +11,7 @@ import (
 	"github.com/lusoris/revenge/internal/api/ogen"
 	"github.com/lusoris/revenge/internal/service/auth"
 	"github.com/lusoris/revenge/internal/service/oidc"
+	"github.com/lusoris/revenge/internal/service/session"
 )
 
 // ============================================================================
@@ -168,8 +169,22 @@ func (h *Handler) OidcCallback(ctx context.Context, params ogen.OidcCallbackPara
 		userID = result.UserID
 	}
 
-	// Create session for the user
-	loginResp, err := h.authService.CreateSessionForUser(ctx, userID, nil, nil, nil)
+	// Create session record for tracking BEFORE generating JWT
+	var sessionID uuid.UUID
+	if h.sessionService != nil {
+		var sessErr error
+		sessionID, _, _, sessErr = h.sessionService.CreateSession(ctx, userID, session.DeviceInfo{}, []string{"read", "write"})
+		if sessErr != nil {
+			h.logger.Warn("failed to create session record for OIDC user",
+				slog.String("provider", params.Provider),
+				slog.String("user_id", userID.String()),
+				slog.Any("error", sessErr))
+			// Continue without session ID — JWT will still work
+		}
+	}
+
+	// Create auth tokens (JWT + refresh) for the user with session ID
+	loginResp, err := h.authService.CreateSessionForUser(ctx, userID, sessionID, nil, nil, nil)
 	if err != nil {
 		h.logger.Error("failed to create session for OIDC user",
 			slog.String("provider", params.Provider),

@@ -151,6 +151,8 @@ var compoundEnvVars = map[string]string{
 	"REVENGE_SERVER_RATE_LIMIT_AUTH_BURST":                 "server.rate_limit.auth.burst",
 	"REVENGE_CACHE_L1_MAX_SIZE":                            "cache.l1_max_size",
 	"REVENGE_CACHE_L1_TTL":                                 "cache.l1_ttl",
+	"REVENGE_PLAYBACK_MAX_CONCURRENT_SESSIONS":             "playback.max_concurrent_sessions",
+	"REVENGE_PLAYBACK_SESSION_TIMEOUT":                     "playback.session_timeout",
 }
 
 // applyCompoundEnvOverrides fixes env vars that the simple _→. transform

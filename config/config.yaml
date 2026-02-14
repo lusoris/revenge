@@ -19,6 +19,7 @@ database:
   health_check_period: 1m
 
 cache:
+  enabled: true
   url: "redis://localhost:6379"
   max_retries: 3
   pool_size: 10

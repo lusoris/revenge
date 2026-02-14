@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/netip"
+	"strings"
 
 	"log/slog"
 
@@ -43,14 +44,14 @@ type Handler struct {
 	cfg                  *config.Config
 	healthService        *health.Service
 	settingsService      settings.Service
-	userService          *user.Service
+	userService          *user.CachedService
 	authService          *auth.Service
 	sessionService       *session.Service
 	rbacService          *rbac.Service
 	apikeyService        apikeys.Service
 	oidcService          *oidc.Service
 	activityService      *activity.Service
-	libraryService       *library.Service
+	libraryService       *library.CachedService
 	searchService        *search.MovieSearchService
 	tvshowSearchService  *search.TVShowSearchService
 	episodeSearchService *search.EpisodeSearchService
@@ -109,6 +110,11 @@ func (h *Handler) HandleBearerAuth(ctx context.Context, operationName ogen.Opera
 	// Inject user data into context
 	ctx = WithUserID(ctx, claims.UserID)
 	ctx = WithUsername(ctx, claims.Username)
+
+	// Inject session ID if present in JWT claims
+	if claims.SessionID != uuid.Nil {
+		ctx = WithSessionID(ctx, claims.SessionID)
+	}
 
 	h.logger.Debug("JWT validated successfully",
 		slog.String("user_id", claims.UserID.String()),
@@ -941,6 +947,14 @@ func (h *Handler) Register(ctx context.Context, req *ogen.RegisterRequest) (ogen
 	})
 	if err != nil {
 		h.logger.Warn("Registration failed", slog.Any("error", err))
+		// Check for duplicate key constraint violation (SQLSTATE 23505)
+		errMsg := err.Error()
+		if strings.Contains(errMsg, "23505") || strings.Contains(errMsg, "duplicate key") {
+			return &ogen.Error{
+				Code:    409,
+				Message: "Username or email already exists",
+			}, nil
+		}
 		return &ogen.Error{
 			Code:    400,
 			Message: fmt.Sprintf("Registration failed: %v", err),
@@ -983,7 +997,8 @@ func (h *Handler) Login(ctx context.Context, req *ogen.LoginRequest) (ogen.Login
 		userAgent = &meta.UserAgent
 	}
 
-	loginResp, err := h.authService.Login(ctx, req.Username, req.Password, ipAddr, userAgent, deviceName, nil)
+	// Step 1: Validate credentials (lockout, password check, active check)
+	user, err := h.authService.ValidateLogin(ctx, req.Username, req.Password, ipAddr, userAgent)
 	if err != nil {
 		h.logger.Warn("Login failed", slog.Any("error", err), slog.String("username", req.Username))
 		return &ogen.LoginUnauthorized{
@@ -992,21 +1007,30 @@ func (h *Handler) Login(ctx context.Context, req *ogen.LoginRequest) (ogen.Login
 		}, nil
 	}
 
-	h.logger.Info("Login successful", slog.String("user_id", loginResp.User.ID.String()))
-
-	// Create a session record for device/session management tracking
+	// Step 2: Create session record BEFORE generating JWT so we can embed session ID
+	var sessionID uuid.UUID
 	if h.sessionService != nil {
-		_, _, err := h.sessionService.CreateSession(ctx, loginResp.User.ID, session.DeviceInfo{
+		sessionID, _, _, err = h.sessionService.CreateSession(ctx, user.ID, session.DeviceInfo{
 			DeviceName: deviceName,
 			UserAgent:  userAgent,
 			IPAddress:  ipAddr,
 		}, []string{"read", "write"})
 		if err != nil {
 			h.logger.Warn("failed to create session record on login",
-				slog.String("user_id", loginResp.User.ID.String()),
+				slog.String("user_id", user.ID.String()),
 				slog.Any("error", err))
+			// Continue without session ID — JWT will still work, just without session tracking
 		}
 	}
+
+	// Step 3: Generate JWT (with session ID) + refresh token
+	loginResp, err := h.authService.GenerateLoginTokens(ctx, user, sessionID, ipAddr, userAgent, deviceName, nil)
+	if err != nil {
+		h.logger.Error("Failed to generate login tokens", slog.Any("error", err))
+		return nil, fmt.Errorf("failed to generate login tokens: %w", err)
+	}
+
+	h.logger.Info("Login successful", slog.String("user_id", user.ID.String()))
 
 	// Set auth cookies if cookie auth is enabled
 	if h.cfg.Server.CookieAuth.Enabled {

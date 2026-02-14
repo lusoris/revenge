@@ -245,17 +245,17 @@ func TestHandler_AdminTriggerSonarrSync_DirectSync(t *testing.T) {
 		status: sonarr.SyncStatus{IsRunning: false},
 	}
 	handler.sonarrService = mockService
-	// No river client - should start sync directly
+	// No river client - returns 503 (job queue required)
 
 	ctx := WithUserID(context.Background(), adminID)
 
 	result, err := handler.AdminTriggerSonarrSync(ctx)
 	require.NoError(t, err)
 
-	response, ok := result.(*ogen.SonarrSyncResponse)
+	response, ok := result.(*ogen.AdminTriggerSonarrSyncServiceUnavailable)
 	require.True(t, ok)
-	assert.Equal(t, ogen.SonarrSyncResponseStatusStarted, response.Status)
-	assert.Contains(t, response.Message, "started")
+	assert.Equal(t, 503, response.Code)
+	assert.Contains(t, response.Message, "Job queue not available")
 }
 
 // ============================================================================

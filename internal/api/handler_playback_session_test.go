@@ -451,7 +451,7 @@ func testPlaybackConfig() *config.Config {
 
 func testPipelineManagerForAPI(t *testing.T) *transcode.PipelineManager {
 	t.Helper()
-	pm, err := transcode.NewPipelineManager("ffmpeg", 4, logging.NewTestLogger())
+	pm, err := transcode.NewPipelineManager(4, logging.NewTestLogger())
 	require.NoError(t, err)
 	t.Cleanup(pm.Close)
 	return pm

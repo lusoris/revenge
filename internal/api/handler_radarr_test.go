@@ -304,17 +304,17 @@ func TestHandler_AdminTriggerRadarrSync_DirectSync(t *testing.T) {
 		status: radarr.SyncStatus{IsRunning: false},
 	}
 	handler.radarrService = mockService
-	// No river client - should start sync directly
+	// No river client - returns 503 (job queue required)
 
 	ctx := WithUserID(context.Background(), adminID)
 
 	result, err := handler.AdminTriggerRadarrSync(ctx)
 	require.NoError(t, err)
 
-	response, ok := result.(*ogen.RadarrSyncResponse)
+	response, ok := result.(*ogen.AdminTriggerRadarrSyncServiceUnavailable)
 	require.True(t, ok)
-	assert.Equal(t, ogen.RadarrSyncResponseStatusStarted, response.Status)
-	assert.Contains(t, response.Message, "started")
+	assert.Equal(t, 503, response.Code)
+	assert.Contains(t, response.Message, "Job queue not available")
 }
 
 // ============================================================================

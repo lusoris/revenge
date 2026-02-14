@@ -31,6 +31,11 @@ func WithUsername(ctx context.Context, username string) context.Context {
 	return context.WithValue(ctx, contextKeyUsername, username)
 }
 
+// WithSessionID stores the session ID in the context
+func WithSessionID(ctx context.Context, sessionID uuid.UUID) context.Context {
+	return context.WithValue(ctx, sessionIDKey, sessionID)
+}
+
 // GetUserID retrieves the user ID from the context
 func GetUserID(ctx context.Context) (uuid.UUID, error) {
 	userID, ok := ctx.Value(contextKeyUserID).(uuid.UUID)
