@@ -15,10 +15,10 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-// testPipelineManager creates a PipelineManager for tests (needs no real ffmpeg).
+// testPipelineManager creates a PipelineManager for tests.
 func testPipelineManager(t *testing.T) *transcode.PipelineManager {
 	t.Helper()
-	pm, err := transcode.NewPipelineManager("ffmpeg", 4, testLogger())
+	pm, err := transcode.NewPipelineManager(4, testLogger())
 	require.NoError(t, err)
 	t.Cleanup(pm.Close)
 	return pm

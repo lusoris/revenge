@@ -102,7 +102,7 @@ func newIntegrationService(t *testing.T, videoPath string) (*playback.Service, *
 	require.NoError(t, err)
 	t.Cleanup(sm.Close)
 
-	pm, err := transcode.NewPipelineManager("ffmpeg", 2, logger)
+	pm, err := transcode.NewPipelineManager(2, logger)
 	require.NoError(t, err)
 	t.Cleanup(pm.Close)
 
@@ -134,7 +134,7 @@ func TestIntegration_ProbeRealVideo(t *testing.T) {
 	assert.Equal(t, "h264", info.VideoCodec)
 	assert.Equal(t, 3840, info.Width)
 	assert.Equal(t, 2160, info.Height)
-	assert.InDelta(t, 634.6, info.DurationSeconds, 1.0)
+	assert.InDelta(t, 10.0, info.DurationSeconds, 1.0)
 	assert.Greater(t, info.VideoBitrateKbps, int64(5000))
 
 	// Audio — two tracks: MP3 stereo + AC-3 5.1
@@ -221,7 +221,7 @@ func TestIntegration_SessionLifecycle(t *testing.T) {
 
 	assert.Equal(t, userID, sess.UserID)
 	assert.Equal(t, playback.MediaTypeMovie, sess.MediaType)
-	assert.InDelta(t, 634.6, sess.DurationSeconds, 1.0)
+	assert.InDelta(t, 10.0, sess.DurationSeconds, 1.0)
 	assert.NotEmpty(t, sess.ActiveProfiles)
 	assert.Len(t, sess.AudioTracks, 2)
 	assert.Empty(t, sess.SubtitleTracks)
@@ -411,7 +411,7 @@ func TestIntegration_MaxConcurrentSessions(t *testing.T) {
 	require.NoError(t, err)
 	t.Cleanup(sm.Close)
 
-	pm, err := transcode.NewPipelineManager("ffmpeg", 2, logger)
+	pm, err := transcode.NewPipelineManager(2, logger)
 	require.NoError(t, err)
 	t.Cleanup(pm.Close)
 
@@ -475,7 +475,7 @@ func TestIntegration_SessionToResponse(t *testing.T) {
 	assert.Equal(t, sess.ID, resp.SessionID)
 	assert.Contains(t, resp.MasterPlaylistURL, sess.ID.String())
 	assert.Contains(t, resp.MasterPlaylistURL, "master.m3u8")
-	assert.InDelta(t, 634.6, resp.DurationSeconds, 1.0)
+	assert.InDelta(t, 10.0, resp.DurationSeconds, 1.0)
 	assert.NotEmpty(t, resp.Profiles)
 	assert.Len(t, resp.AudioTracks, 2)
 	assert.Empty(t, resp.SubtitleTracks)

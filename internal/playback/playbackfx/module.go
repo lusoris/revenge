@@ -28,14 +28,22 @@ var Module = fx.Module("playback",
 	fx.Invoke(registerCleanupWorker),
 )
 
-func provideSessionManager(cfg *config.Config, logger *slog.Logger) (*playback.SessionManager, error) {
+func provideSessionManager(cfg *config.Config, pipeline *transcode.PipelineManager, logger *slog.Logger) (*playback.SessionManager, error) {
 	if !cfg.Playback.Enabled {
 		return nil, nil
 	}
+
+	// When sessions expire or are evicted by the cache, kill their FFmpeg processes.
+	var cleanupFn playback.SessionCleanupFunc
+	if pipeline != nil {
+		cleanupFn = pipeline.StopAllForSession
+	}
+
 	return playback.NewSessionManager(
 		cfg.Playback.MaxConcurrentSessions,
 		cfg.Playback.SessionTimeout,
 		logger.With(slog.String("component", "playback.sessions")),
+		cleanupFn,
 	)
 }
 
@@ -44,7 +52,6 @@ func providePipelineManager(cfg *config.Config, logger *slog.Logger) (*transcode
 		return nil, nil
 	}
 	return transcode.NewPipelineManager(
-		cfg.Playback.FFmpegPath,
 		cfg.Playback.SegmentDuration,
 		logger.With(slog.String("component", "playback.pipeline")),
 	)

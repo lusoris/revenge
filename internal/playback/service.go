@@ -166,10 +166,7 @@ func (s *Service) GetSession(sessionID uuid.UUID) (*Session, bool) {
 // HeartbeatSession keeps a playback session alive and optionally updates the
 // playback position. Returns the updated session or false if the session doesn't exist.
 func (s *Service) HeartbeatSession(sessionID uuid.UUID, positionSeconds *int) (*Session, bool) {
-	s.sessions.mu.Lock()
-	defer s.sessions.mu.Unlock()
-
-	session, ok := s.sessions.cache.Get(sessionID)
+	session, ok := s.sessions.Get(sessionID)
 	if !ok {
 		return nil, false
 	}
@@ -296,7 +293,6 @@ func (s *Service) extractSubtitles(sessionID uuid.UUID, filePath, segmentDir str
 
 		_, err := subtitle.ExtractToWebVTT(
 			context.Background(),
-			s.cfg.Playback.FFmpegPath,
 			filePath,
 			segmentDir,
 			sub.Index,

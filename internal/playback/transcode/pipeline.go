@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log/slog"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"strings"
 	"time"
@@ -17,56 +16,44 @@ import (
 	"github.com/lusoris/revenge/internal/infra/observability"
 )
 
-// FFmpegProcess tracks a running FFmpeg process.
-type FFmpegProcess struct {
-	Cmd         *exec.Cmd
-	SessionID   uuid.UUID
-	Profile     string
-	Codec       string // video codec used (e.g. "libx264", "copy")
-	Done        chan struct{}
-	Err         error
-	StartTime   time.Time
-	IsTranscode bool
-}
-
-// PipelineManager manages running FFmpeg processes per session+profile.
+// PipelineManager manages running transcode jobs per session+profile.
+// Jobs run in-process using astiav (libavcodec/libavformat/libavfilter)
+// instead of spawning FFmpeg child processes.
 type PipelineManager struct {
-	ffmpegPath      string
 	segmentDuration int
-	processes       *cache.L1Cache[string, *FFmpegProcess]
+	jobs            *cache.L1Cache[string, *TranscodeJob]
 	logger          *slog.Logger
 }
 
 // NewPipelineManager creates a new pipeline manager.
-func NewPipelineManager(ffmpegPath string, segmentDuration int, logger *slog.Logger) (*PipelineManager, error) {
+func NewPipelineManager(segmentDuration int, logger *slog.Logger) (*PipelineManager, error) {
 	pm := &PipelineManager{
-		ffmpegPath:      ffmpegPath,
 		segmentDuration: segmentDuration,
 		logger:          logger,
 	}
 
-	// ttl=0: no automatic expiration — processes are managed manually via StopProcess/StopAllForSession.
-	// OnDeletion: kill FFmpeg processes evicted by cache size pressure to prevent orphaned children.
-	processCache, err := cache.NewL1Cache[string, *FFmpegProcess](1000, 0,
-		cache.WithOnDeletion(func(e otter.DeletionEvent[string, *FFmpegProcess]) {
+	// ttl=0: no automatic expiration — jobs are managed manually via StopProcess/StopAllForSession.
+	// OnDeletion: stop transcode jobs evicted by cache size pressure to prevent orphaned goroutines.
+	jobCache, err := cache.NewL1Cache[string, *TranscodeJob](1000, 0,
+		cache.WithOnDeletion(func(e otter.DeletionEvent[string, *TranscodeJob]) {
 			if !e.WasEvicted() {
 				return // manual invalidation already handled in StopProcess
 			}
-			proc := e.Value
-			if proc != nil && proc.Cmd.Process != nil {
-				logger.Warn("killing evicted FFmpeg process",
+			job := e.Value
+			if job != nil {
+				logger.Warn("stopping evicted transcode job",
 					slog.String("key", e.Key),
-					slog.String("session_id", proc.SessionID.String()),
-					slog.String("profile", proc.Profile),
+					slog.String("session_id", job.SessionID),
+					slog.String("profile", job.Profile),
 				)
-				_ = proc.Cmd.Process.Kill()
+				job.Stop()
 			}
 		}),
 	)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create process cache: %w", err)
+		return nil, fmt.Errorf("failed to create job cache: %w", err)
 	}
-	pm.processes = processCache
+	pm.jobs = jobCache
 
 	return pm, nil
 }
@@ -75,9 +62,9 @@ func processKey(sessionID uuid.UUID, profile string) string {
 	return sessionID.String() + ":" + profile
 }
 
-// StartVideoSegmenting launches an FFmpeg process to output video-only HLS segments.
+// StartVideoSegmenting launches an in-process transcode job to output video-only HLS segments.
 // Audio is excluded — each audio track gets its own rendition via StartAudioRendition.
-func (pm *PipelineManager) StartVideoSegmenting(ctx context.Context, sessionID uuid.UUID, filePath, segmentDir string, pd ProfileDecision, seekSeconds int) (*FFmpegProcess, error) {
+func (pm *PipelineManager) StartVideoSegmenting(ctx context.Context, sessionID uuid.UUID, filePath, segmentDir string, pd ProfileDecision, seekSeconds int) (*TranscodeJob, error) {
 	key := processKey(sessionID, pd.Name)
 
 	profileDir := filepath.Join(segmentDir, pd.Name)
@@ -85,15 +72,29 @@ func (pm *PipelineManager) StartVideoSegmenting(ctx context.Context, sessionID u
 		return nil, fmt.Errorf("failed to create segment dir %s: %w", profileDir, err)
 	}
 
-	cmd := BuildVideoOnlyCommand(pm.ffmpegPath, filePath, profileDir, pd, pm.segmentDuration, seekSeconds)
+	job := NewTranscodeJob(TranscodeJobConfig{
+		InputFile:        filePath,
+		OutputDir:        profileDir,
+		SessionID:        sessionID.String(),
+		Profile:          pd.Name,
+		VideoCodec:       pd.VideoCodec,
+		AudioCodec:       "", // no audio — separate renditions
+		Width:            pd.Width,
+		Height:           pd.Height,
+		VideoBitrate:     pd.VideoBitrate,
+		SegmentDuration:  pm.segmentDuration,
+		VideoStreamIndex: 0,  // first video stream
+		AudioStreamIndex: -1, // disable audio
+		SeekSeconds:      seekSeconds,
+	})
 
-	return pm.startProcess(cmd, key, sessionID, pd.Name, pd.VideoCodec, pd.NeedsTranscode)
+	return pm.startJob(ctx, job, key, sessionID, pd.Name, pd.VideoCodec, pd.NeedsTranscode)
 }
 
-// StartAudioRendition launches an FFmpeg process to output audio-only HLS segments
+// StartAudioRendition launches an in-process transcode job to output audio-only HLS segments
 // for a single audio track. Each track is a separate rendition — HLS.js downloads
 // only the selected track's segments, preserving original quality and saving bandwidth.
-func (pm *PipelineManager) StartAudioRendition(ctx context.Context, sessionID uuid.UUID, filePath, segmentDir string, trackIndex int, codec string, bitrate, seekSeconds int) (*FFmpegProcess, error) {
+func (pm *PipelineManager) StartAudioRendition(ctx context.Context, sessionID uuid.UUID, filePath, segmentDir string, trackIndex int, codec string, bitrate, seekSeconds int) (*TranscodeJob, error) {
 	renditionName := fmt.Sprintf("audio/%d", trackIndex)
 	key := processKey(sessionID, renditionName)
 
@@ -102,103 +103,98 @@ func (pm *PipelineManager) StartAudioRendition(ctx context.Context, sessionID uu
 		return nil, fmt.Errorf("failed to create audio rendition dir %s: %w", audioDir, err)
 	}
 
-	cmd := BuildAudioRenditionCommand(pm.ffmpegPath, filePath, audioDir, trackIndex, codec, bitrate, pm.segmentDuration, seekSeconds)
+	job := NewTranscodeJob(TranscodeJobConfig{
+		InputFile:        filePath,
+		OutputDir:        audioDir,
+		SessionID:        sessionID.String(),
+		Profile:          renditionName,
+		VideoCodec:       "",     // no video
+		AudioCodec:       codec,
+		AudioBitrate:     bitrate,
+		SegmentDuration:  pm.segmentDuration,
+		VideoStreamIndex: -1, // disable video
+		AudioStreamIndex: trackIndex,
+		SeekSeconds:      seekSeconds,
+	})
 
-	return pm.startProcess(cmd, key, sessionID, renditionName, codec, codec != "copy")
+	return pm.startJob(ctx, job, key, sessionID, renditionName, codec, codec != "copy")
 }
 
-func (pm *PipelineManager) startProcess(cmd *exec.Cmd, key string, sessionID uuid.UUID, name, codec string, isTranscode bool) (*FFmpegProcess, error) {
-	proc := &FFmpegProcess{
-		Cmd:         cmd,
-		SessionID:   sessionID,
-		Profile:     name,
-		Codec:       codec,
-		Done:        make(chan struct{}),
-		StartTime:   time.Now(),
-		IsTranscode: isTranscode,
-	}
-
-	if err := cmd.Start(); err != nil {
-		return nil, fmt.Errorf("failed to start FFmpeg for %s/%s: %w", sessionID, name, err)
-	}
-
-	pm.processes.Set(key, proc)
+func (pm *PipelineManager) startJob(_ context.Context, job *TranscodeJob, key string, sessionID uuid.UUID, name, codec string, isTranscode bool) (*TranscodeJob, error) {
+	pm.jobs.Set(key, job)
 
 	// Record transcoding start metric
 	if isTranscode {
 		observability.RecordTranscodingStart()
 	}
 
-	pm.logger.Info("FFmpeg process started",
+	pm.logger.Info("transcode job started",
 		slog.String("session_id", sessionID.String()),
 		slog.String("profile", name),
 		slog.Bool("transcode", isTranscode),
-		slog.String("cmd", strings.Join(cmd.Args, " ")),
+		slog.String("input", job.InputFile),
+		slog.String("output", job.OutputFile),
 	)
 
+	startTime := time.Now()
+
+	// Use a detached context — transcode jobs must outlive the HTTP request.
+	// Cancellation is handled by job.Stop() (called from StopProcess/StopAllForSession).
 	go func() {
-		defer close(proc.Done)
-		proc.Err = cmd.Wait()
+		defer close(job.Done)
+		job.Err = job.Run(context.Background())
 
 		// Record transcoding end metric
-		if proc.IsTranscode {
-			duration := time.Since(proc.StartTime).Seconds()
-			// Extract resolution from profile name (e.g., "1080p", "720p", "480p")
-			resolution := "unknown"
-			if strings.Contains(proc.Profile, "1080") {
-				resolution = "1080p"
-			} else if strings.Contains(proc.Profile, "720") {
-				resolution = "720p"
-			} else if strings.Contains(proc.Profile, "480") {
-				resolution = "480p"
-			} else if proc.Profile == "original" {
-				resolution = "original"
-			}
-			observability.RecordTranscodingEnd(proc.Codec, resolution, duration)
+		if job.IsTranscode {
+			duration := time.Since(startTime).Seconds()
+			resolution := resolveResolutionLabel(job.Profile)
+			observability.RecordTranscodingEnd(codec, resolution, duration)
 		}
 
-		if proc.Err != nil {
-			pm.logger.Error("FFmpeg process failed",
-				slog.String("session_id", sessionID.String()),
-				slog.String("profile", name),
-				slog.String("error", proc.Err.Error()),
-			)
+		if job.Err != nil {
+			// Context cancellation is expected during cleanup (Stop() was called)
+			if strings.Contains(job.Err.Error(), "context canceled") {
+				pm.logger.Debug("transcode job cancelled (expected cleanup)",
+					slog.String("session_id", sessionID.String()),
+					slog.String("profile", name),
+				)
+			} else {
+				pm.logger.Error("transcode job failed",
+					slog.String("session_id", sessionID.String()),
+					slog.String("profile", name),
+					slog.String("error", job.Err.Error()),
+				)
+			}
 		} else {
-			pm.logger.Info("FFmpeg process completed",
+			pm.logger.Info("transcode job completed",
 				slog.String("session_id", sessionID.String()),
 				slog.String("profile", name),
 			)
 		}
 	}()
 
-	return proc, nil
+	return job, nil
 }
 
-// StopProcess kills an FFmpeg process for a session+profile.
+// StopProcess stops a transcode job for a session+profile.
 func (pm *PipelineManager) StopProcess(sessionID uuid.UUID, profile string) error {
 	key := processKey(sessionID, profile)
-	proc, ok := pm.processes.Get(key)
+	job, ok := pm.jobs.Get(key)
 	if !ok {
 		return nil
 	}
 
-	pm.processes.Delete(key)
+	pm.jobs.Delete(key)
 
-	if proc.Cmd.Process != nil {
-		if err := proc.Cmd.Process.Kill(); err != nil {
-			pm.logger.Warn("failed to kill FFmpeg process",
-				slog.String("session_id", sessionID.String()),
-				slog.String("profile", profile),
-				slog.String("error", err.Error()),
-			)
-		}
-		<-proc.Done
+	if job != nil {
+		job.Stop()
+		<-job.Done
 	}
 
 	return nil
 }
 
-// StopAllForSession kills all FFmpeg processes for a session (video + audio renditions).
+// StopAllForSession stops all transcode jobs for a session (video + audio renditions).
 func (pm *PipelineManager) StopAllForSession(sessionID uuid.UUID) {
 	profiles := []string{"original", "1080p", "720p", "480p"}
 	for _, p := range profiles {
@@ -210,12 +206,28 @@ func (pm *PipelineManager) StopAllForSession(sessionID uuid.UUID) {
 	}
 }
 
-// GetProcess returns the FFmpeg process for a session+profile, if running.
-func (pm *PipelineManager) GetProcess(sessionID uuid.UUID, profile string) (*FFmpegProcess, bool) {
-	return pm.processes.Get(processKey(sessionID, profile))
+// GetProcess returns the transcode job for a session+profile, if running.
+func (pm *PipelineManager) GetProcess(sessionID uuid.UUID, profile string) (*TranscodeJob, bool) {
+	return pm.jobs.Get(processKey(sessionID, profile))
 }
 
-// Close shuts down the pipeline manager and kills all processes.
+// Close shuts down the pipeline manager and stops all jobs.
 func (pm *PipelineManager) Close() {
-	pm.processes.Close()
+	pm.jobs.Close()
+}
+
+// resolveResolutionLabel extracts a resolution label from a profile name.
+func resolveResolutionLabel(profile string) string {
+	switch {
+	case strings.Contains(profile, "1080"):
+		return "1080p"
+	case strings.Contains(profile, "720"):
+		return "720p"
+	case strings.Contains(profile, "480"):
+		return "480p"
+	case profile == "original":
+		return "original"
+	default:
+		return "unknown"
+	}
 }
