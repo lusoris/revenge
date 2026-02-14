@@ -11,7 +11,7 @@ const config = {
 			assets: 'build',
 			fallback: 'index.html',
 			precompress: true,
-			strict: true
+			strict: false
 		}),
 
 		alias: {
