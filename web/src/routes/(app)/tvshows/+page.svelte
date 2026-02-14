@@ -1,23 +1,31 @@
 <script lang="ts">
 	import { createInfiniteQuery } from '@tanstack/svelte-query';
+	import { derived, writable } from 'svelte/store';
 	import MediaCard from '$components/media/MediaCard.svelte';
 	import MediaGrid from '$components/media/MediaGrid.svelte';
 	import * as tvshowsApi from '$api/endpoints/tvshows';
+	import type { TVShowListResponse } from '$api/types';
 
 	const PAGE_SIZE = 30;
 
+	const sortByStore = writable('created_at');
 	let sortBy = $state('created_at');
+	$effect(() => {
+		sortByStore.set(sortBy);
+	});
 
-	const query = createInfiniteQuery(() => ({
-		queryKey: ['tvshows', 'list', sortBy],
-		queryFn: ({ pageParam = 0 }) =>
-			tvshowsApi.listTVShows({ limit: PAGE_SIZE, offset: pageParam, order_by: sortBy }),
-		getNextPageParam: (lastPage, allPages) => {
+	const queryOptions = derived(sortByStore, ($sort) => ({
+		queryKey: ['tvshows', 'list', $sort] as const,
+		queryFn: ({ pageParam }: { pageParam: number }) =>
+			tvshowsApi.listTVShows({ limit: PAGE_SIZE, offset: pageParam, order_by: $sort }),
+		getNextPageParam: (lastPage: TVShowListResponse, allPages: TVShowListResponse[]) => {
 			const fetched = allPages.reduce((n, p) => n + p.items.length, 0);
 			return fetched < lastPage.total ? fetched : undefined;
 		},
 		initialPageParam: 0
 	}));
+
+	const query = createInfiniteQuery(queryOptions);
 
 	function loadMore() {
 		if ($query.hasNextPage && !$query.isFetchingNextPage) {

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { createQuery } from '@tanstack/svelte-query';
+	import { derived, writable } from 'svelte/store';
 	import * as searchApi from '$api/endpoints/search';
 	import MediaCard from '$components/media/MediaCard.svelte';
 	import MediaGrid from '$components/media/MediaGrid.svelte';
@@ -8,6 +9,11 @@
 	let query = $state(page.url.searchParams.get('q') ?? '');
 	let debounced = $state(page.url.searchParams.get('q') ?? '');
 	let timer: ReturnType<typeof setTimeout>;
+
+	const debouncedStore = writable(debounced);
+	$effect(() => {
+		debouncedStore.set(debounced);
+	});
 
 	function onInput(e: Event) {
 		query = (e.target as HTMLInputElement).value;
@@ -17,17 +23,20 @@
 		}, 300);
 	}
 
-	const results = createQuery(() => ({
-		queryKey: ['search', 'multi', debounced],
-		queryFn: () => searchApi.searchMulti({ q: debounced, limit: 40 }),
-		enabled: debounced.length >= 2
+	const resultsOptions = derived(debouncedStore, ($d) => ({
+		queryKey: ['search', 'multi', $d] as const,
+		queryFn: () => searchApi.searchMulti({ q: $d, limit: 40 }),
+		enabled: $d.length >= 2
 	}));
 
-	const autocomplete = createQuery(() => ({
-		queryKey: ['search', 'autocomplete', debounced],
-		queryFn: () => searchApi.autocompleteMovies({ q: debounced, limit: 8 }),
-		enabled: debounced.length >= 2 && debounced.length < 4
+	const autocompleteOptions = derived(debouncedStore, ($d) => ({
+		queryKey: ['search', 'autocomplete', $d] as const,
+		queryFn: () => searchApi.autocompleteMovies({ q: $d, limit: 8 }),
+		enabled: $d.length >= 2 && $d.length < 4
 	}));
+
+	const results = createQuery(resultsOptions);
+	const autocomplete = createQuery(autocompleteOptions);
 </script>
 
 <svelte:head>
