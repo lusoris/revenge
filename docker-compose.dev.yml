@@ -33,6 +33,14 @@ services:
       # Playback - relaxed for load testing
       - REVENGE_PLAYBACK_MAX_CONCURRENT_SESSIONS=100
       - REVENGE_PLAYBACK_SESSION_TIMEOUT=5m
+      # Radarr integration
+      - REVENGE_INTEGRATIONS_RADARR_ENABLED=true
+      - REVENGE_INTEGRATIONS_RADARR_BASE_URL=http://radarr:7878
+      - REVENGE_INTEGRATIONS_RADARR_API_KEY=dev_radarr_api_key
+      # Sonarr integration
+      - REVENGE_INTEGRATIONS_SONARR_ENABLED=true
+      - REVENGE_INTEGRATIONS_SONARR_BASE_URL=http://sonarr:8989
+      - REVENGE_INTEGRATIONS_SONARR_API_KEY=dev_sonarr_api_key
     volumes:
       # ./:/app - Disabled for Docker-based testing (overwrites binary)
       - revenge-data:/data
@@ -290,6 +298,56 @@ services:
         limits:
           memory: 256M
 
+  # Radarr — Movie management (PVR)
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: revenge-radarr-dev
+    ports:
+      - "7878:7878"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Berlin
+    volumes:
+      - radarr-config:/config
+      - media-data:/media
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:7878/ping || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+
+  # Sonarr — TV show management (PVR)
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: revenge-sonarr-dev
+    ports:
+      - "8989:8989"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Berlin
+    volumes:
+      - sonarr-config:/config
+      - media-data:/media
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:8989/ping || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+
 volumes:
   revenge-data:
   revenge-config:
@@ -300,3 +358,6 @@ volumes:
   pgadmin-data:
   prometheus-data:
   grafana-data:
+  radarr-config:
+  sonarr-config:
+  media-data:
