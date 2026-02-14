@@ -99,7 +99,34 @@ var Module = fx.Module("app",
 	radarr.Module,
 	sonarr.Module,
 
-	// Metadata Service
+	// Metadata Service — bridge app config → metadatafx.Config
+	fx.Provide(func(cfg *config.Config) metadatafx.Config {
+		return metadatafx.Config{
+			DefaultLanguages:       []string{"en", "de", "fr", "es", "ja"},
+			EnableProviderFallback: true,
+			EnableEnrichment:       false,
+			TMDbAPIKey:             cfg.Movie.TMDb.APIKey,
+			TMDbProxyURL:           cfg.Movie.TMDb.ProxyURL,
+			FanartTVAPIKey:         cfg.Metadata.FanartTV.APIKey,
+			FanartTVClientKey:      cfg.Metadata.FanartTV.ClientKey,
+			OMDbAPIKey:             cfg.Metadata.OMDb.APIKey,
+			TVmazeEnabled:          cfg.Metadata.TVmaze.Enabled,
+			AniListEnabled:         cfg.Metadata.AniList.Enabled,
+			KitsuEnabled:           cfg.Metadata.Kitsu.Enabled,
+			AniDBEnabled:           cfg.Metadata.AniDB.Enabled,
+			AniDBClientName:        cfg.Metadata.AniDB.ClientName,
+			AniDBClientVersion:     cfg.Metadata.AniDB.ClientVersion,
+			MALEnabled:             cfg.Metadata.MAL.Enabled,
+			MALClientID:            cfg.Metadata.MAL.ClientID,
+			TraktEnabled:           cfg.Metadata.Trakt.Enabled,
+			TraktClientID:          cfg.Metadata.Trakt.ClientID,
+			SimklEnabled:           cfg.Metadata.Simkl.Enabled,
+			SimklClientID:          cfg.Metadata.Simkl.ClientID,
+			LetterboxdEnabled:      cfg.Metadata.Letterboxd.Enabled,
+			LetterboxdAPIKey:       cfg.Metadata.Letterboxd.APIKey,
+			LetterboxdAPISecret:    cfg.Metadata.Letterboxd.APISecret,
+		}
+	}),
 	metadatafx.Module,
 
 	// Observability (metrics, pprof)

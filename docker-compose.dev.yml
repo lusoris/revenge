@@ -41,13 +41,14 @@ services:
       - REVENGE_INTEGRATIONS_SONARR_ENABLED=true
       - REVENGE_INTEGRATIONS_SONARR_BASE_URL=http://sonarr:8989
       - REVENGE_INTEGRATIONS_SONARR_API_KEY=31f3baf2872f4769921ba2bdd29f9457
+      # TMDb metadata provider
+      - REVENGE_MOVIE_TMDB_API_KEY=99409542dd29a29e7cbaf36fd95ab51d
     volumes:
       # ./:/app - Disabled for Docker-based testing (overwrites binary)
       - revenge-data:/data
       - revenge-config:/config
       - revenge-cache:/cache
-      - ./testdata/media:/media:ro
-      - ./.workingdir11:/movies:ro
+      - /home/kilian/media:/media:ro
     depends_on:
       postgres:
         condition: service_healthy
@@ -229,7 +230,7 @@ services:
     ports:
       - "5050:80"
     environment:
-      - PGADMIN_DEFAULT_EMAIL=admin@revenge.local
+      - PGADMIN_DEFAULT_EMAIL=admin@revenge.dev
       - PGADMIN_DEFAULT_PASSWORD=admin
     volumes:
       - pgadmin-data:/var/lib/pgadmin
@@ -310,7 +311,7 @@ services:
       - TZ=Europe/Berlin
     volumes:
       - radarr-config:/config
-      - media-data:/media
+      - /home/kilian/media:/media
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "curl -sf http://localhost:7878/ping || exit 1"]
@@ -335,7 +336,7 @@ services:
       - TZ=Europe/Berlin
     volumes:
       - sonarr-config:/config
-      - media-data:/media
+      - /home/kilian/media:/media
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "curl -sf http://localhost:8989/ping || exit 1"]
@@ -360,4 +361,3 @@ volumes:
   grafana-data:
   radarr-config:
   sonarr-config:
-  media-data:
