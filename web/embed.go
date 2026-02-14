@@ -8,8 +8,8 @@
 // The SvelteKit project must be built first with @sveltejs/adapter-static
 // which outputs to the build/ directory:
 //
-//cd web && npm run build
-//go build -tags frontend ./cmd/revenge
+// cd web && npm run build
+// go build -tags frontend ./cmd/revenge
 package web
 
 import "embed"
