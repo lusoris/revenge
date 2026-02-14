@@ -1,13 +1,12 @@
 <script lang="ts">
-	import { createQuery, useQueryClient } from '@tanstack/svelte-query';
-	import { derived, writable } from 'svelte/store';
-	import { adminListUsers, adminDeleteUser } from '$api/endpoints/admin';
-	import { assignUserRole, removeUserRole, getUserRoles } from '$api/endpoints/rbac';
-	import { Button } from '$components/ui/button';
-	import { Input } from '$components/ui/input';
-	import * as Card from '$components/ui/card';
-	import { Badge } from '$components/ui/badge';
+	import { adminDeleteUser, adminListUsers } from '$api/endpoints/admin';
+	import { assignUserRole, removeUserRole } from '$api/endpoints/rbac';
 	import type { User } from '$api/types';
+	import { Badge } from '$components/ui/badge';
+	import { Button } from '$components/ui/button';
+	import * as Card from '$components/ui/card';
+	import { Input } from '$components/ui/input';
+	import { createQuery, useQueryClient } from '@tanstack/svelte-query';
 
 	const queryClient = useQueryClient();
 
@@ -15,22 +14,15 @@
 	let currentPage = $state(1);
 	const pageSize = 20;
 
-	const searchStore = writable('');
-	const pageStore = writable(1);
-	$effect(() => { searchStore.set(search); });
-	$effect(() => { pageStore.set(currentPage); });
-
-	const usersQuery = createQuery(
-		derived([searchStore, pageStore], ([$s, $p]) => ({
-			queryKey: ['admin', 'users', $s, $p],
-			queryFn: () =>
-				adminListUsers({
-					page: $p,
-					page_size: pageSize,
-					search: $s || undefined
-				})
-		}))
-	);
+	const usersQuery = createQuery(() => ({
+		queryKey: ['admin', 'users', search, currentPage],
+		queryFn: () =>
+			adminListUsers({
+				page: currentPage,
+				page_size: pageSize,
+				search: search || undefined
+			})
+	}));
 
 	async function handleDelete(user: User) {
 		if (!confirm(`Delete user ${user.username}? This cannot be undone.`)) return;
@@ -61,7 +53,7 @@
 		<div>
 			<Card.Title class="text-white">Users</Card.Title>
 			<Card.Description>
-				{$usersQuery.data?.total ?? 0} total users
+				{usersQuery.data?.total ?? 0} total users
 			</Card.Description>
 		</div>
 		<Input
@@ -71,9 +63,9 @@
 		/>
 	</Card.Header>
 	<Card.Content>
-		{#if $usersQuery.isLoading}
+		{#if usersQuery.isLoading}
 			<p class="text-sm text-neutral-500">Loading users…</p>
-		{:else if $usersQuery.data}
+		{:else if usersQuery.data}
 			<div class="overflow-x-auto">
 				<table class="w-full text-sm">
 					<thead>
@@ -87,7 +79,7 @@
 						</tr>
 					</thead>
 					<tbody class="divide-y divide-neutral-800">
-						{#each $usersQuery.data.users as user}
+						{#each usersQuery.data.users as user}
 							<tr>
 								<td class="py-3 pr-4">
 									<div class="flex items-center gap-3">
@@ -137,10 +129,10 @@
 			</div>
 
 			<!-- Pagination -->
-			{#if ($usersQuery.data.total ?? 0) > pageSize}
+			{#if (usersQuery.data.total ?? 0) > pageSize}
 				<div class="mt-4 flex items-center justify-between">
 					<p class="text-sm text-neutral-500">
-						Page {currentPage} of {Math.ceil(($usersQuery.data.total ?? 0) / pageSize)}
+						Page {currentPage} of {Math.ceil((usersQuery.data.total ?? 0) / pageSize)}
 					</p>
 					<div class="flex gap-2">
 						<Button
@@ -154,7 +146,7 @@
 						<Button
 							variant="outline"
 							size="sm"
-							disabled={currentPage >= Math.ceil(($usersQuery.data.total ?? 0) / pageSize)}
+							disabled={currentPage >= Math.ceil((usersQuery.data.total ?? 0) / pageSize)}
 							onclick={() => currentPage++}
 						>
 							Next

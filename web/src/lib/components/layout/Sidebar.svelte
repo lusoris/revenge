@@ -1,6 +1,7 @@
 <script lang="ts">
-	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
+	import { page } from '$app/state';
+	import CommandSearch from '$components/layout/CommandSearch.svelte';
 	import { getAuth, logout } from '$lib/stores/auth.svelte';
 
 	const auth = getAuth();
@@ -14,8 +15,7 @@
 	const nav: NavItem[] = [
 		{ href: '/', label: 'Home', icon: '🏠' },
 		{ href: '/movies', label: 'Movies', icon: '🎬' },
-		{ href: '/tvshows', label: 'TV Shows', icon: '📺' },
-		{ href: '/search', label: 'Search', icon: '🔍' }
+		{ href: '/tvshows', label: 'TV Shows', icon: '📺' }
 	];
 
 	const settingsNav: NavItem[] = [{ href: '/settings', label: 'Settings', icon: '👤' }];
@@ -62,6 +62,9 @@
 				{item.label}
 			</a>
 		{/each}
+
+		<!-- Command palette search -->
+		<CommandSearch />
 
 		{#if auth.isAdmin}
 			<div class="my-3 border-t border-neutral-800"></div>
@@ -143,6 +146,15 @@
 			{item.label}
 		</a>
 	{/each}
+	<a
+		href="/search"
+		class="flex flex-1 flex-col items-center gap-0.5 py-2 text-xs transition-colors {isActive('/search')
+			? 'text-white'
+			: 'text-neutral-500'}"
+	>
+		<span class="text-lg">🔍</span>
+		Search
+	</a>
 	<button
 		onclick={handleLogout}
 		class="flex flex-1 flex-col items-center gap-0.5 py-2 text-xs text-neutral-500 transition-colors hover:text-red-400"

@@ -1,23 +1,20 @@
 <script lang="ts">
-	import { createQuery, useQueryClient } from '@tanstack/svelte-query';
-	import { derived, writable } from 'svelte/store';
-	import { listAPIKeys, createAPIKey, revokeAPIKey } from '$api/endpoints/apikeys';
+	import { createAPIKey, listAPIKeys, revokeAPIKey } from '$api/endpoints/apikeys';
+	import type { APIKeyScope, CreateAPIKeyResponse } from '$api/types';
+	import { Badge } from '$components/ui/badge';
 	import { Button } from '$components/ui/button';
-	import { Input } from '$components/ui/input';
-	import { Label } from '$components/ui/label';
 	import * as Card from '$components/ui/card';
 	import * as Dialog from '$components/ui/dialog';
-	import { Badge } from '$components/ui/badge';
-	import type { APIKeyScope, CreateAPIKeyResponse } from '$api/types';
+	import { Input } from '$components/ui/input';
+	import { Label } from '$components/ui/label';
+	import { createQuery, useQueryClient } from '@tanstack/svelte-query';
 
 	const queryClient = useQueryClient();
 
-	const keysQuery = createQuery(
-		derived(writable(null), () => ({
-			queryKey: ['apikeys'],
-			queryFn: () => listAPIKeys()
-		}))
-	);
+	const keysQuery = createQuery(() => ({
+		queryKey: ['apikeys'],
+		queryFn: () => listAPIKeys()
+	}));
 
 	let showCreate = $state(false);
 	let keyName = $state('');
@@ -157,11 +154,11 @@
 		</Dialog.Root>
 	</Card.Header>
 	<Card.Content>
-		{#if $keysQuery.isLoading}
+		{#if keysQuery.isLoading}
 			<p class="text-sm text-neutral-500">Loading…</p>
-		{:else if $keysQuery.data}
+		{:else if keysQuery.data}
 			<div class="divide-y divide-neutral-800">
-				{#each $keysQuery.data.keys as key}
+				{#each keysQuery.data.keys as key}
 					<div class="flex items-center justify-between py-3">
 						<div class="min-w-0 flex-1">
 							<div class="flex items-center gap-2">
@@ -196,7 +193,7 @@
 					</div>
 				{/each}
 			</div>
-			{#if $keysQuery.data.keys.length === 0}
+			{#if keysQuery.data.keys.length === 0}
 				<p class="py-8 text-center text-sm text-neutral-500">No API keys yet</p>
 			{/if}
 		{/if}

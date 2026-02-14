@@ -1,22 +1,19 @@
 <script lang="ts">
-	import { createQuery, createMutation, useQueryClient } from '@tanstack/svelte-query';
-	import { derived, writable } from 'svelte/store';
 	import { getPreferences, updatePreferences } from '$api/endpoints/users';
+	import type { UserPreferences } from '$api/types';
+	import * as Alert from '$components/ui/alert';
 	import { Button } from '$components/ui/button';
+	import * as Card from '$components/ui/card';
 	import { Label } from '$components/ui/label';
 	import { Switch } from '$components/ui/switch';
-	import * as Card from '$components/ui/card';
-	import * as Alert from '$components/ui/alert';
-	import type { UserPreferences } from '$api/types';
+	import { createMutation, createQuery, useQueryClient } from '@tanstack/svelte-query';
 
 	const queryClient = useQueryClient();
 
-	const prefsQuery = createQuery(
-		derived(writable(null), () => ({
-			queryKey: ['preferences'],
-			queryFn: () => getPreferences()
-		}))
-	);
+	const prefsQuery = createQuery(() => ({
+		queryKey: ['preferences'],
+		queryFn: () => getPreferences()
+	}));
 
 	let theme = $state<'light' | 'dark' | 'system'>('dark');
 	let autoPlay = $state(true);
@@ -27,32 +24,30 @@
 	let errorMsg = $state('');
 
 	$effect(() => {
-		if ($prefsQuery.data) {
-			theme = $prefsQuery.data.theme ?? 'dark';
-			autoPlay = $prefsQuery.data.auto_play_videos ?? true;
-			showAdult = $prefsQuery.data.show_adult_content ?? false;
-			showSpoilers = $prefsQuery.data.show_spoilers ?? false;
-			profileVisibility = $prefsQuery.data.profile_visibility ?? 'private';
+		if (prefsQuery.data) {
+			theme = prefsQuery.data.theme ?? 'dark';
+			autoPlay = prefsQuery.data.auto_play_videos ?? true;
+			showAdult = prefsQuery.data.show_adult_content ?? false;
+			showSpoilers = prefsQuery.data.show_spoilers ?? false;
+			profileVisibility = prefsQuery.data.profile_visibility ?? 'private';
 		}
 	});
 
-	const updateMutation = createMutation(
-		derived(writable(null), () => ({
-			mutationFn: (data: Partial<UserPreferences>) => updatePreferences(data),
-			onSuccess: () => {
-				successMsg = 'Preferences saved';
-				errorMsg = '';
-				queryClient.invalidateQueries({ queryKey: ['preferences'] });
-			},
-			onError: (err: Error) => {
-				errorMsg = err.message;
-				successMsg = '';
-			}
-		}))
-	);
+	const updateMutation = createMutation(() => ({
+		mutationFn: (data: Partial<UserPreferences>) => updatePreferences(data),
+		onSuccess: () => {
+			successMsg = 'Preferences saved';
+			errorMsg = '';
+			queryClient.invalidateQueries({ queryKey: ['preferences'] });
+		},
+		onError: (err: Error) => {
+			errorMsg = err.message;
+			successMsg = '';
+		}
+	}));
 
 	function save() {
-		$updateMutation.mutate({
+		updateMutation.mutate({
 			theme,
 			auto_play_videos: autoPlay,
 			show_adult_content: showAdult,
@@ -116,8 +111,8 @@
 			</div>
 		</Card.Content>
 		<Card.Footer>
-			<Button onclick={save} disabled={$updateMutation.isPending}>
-				{$updateMutation.isPending ? 'Saving…' : 'Save Preferences'}
+		<Button onclick={save} disabled={updateMutation.isPending}>
+			{updateMutation.isPending ? 'Saving…' : 'Save Preferences'}
 			</Button>
 		</Card.Footer>
 	</Card.Root>

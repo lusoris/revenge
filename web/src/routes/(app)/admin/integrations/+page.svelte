@@ -1,64 +1,53 @@
 <script lang="ts">
-	import { createQuery, useQueryClient } from '@tanstack/svelte-query';
-	import { derived, writable } from 'svelte/store';
 	import {
-		radarrGetStatus, radarrSync, radarrGetQualityProfiles, radarrGetRootFolders,
-		sonarrGetStatus, sonarrSync, sonarrGetQualityProfiles, sonarrGetRootFolders
+		radarrGetQualityProfiles, radarrGetRootFolders,
+		radarrGetStatus, radarrSync,
+		sonarrGetQualityProfiles, sonarrGetRootFolders,
+		sonarrGetStatus, sonarrSync
 	} from '$api/endpoints/admin';
+	import { Badge } from '$components/ui/badge';
 	import { Button } from '$components/ui/button';
 	import * as Card from '$components/ui/card';
-	import { Badge } from '$components/ui/badge';
 	import { Separator } from '$components/ui/separator';
+	import { createQuery, useQueryClient } from '@tanstack/svelte-query';
 
 	const queryClient = useQueryClient();
 
-	const radarrStatus = createQuery(
-		derived(writable(null), () => ({
-			queryKey: ['admin', 'radarr', 'status'],
-			queryFn: () => radarrGetStatus(),
-			retry: false
-		}))
-	);
+	const radarrStatus = createQuery(() => ({
+		queryKey: ['admin', 'radarr', 'status'],
+		queryFn: () => radarrGetStatus(),
+		retry: false
+	}));
 
-	const radarrProfiles = createQuery(
-		derived(writable(null), () => ({
-			queryKey: ['admin', 'radarr', 'profiles'],
-			queryFn: () => radarrGetQualityProfiles(),
-			retry: false
-		}))
-	);
+	const radarrProfiles = createQuery(() => ({
+		queryKey: ['admin', 'radarr', 'profiles'],
+		queryFn: () => radarrGetQualityProfiles(),
+		retry: false
+	}));
 
-	const radarrFolders = createQuery(
-		derived(writable(null), () => ({
-			queryKey: ['admin', 'radarr', 'folders'],
-			queryFn: () => radarrGetRootFolders(),
-			retry: false
-		}))
-	);
+	const radarrFolders = createQuery(() => ({
+		queryKey: ['admin', 'radarr', 'folders'],
+		queryFn: () => radarrGetRootFolders(),
+		retry: false
+	}));
 
-	const sonarrStatus = createQuery(
-		derived(writable(null), () => ({
-			queryKey: ['admin', 'sonarr', 'status'],
-			queryFn: () => sonarrGetStatus(),
-			retry: false
-		}))
-	);
+	const sonarrStatus = createQuery(() => ({
+		queryKey: ['admin', 'sonarr', 'status'],
+		queryFn: () => sonarrGetStatus(),
+		retry: false
+	}));
 
-	const sonarrProfiles = createQuery(
-		derived(writable(null), () => ({
-			queryKey: ['admin', 'sonarr', 'profiles'],
-			queryFn: () => sonarrGetQualityProfiles(),
-			retry: false
-		}))
-	);
+	const sonarrProfiles = createQuery(() => ({
+		queryKey: ['admin', 'sonarr', 'profiles'],
+		queryFn: () => sonarrGetQualityProfiles(),
+		retry: false
+	}));
 
-	const sonarrFolders = createQuery(
-		derived(writable(null), () => ({
-			queryKey: ['admin', 'sonarr', 'folders'],
-			queryFn: () => sonarrGetRootFolders(),
-			retry: false
-		}))
-	);
+	const sonarrFolders = createQuery(() => ({
+		queryKey: ['admin', 'sonarr', 'folders'],
+		queryFn: () => sonarrGetRootFolders(),
+		retry: false
+	}));
 
 	let radarrSyncing = $state(false);
 	let sonarrSyncing = $state(false);
@@ -104,15 +93,15 @@
 				<Card.Title class="text-white">Radarr</Card.Title>
 				<Card.Description>Movie library integration</Card.Description>
 			</div>
-			{#if $radarrStatus.data?.connected}
+			{#if radarrStatus.data?.connected}
 				<Badge class="bg-green-900 text-green-200">Connected</Badge>
 			{:else}
 				<Badge variant="destructive">Disconnected</Badge>
 			{/if}
 		</Card.Header>
 		<Card.Content class="space-y-4">
-			{#if $radarrStatus.data}
-				{@const s = $radarrStatus.data}
+			{#if radarrStatus.data}
+				{@const s = radarrStatus.data}
 				<div class="grid grid-cols-2 gap-3 text-sm">
 					<div>
 						<p class="text-neutral-500">Version</p>
@@ -145,11 +134,11 @@
 				<Separator class="bg-neutral-800" />
 
 				<!-- Quality Profiles -->
-				{#if $radarrProfiles.data && $radarrProfiles.data.length > 0}
+				{#if radarrProfiles.data && radarrProfiles.data.length > 0}
 					<div>
 						<p class="mb-2 text-xs font-medium uppercase text-neutral-500">Quality Profiles</p>
 						<div class="flex flex-wrap gap-1">
-							{#each $radarrProfiles.data as p}
+							{#each radarrProfiles.data as p}
 								<Badge variant="outline" class="text-neutral-300">{p.name}</Badge>
 							{/each}
 						</div>
@@ -157,10 +146,10 @@
 				{/if}
 
 				<!-- Root Folders -->
-				{#if $radarrFolders.data && $radarrFolders.data.length > 0}
+				{#if radarrFolders.data && radarrFolders.data.length > 0}
 					<div>
 						<p class="mb-2 text-xs font-medium uppercase text-neutral-500">Root Folders</p>
-						{#each $radarrFolders.data as f}
+						{#each radarrFolders.data as f}
 							<div class="flex items-center justify-between text-sm">
 								<span class="text-neutral-300">{f.path}</span>
 								<span class="text-neutral-500">{formatBytes(f.freeSpace)} free</span>
@@ -168,9 +157,9 @@
 						{/each}
 					</div>
 				{/if}
-			{:else if $radarrStatus.isLoading}
+			{:else if radarrStatus.isLoading}
 				<p class="text-sm text-neutral-500">Loading…</p>
-			{:else if $radarrStatus.isError}
+			{:else if radarrStatus.isError}
 				<p class="text-sm text-red-400">Failed to connect to Radarr</p>
 			{/if}
 		</Card.Content>
@@ -188,15 +177,15 @@
 				<Card.Title class="text-white">Sonarr</Card.Title>
 				<Card.Description>TV series library integration</Card.Description>
 			</div>
-			{#if $sonarrStatus.data?.connected}
+			{#if sonarrStatus.data?.connected}
 				<Badge class="bg-green-900 text-green-200">Connected</Badge>
 			{:else}
 				<Badge variant="destructive">Disconnected</Badge>
 			{/if}
 		</Card.Header>
 		<Card.Content class="space-y-4">
-			{#if $sonarrStatus.data}
-				{@const s = $sonarrStatus.data}
+			{#if sonarrStatus.data}
+				{@const s = sonarrStatus.data}
 				<div class="grid grid-cols-2 gap-3 text-sm">
 					<div>
 						<p class="text-neutral-500">Version</p>
@@ -228,21 +217,21 @@
 
 				<Separator class="bg-neutral-800" />
 
-				{#if $sonarrProfiles.data && $sonarrProfiles.data.length > 0}
+				{#if sonarrProfiles.data && sonarrProfiles.data.length > 0}
 					<div>
 						<p class="mb-2 text-xs font-medium uppercase text-neutral-500">Quality Profiles</p>
 						<div class="flex flex-wrap gap-1">
-							{#each $sonarrProfiles.data as p}
+							{#each sonarrProfiles.data as p}
 								<Badge variant="outline" class="text-neutral-300">{p.name}</Badge>
 							{/each}
 						</div>
 					</div>
 				{/if}
 
-				{#if $sonarrFolders.data && $sonarrFolders.data.length > 0}
+				{#if sonarrFolders.data && sonarrFolders.data.length > 0}
 					<div>
 						<p class="mb-2 text-xs font-medium uppercase text-neutral-500">Root Folders</p>
-						{#each $sonarrFolders.data as f}
+						{#each sonarrFolders.data as f}
 							<div class="flex items-center justify-between text-sm">
 								<span class="text-neutral-300">{f.path}</span>
 								<span class="text-neutral-500">{formatBytes(f.freeSpace)} free</span>
@@ -250,9 +239,9 @@
 						{/each}
 					</div>
 				{/if}
-			{:else if $sonarrStatus.isLoading}
+			{:else if sonarrStatus.isLoading}
 				<p class="text-sm text-neutral-500">Loading…</p>
-			{:else if $sonarrStatus.isError}
+			{:else if sonarrStatus.isError}
 				<p class="text-sm text-red-400">Failed to connect to Sonarr</p>
 			{/if}
 		</Card.Content>

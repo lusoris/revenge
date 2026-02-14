@@ -1,41 +1,33 @@
 <script lang="ts">
-	import { createQuery, createMutation, useQueryClient } from '@tanstack/svelte-query';
-	import { derived, writable } from 'svelte/store';
 	import {
-		getMFAStatus,
-		enableMFA,
-		disableMFA,
-		setupTOTP,
-		verifyTOTP,
-		removeTOTP,
+		deleteWebAuthnCredential,
 		generateBackupCodes,
-		regenerateBackupCodes,
+		getMFAStatus,
 		listWebAuthnCredentials,
-		deleteWebAuthnCredential
+		removeTOTP,
+		setupTOTP,
+		verifyTOTP
 	} from '$api/endpoints/mfa';
-	import { Button } from '$components/ui/button';
-	import { Input } from '$components/ui/input';
-	import { Label } from '$components/ui/label';
-	import * as Card from '$components/ui/card';
+	import type { TOTPSetup } from '$api/types';
 	import * as Alert from '$components/ui/alert';
 	import { Badge } from '$components/ui/badge';
-	import type { MFAStatus, TOTPSetup, BackupCodesResponse, WebAuthnCredentialInfo } from '$api/types';
+	import { Button } from '$components/ui/button';
+	import * as Card from '$components/ui/card';
+	import { Input } from '$components/ui/input';
+	import { Label } from '$components/ui/label';
+	import { createQuery, useQueryClient } from '@tanstack/svelte-query';
 
 	const queryClient = useQueryClient();
 
-	const statusQuery = createQuery(
-		derived(writable(null), () => ({
-			queryKey: ['mfa', 'status'],
-			queryFn: () => getMFAStatus()
-		}))
-	);
+	const statusQuery = createQuery(() => ({
+		queryKey: ['mfa', 'status'],
+		queryFn: () => getMFAStatus()
+	}));
 
-	const credentialsQuery = createQuery(
-		derived(writable(null), () => ({
-			queryKey: ['mfa', 'webauthn'],
-			queryFn: () => listWebAuthnCredentials()
-		}))
-	);
+	const credentialsQuery = createQuery(() => ({
+		queryKey: ['mfa', 'webauthn'],
+		queryFn: () => listWebAuthnCredentials()
+	}));
 
 	// TOTP setup state
 	let showTOTPSetup = $state(false);
@@ -122,8 +114,8 @@
 				</Alert.Root>
 			{/if}
 
-			{#if $statusQuery.data}
-				{@const s = $statusQuery.data}
+			{#if statusQuery.data}
+				{@const s = statusQuery.data}
 				<div class="space-y-3">
 					<div class="flex items-center justify-between">
 						<span class="text-sm text-neutral-300">TOTP (Authenticator App)</span>
@@ -142,12 +134,12 @@
 						<Badge variant="outline" class="text-neutral-400">{s.unused_backup_codes} remaining</Badge>
 					</div>
 				</div>
-			{:else if $statusQuery.isLoading}
+			{:else if statusQuery.isLoading}
 				<p class="text-sm text-neutral-500">Loading…</p>
 			{/if}
 		</Card.Content>
 		<Card.Footer class="flex gap-2">
-			{#if $statusQuery.data?.has_totp}
+			{#if statusQuery.data?.has_totp}
 				<Button variant="destructive" size="sm" onclick={handleRemoveTOTP}>Remove TOTP</Button>
 			{:else}
 				<Button size="sm" onclick={handleSetupTOTP}>Setup TOTP</Button>
@@ -218,14 +210,14 @@
 	{/if}
 
 	<!-- WebAuthn Credentials -->
-	{#if $credentialsQuery.data && $credentialsQuery.data.credentials.length > 0}
+	{#if credentialsQuery.data && credentialsQuery.data.credentials.length > 0}
 		<Card.Root class="border-neutral-800 bg-neutral-900 lg:col-span-2">
 			<Card.Header>
 				<Card.Title class="text-white">Security Keys</Card.Title>
 			</Card.Header>
 			<Card.Content>
 				<div class="divide-y divide-neutral-800">
-					{#each $credentialsQuery.data.credentials as cred}
+					{#each credentialsQuery.data.credentials as cred}
 						<div class="flex items-center justify-between py-3">
 							<div>
 								<p class="text-sm font-medium text-white">{cred.name}</p>

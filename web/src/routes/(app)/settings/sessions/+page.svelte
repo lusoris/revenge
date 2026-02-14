@@ -1,20 +1,16 @@
 <script lang="ts">
-	import { createQuery, createMutation, useQueryClient } from '@tanstack/svelte-query';
-	import { derived, writable } from 'svelte/store';
-	import { listSessions, revokeSession, revokeAllOtherSessions } from '$api/endpoints/sessions';
+	import { listSessions, revokeAllOtherSessions, revokeSession } from '$api/endpoints/sessions';
+	import { Badge } from '$components/ui/badge';
 	import { Button } from '$components/ui/button';
 	import * as Card from '$components/ui/card';
-	import { Badge } from '$components/ui/badge';
-	import type { SessionInfo } from '$api/types';
+	import { createQuery, useQueryClient } from '@tanstack/svelte-query';
 
 	const queryClient = useQueryClient();
 
-	const sessionsQuery = createQuery(
-		derived(writable(null), () => ({
-			queryKey: ['sessions'],
-			queryFn: () => listSessions()
-		}))
-	);
+	const sessionsQuery = createQuery(() => ({
+		queryKey: ['sessions'],
+		queryFn: () => listSessions()
+	}));
 
 	async function handleRevoke(id: string) {
 		if (!confirm('Revoke this session?')) return;
@@ -58,11 +54,11 @@
 		</Button>
 	</Card.Header>
 	<Card.Content>
-		{#if $sessionsQuery.isLoading}
+		{#if sessionsQuery.isLoading}
 			<p class="text-sm text-neutral-500">Loading sessions…</p>
-		{:else if $sessionsQuery.data}
+		{:else if sessionsQuery.data}
 			<div class="divide-y divide-neutral-800">
-				{#each $sessionsQuery.data.sessions as session}
+				{#each sessionsQuery.data.sessions as session}
 					<div class="flex items-center justify-between py-3">
 						<div class="min-w-0 flex-1">
 							<div class="flex items-center gap-2">
@@ -93,7 +89,7 @@
 					</div>
 				{/each}
 			</div>
-			{#if $sessionsQuery.data.sessions.length === 0}
+			{#if sessionsQuery.data.sessions.length === 0}
 				<p class="py-8 text-center text-sm text-neutral-500">No active sessions found</p>
 			{/if}
 		{/if}

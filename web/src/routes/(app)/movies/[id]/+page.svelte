@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { page } from '$app/state';
-	import { createQuery } from '@tanstack/svelte-query';
 	import { imageUrl } from '$api/client';
 	import * as moviesApi from '$api/endpoints/movies';
 	import * as playbackApi from '$api/endpoints/playback';
 	import { goto } from '$app/navigation';
+	import { page } from '$app/state';
+	import { createQuery } from '@tanstack/svelte-query';
 
 	const movieId = $derived(page.params.id);
 
@@ -30,38 +30,38 @@
 	}));
 
 	async function play() {
-		const fileList = $files.data;
+		const fileList = files.data;
 		if (!fileList?.length) return;
 
 		const session = await playbackApi.startPlayback({
 			movie_file_id: fileList[0].id,
-			start_position_seconds: $progress.data?.position_seconds
+			start_position_seconds: progress.data?.position_seconds
 		});
 		goto(`/play/${session.id}`);
 	}
 
 	const backdrop = $derived(
-		$movie.data?.backdrop_path ? imageUrl('backdrop', 'w1280', $movie.data.backdrop_path) : ''
+		movie.data?.backdrop_path ? imageUrl('backdrop', 'w1280', movie.data.backdrop_path) : ''
 	);
 	const poster = $derived(
-		$movie.data?.poster_path ? imageUrl('poster', 'w500', $movie.data.poster_path) : ''
+		movie.data?.poster_path ? imageUrl('poster', 'w500', movie.data.poster_path) : ''
 	);
 </script>
 
 <svelte:head>
-	<title>{$movie.data?.title ?? 'Movie'} — Revenge</title>
+	<title>{movie.data?.title ?? 'Movie'} — Revenge</title>
 </svelte:head>
 
-{#if $movie.isPending}
+{#if movie.isPending}
 	<div class="flex justify-center py-16">
 		<div
 			class="h-8 w-8 animate-spin rounded-full border-2 border-neutral-700 border-t-white"
 		></div>
 	</div>
-{:else if $movie.isError}
+{:else if movie.isError}
 	<div class="py-16 text-center text-red-400">Failed to load movie.</div>
-{:else if $movie.data}
-	{@const m = $movie.data}
+{:else if movie.data}
+	{@const m = movie.data}
 
 	<!-- Backdrop hero -->
 	<div class="relative -mx-4 -mt-6 mb-6 sm:-mx-6 lg:-mx-8">
@@ -108,10 +108,10 @@
 					<div class="mt-4 flex gap-3">
 						<button
 							onclick={play}
-							disabled={!$files.data?.length}
+							disabled={!files.data?.length}
 							class="flex items-center gap-2 rounded-lg bg-white px-5 py-2.5 text-sm font-semibold text-black transition-colors hover:bg-neutral-200 disabled:opacity-40"
 						>
-							▶ {$progress.data?.position_seconds ? 'Resume' : 'Play'}
+							▶ {progress.data?.position_seconds ? 'Resume' : 'Play'}
 						</button>
 					</div>
 				</div>
@@ -127,11 +127,11 @@
 	{/if}
 
 	<!-- Cast -->
-	{#if $cast.data?.credits?.length}
+	{#if cast.data?.items?.length}
 		<section class="mb-8">
 			<h2 class="mb-3 text-lg font-semibold text-white">Cast</h2>
 			<div class="flex gap-3 overflow-x-auto pb-2">
-				{#each $cast.data.credits.slice(0, 20) as person (person.id)}
+				{#each cast.data.items.slice(0, 20) as person (person.id)}
 					<div class="w-24 flex-shrink-0 text-center">
 						{#if person.profile_path}
 							<img
@@ -158,11 +158,11 @@
 	{/if}
 
 	<!-- Files -->
-	{#if $files.data?.length}
+	{#if files.data?.length}
 		<section class="mb-8">
 			<h2 class="mb-3 text-lg font-semibold text-white">Files</h2>
 			<div class="space-y-2">
-				{#each $files.data as file (file.id)}
+				{#each files.data as file (file.id)}
 					<div
 						class="flex items-center justify-between rounded-lg border border-neutral-800 bg-neutral-900/50 px-4 py-3"
 					>

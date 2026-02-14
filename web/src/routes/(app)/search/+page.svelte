@@ -4,16 +4,10 @@
 	import MediaCard from '$components/media/MediaCard.svelte';
 	import MediaGrid from '$components/media/MediaGrid.svelte';
 	import { createQuery } from '@tanstack/svelte-query';
-	import { derived, writable } from 'svelte/store';
 
 	let query = $state(page.url.searchParams.get('q') ?? '');
 	let debounced = $state(page.url.searchParams.get('q') ?? '');
 	let timer: ReturnType<typeof setTimeout>;
-
-	const debouncedStore = writable(debounced);
-	$effect(() => {
-		debouncedStore.set(debounced);
-	});
 
 	function onInput(e: Event) {
 		query = (e.target as HTMLInputElement).value;
@@ -23,20 +17,17 @@
 		}, 300);
 	}
 
-	const resultsOptions = derived(debouncedStore, ($d) => ({
-		queryKey: ['search', 'multi', $d] as const,
-		queryFn: () => searchApi.searchMulti({ q: $d, limit: 40 }),
-		enabled: $d.length >= 2
+	const results = createQuery(() => ({
+		queryKey: ['search', 'multi', debounced] as const,
+		queryFn: () => searchApi.searchMulti({ q: debounced, limit: 40 }),
+		enabled: debounced.length >= 2
 	}));
 
-	const autocompleteOptions = derived(debouncedStore, ($d) => ({
-		queryKey: ['search', 'autocomplete', $d] as const,
-		queryFn: () => searchApi.autocompleteMovies({ q: $d, limit: 8 }),
-		enabled: $d.length >= 2 && $d.length < 4
+	const autocomplete = createQuery(() => ({
+		queryKey: ['search', 'autocomplete', debounced] as const,
+		queryFn: () => searchApi.autocompleteMovies({ q: debounced, limit: 8 }),
+		enabled: debounced.length >= 2 && debounced.length < 4
 	}));
-
-	const results = createQuery(resultsOptions);
-	const autocomplete = createQuery(autocompleteOptions);
 </script>
 
 <svelte:head>
@@ -59,14 +50,14 @@
 		<div class="py-16 text-center">
 			<p class="text-lg text-neutral-500">Type to search your library</p>
 		</div>
-	{:else if $results.isPending}
+	{:else if results.isPending}
 		<div class="flex justify-center py-16">
 			<div class="h-8 w-8 animate-spin rounded-full border-2 border-neutral-700 border-t-white"></div>
 		</div>
-	{:else if $results.data}
-		{@const movieHits = $results.data.movies?.hits ?? []}
-		{@const tvHits = $results.data.tvshows?.hits ?? []}
-		{@const totalHits = ($results.data.movies?.total_hits ?? 0) + ($results.data.tvshows?.total_hits ?? 0)}
+	{:else if results.data}
+		{@const movieHits = results.data.movies?.hits ?? []}
+		{@const tvHits = results.data.tvshows?.hits ?? []}
+		{@const totalHits = (results.data.movies?.total_hits ?? 0) + (results.data.tvshows?.total_hits ?? 0)}
 
 		{#if totalHits === 0}
 			<div class="py-16 text-center">

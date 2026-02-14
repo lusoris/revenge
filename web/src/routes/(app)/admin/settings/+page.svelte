@@ -1,23 +1,19 @@
 <script lang="ts">
-	import { createQuery, createMutation, useQueryClient } from '@tanstack/svelte-query';
-	import { derived, writable } from 'svelte/store';
 	import { getServerSettings, updateServerSetting } from '$api/endpoints/settings';
-	import { Button } from '$components/ui/button';
-	import { Input } from '$components/ui/input';
-	import { Label } from '$components/ui/label';
-	import { Switch } from '$components/ui/switch';
-	import * as Card from '$components/ui/card';
-	import * as Alert from '$components/ui/alert';
 	import type { ServerSetting } from '$api/types';
+	import * as Alert from '$components/ui/alert';
+	import { Button } from '$components/ui/button';
+	import * as Card from '$components/ui/card';
+	import { Input } from '$components/ui/input';
+	import { Switch } from '$components/ui/switch';
+	import { createQuery, useQueryClient } from '@tanstack/svelte-query';
 
 	const queryClient = useQueryClient();
 
-	const settingsQuery = createQuery(
-		derived(writable(null), () => ({
-			queryKey: ['admin', 'settings'],
-			queryFn: () => getServerSettings()
-		}))
-	);
+	const settingsQuery = createQuery(() => ({
+		queryKey: ['admin', 'settings'],
+		queryFn: () => getServerSettings()
+	}));
 
 	let editingKey = $state<string | null>(null);
 	let editValue = $state('');
@@ -69,10 +65,10 @@
 		</Alert.Root>
 	{/if}
 
-	{#if $settingsQuery.isLoading}
+	{#if settingsQuery.isLoading}
 		<p class="text-sm text-neutral-500">Loading settings…</p>
-	{:else if $settingsQuery.data}
-		{@const groups = groupByCategory($settingsQuery.data)}
+	{:else if settingsQuery.data}
+		{@const groups = groupByCategory(settingsQuery.data)}
 		{#each Object.entries(groups) as [category, settings]}
 			<Card.Root class="border-neutral-800 bg-neutral-900">
 				<Card.Header>
@@ -132,7 +128,7 @@
 			</Card.Root>
 		{/each}
 
-		{#if $settingsQuery.data.length === 0}
+		{#if settingsQuery.data.length === 0}
 			<Card.Root class="border-neutral-800 bg-neutral-900">
 				<Card.Content>
 					<p class="py-8 text-center text-sm text-neutral-500">No server settings configured</p>

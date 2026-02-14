@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { page } from '$app/state';
-	import { onDestroy } from 'svelte';
-	import { createQuery } from '@tanstack/svelte-query';
 	import * as playbackApi from '$api/endpoints/playback';
+	import { page } from '$app/state';
+	import { createQuery } from '@tanstack/svelte-query';
+	import { onDestroy } from 'svelte';
 
 	const sessionId = $derived(page.params.sessionId);
 
@@ -34,7 +34,7 @@
 		}
 
 		hls = new Hls({
-			startPosition: $session.data?.start_position_seconds ?? 0,
+			startPosition: session.data?.start_position_seconds ?? 0,
 			maxBufferLength: 30,
 			maxMaxBufferLength: 60
 		});
@@ -112,8 +112,8 @@
 	}
 
 	$effect(() => {
-		if ($session.data?.master_playlist_url && videoEl) {
-			initPlayer($session.data.master_playlist_url);
+		if (session.data?.master_playlist_url && videoEl) {
+			initPlayer(session.data.master_playlist_url);
 			startHeartbeat();
 		}
 	});
@@ -140,11 +140,11 @@
 	onmousemove={showControls}
 	onclick={showControls}
 >
-	{#if $session.isPending}
+	{#if session.isPending}
 		<div class="flex h-full items-center justify-center">
 			<div class="h-10 w-10 animate-spin rounded-full border-2 border-neutral-700 border-t-white"></div>
 		</div>
-	{:else if $session.isError}
+	{:else if session.isError}
 		<div class="flex h-full flex-col items-center justify-center gap-4">
 			<p class="text-red-400">Failed to load playback session.</p>
 			<button

@@ -1,10 +1,10 @@
 <script lang="ts">
+	import { imageUrl } from '$api/client';
+	import * as playbackApi from '$api/endpoints/playback';
+	import * as tvshowsApi from '$api/endpoints/tvshows';
+	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import { createQuery } from '@tanstack/svelte-query';
-	import { imageUrl } from '$api/client';
-	import * as tvshowsApi from '$api/endpoints/tvshows';
-	import * as playbackApi from '$api/endpoints/playback';
-	import { goto } from '$app/navigation';
 
 	const showId = $derived(page.params.id);
 
@@ -39,16 +39,16 @@
 
 	// Auto-select first season when loaded
 	$effect(() => {
-		if ($seasons.data?.length && !selectedSeasonId) {
-			selectedSeasonId = $seasons.data[0].id;
+		if (seasons.data?.length && !selectedSeasonId) {
+			selectedSeasonId = seasons.data[0].id;
 		}
 	});
 
 	const backdrop = $derived(
-		$show.data?.backdrop_path ? imageUrl('backdrop', 'w1280', $show.data.backdrop_path) : ''
+		show.data?.backdrop_path ? imageUrl('backdrop', 'w1280', show.data.backdrop_path) : ''
 	);
 	const poster = $derived(
-		$show.data?.poster_path ? imageUrl('poster', 'w500', $show.data.poster_path) : ''
+		show.data?.poster_path ? imageUrl('poster', 'w500', show.data.poster_path) : ''
 	);
 
 	async function playEpisode(episodeId: string) {
@@ -61,24 +61,24 @@
 	}
 
 	async function playNext() {
-		if ($nextEp.data) {
-			await playEpisode($nextEp.data.id);
+		if (nextEp.data) {
+			await playEpisode(nextEp.data.id);
 		}
 	}
 </script>
 
 <svelte:head>
-	<title>{$show.data?.name ?? 'TV Show'} — Revenge</title>
+	<title>{show.data?.title ?? 'TV Show'} — Revenge</title>
 </svelte:head>
 
-{#if $show.isPending}
+{#if show.isPending}
 	<div class="flex justify-center py-16">
 		<div class="h-8 w-8 animate-spin rounded-full border-2 border-neutral-700 border-t-white"></div>
 	</div>
-{:else if $show.isError}
+{:else if show.isError}
 	<div class="py-16 text-center text-red-400">Failed to load TV show.</div>
-{:else if $show.data}
-	{@const s = $show.data}
+{:else if show.data}
+	{@const s = show.data}
 
 	<!-- Backdrop -->
 	<div class="relative -mx-4 -mt-6 mb-6 sm:-mx-6 lg:-mx-8">
@@ -95,12 +95,12 @@
 			<div class="flex gap-6">
 				{#if poster}
 					<div class="hidden w-32 flex-shrink-0 sm:block lg:w-40">
-						<img src={poster} alt={s.name} class="rounded-lg shadow-2xl" />
+						<img src={poster} alt={s.title} class="rounded-lg shadow-2xl" />
 					</div>
 				{/if}
 
 				<div class="flex-1">
-					<h1 class="text-3xl font-bold text-white lg:text-4xl">{s.name}</h1>
+					<h1 class="text-3xl font-bold text-white lg:text-4xl">{s.title}</h1>
 
 					<div class="mt-2 flex flex-wrap items-center gap-3 text-sm text-neutral-400">
 						{#if s.first_air_date}
@@ -118,12 +118,12 @@
 					</div>
 
 					<div class="mt-4 flex gap-3">
-						{#if $nextEp.data}
+						{#if nextEp.data}
 							<button
 								onclick={playNext}
 								class="flex items-center gap-2 rounded-lg bg-white px-5 py-2.5 text-sm font-semibold text-black transition-colors hover:bg-neutral-200"
 							>
-								▶ S{$nextEp.data.season_number}E{$nextEp.data.episode_number}
+								▶ S{nextEp.data.season_number}E{nextEp.data.episode_number}
 							</button>
 						{/if}
 					</div>
@@ -140,10 +140,10 @@
 	{/if}
 
 	<!-- Seasons tabs + Episodes -->
-	{#if $seasons.data?.length}
+	{#if seasons.data?.length}
 		<section class="mb-8">
 			<div class="mb-4 flex gap-2 overflow-x-auto pb-1">
-				{#each $seasons.data as season (season.id)}
+				{#each seasons.data as season (season.id)}
 					<button
 						onclick={() => (selectedSeasonId = season.id)}
 						class="flex-shrink-0 rounded-lg px-4 py-1.5 text-sm transition-colors {selectedSeasonId === season.id
@@ -155,13 +155,13 @@
 				{/each}
 			</div>
 
-			{#if $episodes.isPending}
+			{#if episodes.isPending}
 				<div class="flex justify-center py-8">
 					<div class="h-6 w-6 animate-spin rounded-full border-2 border-neutral-700 border-t-white"></div>
 				</div>
-			{:else if $episodes.data?.length}
+			{:else if episodes.data?.length}
 				<div class="space-y-2">
-					{#each $episodes.data as ep (ep.id)}
+					{#each episodes.data as ep (ep.id)}
 						<button
 							onclick={() => playEpisode(ep.id)}
 							class="flex w-full items-start gap-4 rounded-lg border border-neutral-800 bg-neutral-900/50 p-3 text-left transition-colors hover:bg-neutral-800/70"
@@ -202,11 +202,11 @@
 	{/if}
 
 	<!-- Cast -->
-	{#if $cast.data?.credits?.length}
+	{#if cast.data?.items?.length}
 		<section class="mb-8">
 			<h2 class="mb-3 text-lg font-semibold text-white">Cast</h2>
 			<div class="flex gap-3 overflow-x-auto pb-2">
-				{#each $cast.data.credits.slice(0, 20) as person (person.id)}
+				{#each cast.data.items.slice(0, 20) as person (person.id)}
 					<div class="w-24 flex-shrink-0 text-center">
 						{#if person.profile_path}
 							<img

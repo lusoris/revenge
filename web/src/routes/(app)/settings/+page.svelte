@@ -1,23 +1,20 @@
 <script lang="ts">
-	import { createQuery, createMutation, useQueryClient } from '@tanstack/svelte-query';
-	import { derived, writable } from 'svelte/store';
-	import { getAuth } from '$lib/stores/auth.svelte';
-	import { getCurrentUser, updateCurrentUser, uploadAvatar, deleteAvatar, changePassword } from '$api/endpoints/users';
+	import { changePassword, getCurrentUser, updateCurrentUser, uploadAvatar } from '$api/endpoints/users';
+	import * as Alert from '$components/ui/alert';
 	import { Button } from '$components/ui/button';
+	import * as Card from '$components/ui/card';
 	import { Input } from '$components/ui/input';
 	import { Label } from '$components/ui/label';
-	import * as Card from '$components/ui/card';
-	import * as Alert from '$components/ui/alert';
+	import { getAuth } from '$lib/stores/auth.svelte';
+	import { createMutation, createQuery, useQueryClient } from '@tanstack/svelte-query';
 
 	const auth = getAuth();
 	const queryClient = useQueryClient();
 
-	const userQuery = createQuery(
-		derived(writable(null), () => ({
-			queryKey: ['user', 'me'],
-			queryFn: () => getCurrentUser()
-		}))
-	);
+	const userQuery = createQuery(() => ({
+		queryKey: ['user', 'me'],
+		queryFn: () => getCurrentUser()
+	}));
 
 	let displayName = $state(auth.user?.display_name ?? '');
 	let email = $state(auth.user?.email ?? '');
@@ -32,49 +29,45 @@
 	let pwError = $state('');
 
 	$effect(() => {
-		if ($userQuery.data) {
-			displayName = $userQuery.data.display_name ?? '';
-			email = $userQuery.data.email ?? '';
-			timezone = $userQuery.data.timezone ?? '';
+		if (userQuery.data) {
+			displayName = userQuery.data.display_name ?? '';
+			email = userQuery.data.email ?? '';
+			timezone = userQuery.data.timezone ?? '';
 		}
 	});
 
-	const updateMutation = createMutation(
-		derived(writable(null), () => ({
-			mutationFn: (data: { email?: string; display_name?: string; timezone?: string }) =>
-				updateCurrentUser(data),
-			onSuccess: () => {
-				successMsg = 'Profile updated successfully';
-				errorMsg = '';
-				queryClient.invalidateQueries({ queryKey: ['user', 'me'] });
-			},
-			onError: (err: Error) => {
-				errorMsg = err.message;
-				successMsg = '';
-			}
-		}))
-	);
+	const updateMutation = createMutation(() => ({
+		mutationFn: (data: { email?: string; display_name?: string; timezone?: string }) =>
+			updateCurrentUser(data),
+		onSuccess: () => {
+			successMsg = 'Profile updated successfully';
+			errorMsg = '';
+			queryClient.invalidateQueries({ queryKey: ['user', 'me'] });
+		},
+		onError: (err: Error) => {
+			errorMsg = err.message;
+			successMsg = '';
+		}
+	}));
 
-	const passwordMutation = createMutation(
-		derived(writable(null), () => ({
-			mutationFn: (data: { old_password: string; new_password: string }) =>
-				changePassword(data),
-			onSuccess: () => {
-				pwSuccess = 'Password changed successfully';
-				pwError = '';
-				oldPassword = '';
-				newPassword = '';
-				confirmPassword = '';
-			},
-			onError: (err: Error) => {
-				pwError = err.message;
-				pwSuccess = '';
-			}
-		}))
-	);
+	const passwordMutation = createMutation(() => ({
+		mutationFn: (data: { old_password: string; new_password: string }) =>
+			changePassword(data),
+		onSuccess: () => {
+			pwSuccess = 'Password changed successfully';
+			pwError = '';
+			oldPassword = '';
+			newPassword = '';
+			confirmPassword = '';
+		},
+		onError: (err: Error) => {
+			pwError = err.message;
+			pwSuccess = '';
+		}
+	}));
 
 	function saveProfile() {
-		$updateMutation.mutate({ display_name: displayName, email, timezone });
+		updateMutation.mutate({ display_name: displayName, email, timezone });
 	}
 
 	function savePassword() {
@@ -86,7 +79,7 @@
 			pwError = 'Password must be at least 8 characters';
 			return;
 		}
-		$passwordMutation.mutate({ old_password: oldPassword, new_password: newPassword });
+		passwordMutation.mutate({ old_password: oldPassword, new_password: newPassword });
 	}
 
 	let avatarInput: HTMLInputElement;
@@ -174,8 +167,8 @@
 			</div>
 		</Card.Content>
 		<Card.Footer>
-			<Button onclick={saveProfile} disabled={$updateMutation.isPending}>
-				{$updateMutation.isPending ? 'Saving…' : 'Save Changes'}
+		<Button onclick={saveProfile} disabled={updateMutation.isPending}>
+			{updateMutation.isPending ? 'Saving…' : 'Save Changes'}
 			</Button>
 		</Card.Footer>
 	</Card.Root>
@@ -219,8 +212,8 @@
 			</div>
 		</Card.Content>
 		<Card.Footer>
-			<Button onclick={savePassword} disabled={$passwordMutation.isPending}>
-				{$passwordMutation.isPending ? 'Changing…' : 'Change Password'}
+		<Button onclick={savePassword} disabled={passwordMutation.isPending}>
+			{passwordMutation.isPending ? 'Changing…' : 'Change Password'}
 			</Button>
 		</Card.Footer>
 	</Card.Root>

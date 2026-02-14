@@ -1,40 +1,30 @@
 <script lang="ts">
-	import { createQuery } from '@tanstack/svelte-query';
-	import { derived, writable } from 'svelte/store';
 	import { adminGetActivityLogs, adminGetActivityStats } from '$api/endpoints/admin';
-	import { Button } from '$components/ui/button';
-	import { Input } from '$components/ui/input';
-	import * as Card from '$components/ui/card';
 	import { Badge } from '$components/ui/badge';
+	import { Button } from '$components/ui/button';
+	import * as Card from '$components/ui/card';
+	import { Input } from '$components/ui/input';
+	import { createQuery } from '@tanstack/svelte-query';
 
 	let currentPage = $state(1);
 	let actionFilter = $state('');
 	const pageSize = 25;
 
-	const pageStore = writable(1);
-	const filterStore = writable('');
-	$effect(() => { pageStore.set(currentPage); });
-	$effect(() => { filterStore.set(actionFilter); });
+	const logsQuery = createQuery(() => ({
+		queryKey: ['admin', 'activity', 'logs', currentPage, actionFilter],
+		queryFn: () =>
+			adminGetActivityLogs({
+				page: currentPage,
+				page_size: pageSize,
+				action: actionFilter || undefined
+			})
+	}));
 
-	const logsQuery = createQuery(
-		derived([pageStore, filterStore], ([$p, $f]) => ({
-			queryKey: ['admin', 'activity', 'logs', $p, $f],
-			queryFn: () =>
-				adminGetActivityLogs({
-					page: $p,
-					page_size: pageSize,
-					action: $f || undefined
-				})
-		}))
-	);
-
-	const statsQuery = createQuery(
-		derived(writable(null), () => ({
-			queryKey: ['admin', 'activity', 'stats'],
-			queryFn: () => adminGetActivityStats(),
-			retry: false
-		}))
-	);
+	const statsQuery = createQuery(() => ({
+		queryKey: ['admin', 'activity', 'stats'],
+		queryFn: () => adminGetActivityStats(),
+		retry: false
+	}));
 
 	function actionColor(action: string): string {
 		if (action.includes('delete') || action.includes('revoke')) return 'bg-red-900 text-red-200';
@@ -47,23 +37,23 @@
 
 <div class="space-y-4">
 	<!-- Stats Row -->
-	{#if $statsQuery.data}
+	{#if statsQuery.data}
 		<div class="grid grid-cols-3 gap-4">
 			<Card.Root class="border-neutral-800 bg-neutral-900">
 				<Card.Content class="py-4 text-center">
-					<p class="text-2xl font-bold text-white">{$statsQuery.data.total_count}</p>
+					<p class="text-2xl font-bold text-white">{statsQuery.data.total_count}</p>
 					<p class="text-xs text-neutral-500">Total Events</p>
 				</Card.Content>
 			</Card.Root>
 			<Card.Root class="border-neutral-800 bg-neutral-900">
 				<Card.Content class="py-4 text-center">
-					<p class="text-2xl font-bold text-green-400">{$statsQuery.data.success_count}</p>
+					<p class="text-2xl font-bold text-green-400">{statsQuery.data.success_count}</p>
 					<p class="text-xs text-neutral-500">Successful</p>
 				</Card.Content>
 			</Card.Root>
 			<Card.Root class="border-neutral-800 bg-neutral-900">
 				<Card.Content class="py-4 text-center">
-					<p class="text-2xl font-bold text-red-400">{$statsQuery.data.failed_count}</p>
+					<p class="text-2xl font-bold text-red-400">{statsQuery.data.failed_count}</p>
 					<p class="text-xs text-neutral-500">Failed</p>
 				</Card.Content>
 			</Card.Root>
@@ -81,9 +71,9 @@
 			/>
 		</Card.Header>
 		<Card.Content>
-			{#if $logsQuery.isLoading}
+			{#if logsQuery.isLoading}
 				<p class="text-sm text-neutral-500">Loading…</p>
-			{:else if $logsQuery.data}
+			{:else if logsQuery.data}
 				<div class="overflow-x-auto">
 					<table class="w-full text-sm">
 						<thead>
@@ -97,7 +87,7 @@
 							</tr>
 						</thead>
 						<tbody class="divide-y divide-neutral-800">
-							{#each $logsQuery.data.entries as entry}
+							{#each logsQuery.data.entries as entry}
 								<tr>
 									<td class="py-2 pr-4">
 										<Badge class={actionColor(entry.action)}>{entry.action}</Badge>
@@ -132,15 +122,15 @@
 					</table>
 				</div>
 
-				{#if $logsQuery.data.entries.length === 0}
+				{#if logsQuery.data.entries.length === 0}
 					<p class="py-8 text-center text-sm text-neutral-500">No activity logs found</p>
 				{/if}
 
 				<!-- Pagination -->
-				{#if ($logsQuery.data.total ?? 0) > pageSize}
+				{#if (logsQuery.data.total ?? 0) > pageSize}
 					<div class="mt-4 flex items-center justify-between">
 						<p class="text-sm text-neutral-500">
-							Page {currentPage} of {Math.ceil(($logsQuery.data.total ?? 0) / pageSize)}
+							Page {currentPage} of {Math.ceil((logsQuery.data.total ?? 0) / pageSize)}
 						</p>
 						<div class="flex gap-2">
 							<Button
@@ -155,7 +145,7 @@
 								variant="outline"
 								size="sm"
 								disabled={currentPage >=
-									Math.ceil(($logsQuery.data.total ?? 0) / pageSize)}
+									Math.ceil((logsQuery.data.total ?? 0) / pageSize)}
 								onclick={() => currentPage++}
 							>
 								Next

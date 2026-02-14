@@ -1,23 +1,19 @@
 <script lang="ts">
-	import { createQuery, useQueryClient } from '@tanstack/svelte-query';
-	import { derived, writable } from 'svelte/store';
-	import { listRoles, createRole, deleteRole } from '$api/endpoints/rbac';
+	import { createRole, deleteRole, listRoles } from '$api/endpoints/rbac';
+	import { Badge } from '$components/ui/badge';
 	import { Button } from '$components/ui/button';
-	import { Input } from '$components/ui/input';
-	import { Label } from '$components/ui/label';
 	import * as Card from '$components/ui/card';
 	import * as Dialog from '$components/ui/dialog';
-	import { Badge } from '$components/ui/badge';
-	import type { RoleDetail } from '$api/types';
+	import { Input } from '$components/ui/input';
+	import { Label } from '$components/ui/label';
+	import { createQuery, useQueryClient } from '@tanstack/svelte-query';
 
 	const queryClient = useQueryClient();
 
-	const rolesQuery = createQuery(
-		derived(writable(null), () => ({
-			queryKey: ['admin', 'roles'],
-			queryFn: () => listRoles()
-		}))
-	);
+	const rolesQuery = createQuery(() => ({
+		queryKey: ['admin', 'roles'],
+		queryFn: () => listRoles()
+	}));
 
 	let showCreate = $state(false);
 	let roleName = $state('');
@@ -57,7 +53,7 @@
 		<div>
 			<Card.Title class="text-white">Roles & Permissions</Card.Title>
 			<Card.Description>
-				{$rolesQuery.data?.total ?? 0} roles configured
+				{rolesQuery.data?.total ?? 0} roles configured
 			</Card.Description>
 		</div>
 		<Dialog.Root bind:open={showCreate}>
@@ -95,11 +91,11 @@
 		</Dialog.Root>
 	</Card.Header>
 	<Card.Content>
-		{#if $rolesQuery.isLoading}
+		{#if rolesQuery.isLoading}
 			<p class="text-sm text-neutral-500">Loading roles…</p>
-		{:else if $rolesQuery.data}
+		{:else if rolesQuery.data}
 			<div class="divide-y divide-neutral-800">
-				{#each $rolesQuery.data.roles as role}
+				{#each rolesQuery.data.roles as role}
 					<div class="flex items-center justify-between py-3">
 						<div>
 							<div class="flex items-center gap-2">
@@ -127,7 +123,7 @@
 					</div>
 				{/each}
 			</div>
-			{#if $rolesQuery.data.roles.length === 0}
+			{#if rolesQuery.data.roles.length === 0}
 				<p class="py-8 text-center text-sm text-neutral-500">No roles configured</p>
 			{/if}
 		{/if}
