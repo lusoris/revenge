@@ -10,6 +10,7 @@ import (
 	"golang.org/x/time/rate"
 
 	"github.com/lusoris/revenge/internal/infra/cache"
+	"github.com/lusoris/revenge/internal/infra/circuitbreaker"
 	"github.com/lusoris/revenge/internal/infra/observability"
 )
 
@@ -152,6 +153,9 @@ func NewClient(config Config) (*Client, error) {
 		client.SetProxyURL(config.ProxyURL)
 	}
 
+	// Circuit breaker: protect against sustained TMDb API failures
+	circuitbreaker.WrapReqClient(client, "tmdb", circuitbreaker.TierExternal)
+
 	// Dedicated client for image CDN downloads (different host, no auth headers).
 	imgClient := req.C().
 		SetTimeout(config.Timeout).
@@ -163,6 +167,9 @@ func NewClient(config Config) (*Client, error) {
 			}
 			return resp.StatusCode >= 500
 		})
+
+	// Circuit breaker for image CDN (tolerant — CDN rarely fails)
+	circuitbreaker.WrapReqClient(imgClient, "tmdb-img", circuitbreaker.TierCDN)
 
 	return &Client{
 		httpClient:  client,

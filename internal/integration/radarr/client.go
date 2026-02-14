@@ -9,6 +9,7 @@ import (
 	"golang.org/x/time/rate"
 
 	"github.com/lusoris/revenge/internal/infra/cache"
+	"github.com/lusoris/revenge/internal/infra/circuitbreaker"
 )
 
 // Client is a client for the Radarr API v3.
@@ -55,6 +56,9 @@ func NewClient(config Config) *Client {
 			}
 			return resp.StatusCode >= 500
 		})
+
+	// Circuit breaker (local service — less tolerant)
+	circuitbreaker.WrapReqClient(client, "radarr", circuitbreaker.TierLocal)
 
 	l1, err := cache.NewL1Cache[string, any](1000, config.CacheTTL, cache.WithExpiryAccessing[string, any]())
 	if err != nil {

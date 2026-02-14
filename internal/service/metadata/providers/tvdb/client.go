@@ -11,6 +11,7 @@ import (
 	"golang.org/x/time/rate"
 
 	"github.com/lusoris/revenge/internal/infra/cache"
+	"github.com/lusoris/revenge/internal/infra/circuitbreaker"
 	"github.com/lusoris/revenge/internal/infra/observability"
 )
 
@@ -146,6 +147,9 @@ func NewClient(config Config) (*Client, error) {
 	if config.ProxyURL != "" {
 		client.SetProxyURL(config.ProxyURL)
 	}
+
+	// Circuit breaker
+	circuitbreaker.WrapReqClient(client, "tvdb", circuitbreaker.TierExternal)
 
 	return &Client{
 		httpClient:  client,

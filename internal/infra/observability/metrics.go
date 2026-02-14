@@ -309,6 +309,41 @@ func RecordRateLimitHit(limiter, action string) {
 	RateLimitHitsTotal.WithLabelValues(limiter, action).Inc()
 }
 
+// Circuit breaker metrics
+var (
+	// CircuitBreakerStateChanges counts circuit breaker state transitions.
+	CircuitBreakerStateChanges = promauto.NewCounterVec(prometheus.CounterOpts{
+		Namespace: "revenge",
+		Subsystem: "circuitbreaker",
+		Name:      "state_changes_total",
+		Help:      "Total number of circuit breaker state transitions.",
+	}, []string{"name", "to_state"})
+
+	// CircuitBreakerCurrentState tracks the current state of each circuit breaker
+	// (0=closed, 1=half-open, 2=open).
+	CircuitBreakerCurrentState = promauto.NewGaugeVec(prometheus.GaugeOpts{
+		Namespace: "revenge",
+		Subsystem: "circuitbreaker",
+		Name:      "current_state",
+		Help:      "Current circuit breaker state (0=closed, 1=half-open, 2=open).",
+	}, []string{"name"})
+)
+
+// RecordCircuitBreakerStateChange records a circuit breaker state transition.
+func RecordCircuitBreakerStateChange(name, toState string) {
+	CircuitBreakerStateChanges.WithLabelValues(name, toState).Inc()
+	var stateVal float64
+	switch toState {
+	case "closed":
+		stateVal = 0
+	case "half-open":
+		stateVal = 1
+	case "open":
+		stateVal = 2
+	}
+	CircuitBreakerCurrentState.WithLabelValues(name).Set(stateVal)
+}
+
 // RecordMetadataFetch records a metadata fetch operation.
 func RecordMetadataFetch(provider, mediaType, status string, duration float64) {
 	MetadataFetchTotal.WithLabelValues(provider, mediaType, status).Inc()
@@ -411,5 +446,17 @@ func InitMetrics() {
 	for _, op := range []string{"select", "insert", "update", "delete"} {
 		DBQueryDuration.WithLabelValues(op)
 		DBQueryErrorsTotal.WithLabelValues(op)
+	}
+
+	// Circuit breakers
+	for _, name := range []string{
+		"tmdb", "tmdb-img", "omdb", "trakt", "tvdb", "simkl", "fanarttv",
+		"anilist", "anidb", "kitsu", "letterboxd", "mal", "tvmaze",
+		"radarr", "sonarr", "image-proxy",
+	} {
+		CircuitBreakerCurrentState.WithLabelValues(name).Set(0)
+		for _, state := range []string{"closed", "half-open", "open"} {
+			CircuitBreakerStateChanges.WithLabelValues(name, state)
+		}
 	}
 }

@@ -10,6 +10,7 @@ import (
 	"golang.org/x/time/rate"
 
 	"github.com/lusoris/revenge/internal/infra/cache"
+	"github.com/lusoris/revenge/internal/infra/circuitbreaker"
 )
 
 const (
@@ -85,6 +86,9 @@ func NewClient(config Config) (*Client, error) {
 			}
 			return resp.StatusCode >= 500
 		})
+
+	// Circuit breaker
+	circuitbreaker.WrapReqClient(client, "kitsu", circuitbreaker.TierExternal)
 
 	return &Client{
 		httpClient:  client,

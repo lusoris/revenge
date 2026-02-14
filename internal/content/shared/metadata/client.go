@@ -10,6 +10,7 @@ import (
 	"golang.org/x/time/rate"
 
 	"github.com/lusoris/revenge/internal/infra/cache"
+	"github.com/lusoris/revenge/internal/infra/circuitbreaker"
 )
 
 // ClientConfig configures a metadata API client.
@@ -102,6 +103,20 @@ func NewBaseClient(config ClientConfig) *BaseClient {
 	if config.ProxyURL != "" {
 		client.SetProxyURL(config.ProxyURL)
 	}
+
+	// Circuit breaker (uses base URL as breaker name)
+	breakerName := "metadata"
+	if config.BaseURL != "" {
+		// Extract a short name from the URL for metric labels
+		if idx := strings.Index(config.BaseURL, "://"); idx >= 0 {
+			host := config.BaseURL[idx+3:]
+			if slashIdx := strings.Index(host, "/"); slashIdx >= 0 {
+				host = host[:slashIdx]
+			}
+			breakerName = host
+		}
+	}
+	circuitbreaker.WrapReqClient(client, breakerName, circuitbreaker.TierExternal)
 
 	l1, err := cache.NewL1Cache[string, any](config.CacheMaxSize, config.CacheTTL, cache.WithExpiryAccessing[string, any]())
 	if err != nil {

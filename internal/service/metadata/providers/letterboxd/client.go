@@ -11,6 +11,7 @@ import (
 	"golang.org/x/time/rate"
 
 	"github.com/lusoris/revenge/internal/infra/cache"
+	"github.com/lusoris/revenge/internal/infra/circuitbreaker"
 )
 
 const (
@@ -71,6 +72,9 @@ func NewClient(config Config) (*Client, error) {
 			}
 			return resp.StatusCode >= 500
 		})
+
+	// Circuit breaker
+	circuitbreaker.WrapReqClient(httpClient, "letterboxd", circuitbreaker.TierExternal)
 
 	l1, err := cache.NewL1Cache[string, any](2000, config.CacheTTL, cache.WithExpiryAccessing[string, any]())
 	if err != nil {

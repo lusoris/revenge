@@ -10,6 +10,7 @@ import (
 	"golang.org/x/time/rate"
 
 	"github.com/lusoris/revenge/internal/infra/cache"
+	"github.com/lusoris/revenge/internal/infra/circuitbreaker"
 	"github.com/lusoris/revenge/internal/infra/observability"
 )
 
@@ -106,6 +107,9 @@ func NewClient(config Config) (*Client, error) {
 			observability.RecordMetadataFetch("omdb", mediaType, status, resp.TotalTime().Seconds())
 			return nil
 		})
+
+	// Circuit breaker
+	circuitbreaker.WrapReqClient(client, "omdb", circuitbreaker.TierExternal)
 
 	return &Client{
 		httpClient:  client,

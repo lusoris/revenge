@@ -9,6 +9,7 @@ import (
 	"golang.org/x/time/rate"
 
 	"github.com/lusoris/revenge/internal/infra/cache"
+	"github.com/lusoris/revenge/internal/infra/circuitbreaker"
 )
 
 // ClientConfig contains configuration for an arr API client.
@@ -61,6 +62,9 @@ func NewBaseClient(config ClientConfig, serviceName string) *BaseClient {
 			}
 			return resp.StatusCode >= 500
 		})
+
+	// Circuit breaker (local arr service)
+	circuitbreaker.WrapReqClient(client, serviceName, circuitbreaker.TierLocal)
 
 	l1, err := cache.NewL1Cache[string, any](1000, config.CacheTTL, cache.WithExpiryAccessing[string, any]())
 	if err != nil {

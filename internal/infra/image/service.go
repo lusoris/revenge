@@ -14,6 +14,8 @@ import (
 	"log/slog"
 
 	"github.com/imroc/req/v3"
+
+	"github.com/lusoris/revenge/internal/infra/circuitbreaker"
 )
 
 const (
@@ -98,6 +100,9 @@ func NewService(cfg Config, logger *slog.Logger) (*Service, error) {
 	if cfg.ProxyURL != "" {
 		client.SetProxyURL(cfg.ProxyURL)
 	}
+
+	// Circuit breaker for image CDN downloads (tolerant — CDNs rarely fail)
+	circuitbreaker.WrapReqClient(client, "image-proxy", circuitbreaker.TierCDN)
 
 	return &Service{
 		client: client,
