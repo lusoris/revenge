@@ -1,8 +1,9 @@
-.PHONY: help build run test lint clean docker-build docker-run migrate
+.PHONY: help build run test lint clean docker-build docker-run migrate frontend-build frontend-dev frontend-docker
 
 # Variables
 BINARY_NAME=revenge
 DOCKER_IMAGE=ghcr.io/lusoris/revenge
+DOCKER_IMAGE_FRONTEND=ghcr.io/lusoris/revenge-frontend
 MIGRATIONS_DIR=internal/infra/database/migrations/shared
 VERSION?=dev
 BUILD_TIME=$(shell date -u '+%Y-%m-%d_%H:%M:%S')
@@ -114,6 +115,30 @@ docker-up: ## Start dev services (postgres, dragonfly, typesense)
 
 docker-down: ## Stop dev services
 	docker compose -f docker-compose.dev.yml down
+
+# =============================================================================
+# Frontend
+# =============================================================================
+
+frontend-install: ## Install frontend dependencies
+	@echo "Installing frontend dependencies..."
+	cd web && pnpm install
+
+frontend-dev: ## Run frontend dev server with HMR
+	cd web && pnpm dev
+
+frontend-build: ## Build frontend for production
+	@echo "Building frontend..."
+	cd web && pnpm build
+
+frontend-check: ## Run svelte-check type checking
+	cd web && pnpm check
+
+frontend-docker: ## Build frontend Docker image
+	@echo "Building frontend Docker image..."
+	docker build -t ${DOCKER_IMAGE_FRONTEND}:${VERSION} -t ${DOCKER_IMAGE_FRONTEND}:dev -t revenge/revenge-frontend:dev ./web
+
+docker-build-all: docker-build frontend-docker ## Build both backend and frontend Docker images
 
 # =============================================================================
 # CI Pipeline - Runs the same as local but in order

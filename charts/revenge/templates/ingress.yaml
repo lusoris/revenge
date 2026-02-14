@@ -28,6 +28,32 @@ spec:
     - host: {{ .host | quote }}
       http:
         paths:
+          {{- if $.Values.frontend.enabled }}
+          # API routes → backend
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "revenge.fullname" $ }}
+                port:
+                  name: http
+          # HLS streaming → backend
+          - path: /hls
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "revenge.fullname" $ }}
+                port:
+                  name: http
+          # Everything else → frontend
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "revenge.fullname" $ }}-frontend
+                port:
+                  name: http
+          {{- else }}
           {{- range .paths }}
           - path: {{ .path }}
             pathType: {{ .pathType }}
@@ -36,6 +62,7 @@ spec:
                 name: {{ include "revenge.fullname" $ }}
                 port:
                   name: http
+          {{- end }}
           {{- end }}
     {{- end }}
 {{- end }}
