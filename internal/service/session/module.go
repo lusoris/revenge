@@ -1,10 +1,12 @@
 package session
 
 import (
+	"context"
 	"log/slog"
 
 	"github.com/lusoris/revenge/internal/config"
 	"github.com/lusoris/revenge/internal/infra/database/db"
+	"github.com/riverqueue/river"
 	"go.uber.org/fx"
 )
 
@@ -13,9 +15,21 @@ var Module = fx.Module("session",
 	fx.Provide(
 		NewService,
 		NewRepositoryPG,
+		NewMaintenanceWorker,
 	),
-	fx.Invoke(func(*Service) {}), // Ensure service is instantiated
+	fx.Invoke(initSessionGauge, registerSessionWorker),
 )
+
+// registerSessionWorker registers the session maintenance worker with River.
+func registerSessionWorker(workers *river.Workers, worker *MaintenanceWorker) {
+	river.AddWorker(workers, worker)
+}
+
+// initSessionGauge sets the active sessions gauge to the real DB count on startup.
+func initSessionGauge(svc *Service) {
+	svc.ReconcileSessionGauge(context.Background())
+	svc.logger.Info("Session gauge initialized from database")
+}
 
 // NewService creates a new session service with configuration
 func NewService(

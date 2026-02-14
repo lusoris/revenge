@@ -87,6 +87,11 @@ func (r *RepositoryPG) CountActiveUserSessions(ctx context.Context, userID uuid.
 	return r.queries.CountActiveUserSessions(ctx, userID)
 }
 
+// CountAllActiveSessions counts all active sessions across all users
+func (r *RepositoryPG) CountAllActiveSessions(ctx context.Context) (int64, error) {
+	return r.queries.CountAllActiveSessions(ctx)
+}
+
 // UpdateSessionActivity updates the last activity timestamp
 func (r *RepositoryPG) UpdateSessionActivity(ctx context.Context, sessionID uuid.UUID) error {
 	return r.queries.UpdateSessionActivity(ctx, sessionID)

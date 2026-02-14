@@ -46,36 +46,44 @@ type SessionInfo struct {
 	IsCurrent      bool
 }
 
-// CreateSession creates a new session for a user
-func (s *Service) CreateSession(ctx context.Context, userID uuid.UUID, deviceInfo DeviceInfo, scopes []string) (string, string, error) {
+// CreateSession creates a new session for a user.
+// Returns the session ID, session token, refresh token, and any error.
+func (s *Service) CreateSession(ctx context.Context, userID uuid.UUID, deviceInfo DeviceInfo, scopes []string) (uuid.UUID, string, string, error) {
 	// Check session limit
 	count, err := s.repo.CountActiveUserSessions(ctx, userID)
 	if err != nil {
-		return "", "", fmt.Errorf("failed to count user sessions: %w", err)
+		return uuid.Nil, "", "", fmt.Errorf("failed to count user sessions: %w", err)
 	}
 
 	if int(count) >= s.maxPerUser {
-		s.logger.Warn("User has too many active sessions",
+		s.logger.Warn("User has too many active sessions, evicting oldest",
 			slog.String("user_id", userID.String()),
 			slog.Int64("count", count),
 			slog.Int("max", s.maxPerUser))
-		// Optionally revoke oldest session here
+
+		// Evict oldest sessions to make room for the new one
+		if err := s.evictOldestSessions(ctx, userID, int(count)-s.maxPerUser+1); err != nil {
+			s.logger.Error("Failed to evict oldest sessions",
+				slog.String("user_id", userID.String()),
+				slog.Any("error", err))
+			// Continue anyway — better to exceed the limit than to block login
+		}
 	}
 
 	// Generate session token
 	token, tokenHash, err := s.generateToken()
 	if err != nil {
-		return "", "", fmt.Errorf("failed to generate session token: %w", err)
+		return uuid.Nil, "", "", fmt.Errorf("failed to generate session token: %w", err)
 	}
 
 	// Generate refresh token
 	refreshToken, refreshTokenHash, err := s.generateToken()
 	if err != nil {
-		return "", "", fmt.Errorf("failed to generate refresh token: %w", err)
+		return uuid.Nil, "", "", fmt.Errorf("failed to generate refresh token: %w", err)
 	}
 
 	// Create session
-	_, err = s.repo.CreateSession(ctx, CreateSessionParams{
+	sess, err := s.repo.CreateSession(ctx, CreateSessionParams{
 		UserID:           userID,
 		TokenHash:        tokenHash,
 		RefreshTokenHash: &refreshTokenHash,
@@ -86,16 +94,23 @@ func (s *Service) CreateSession(ctx context.Context, userID uuid.UUID, deviceInf
 		ExpiresAt:        time.Now().Add(s.expiry),
 	})
 	if err != nil {
-		return "", "", fmt.Errorf("failed to create session: %w", err)
+		return uuid.Nil, "", "", fmt.Errorf("failed to create session: %w", err)
 	}
 
-	observability.ActiveSessions.Inc()
+	// Re-count after potential eviction to log the accurate active count
+	activeCount, countErr := s.repo.CountActiveUserSessions(ctx, userID)
+	if countErr != nil {
+		activeCount = count + 1 // fallback to stale estimate
+	}
+
+	s.reconcileSessionGauge(ctx)
 
 	s.logger.Info("Session created",
 		slog.String("user_id", userID.String()),
-		slog.Int("active_sessions", int(count)+1))
+		slog.String("session_id", sess.ID.String()),
+		slog.Int64("active_sessions", activeCount))
 
-	return token, refreshToken, nil
+	return sess.ID, token, refreshToken, nil
 }
 
 // ValidateSession validates a session token
@@ -212,7 +227,7 @@ func (s *Service) RevokeSession(ctx context.Context, sessionID uuid.UUID) error 
 		return fmt.Errorf("failed to revoke session: %w", err)
 	}
 
-	observability.ActiveSessions.Dec()
+	s.reconcileSessionGauge(ctx)
 
 	s.logger.Info("Session revoked", slog.String("session_id", sessionID.String()))
 	return nil
@@ -220,19 +235,12 @@ func (s *Service) RevokeSession(ctx context.Context, sessionID uuid.UUID) error 
 
 // RevokeAllUserSessions revokes all sessions for a user (logout everywhere)
 func (s *Service) RevokeAllUserSessions(ctx context.Context, userID uuid.UUID) error {
-	// Count active sessions before revoking so we can decrement the gauge
-	count, err := s.repo.CountActiveUserSessions(ctx, userID)
-	if err != nil {
-		s.logger.Warn("Failed to count active sessions before revoke-all",
-			slog.String("user_id", userID.String()), slog.Any("error", err))
-	}
-
 	reason := "User logout all"
 	if err := s.repo.RevokeAllUserSessions(ctx, userID, &reason); err != nil {
 		return fmt.Errorf("failed to revoke all user sessions: %w", err)
 	}
 
-	observability.ActiveSessions.Sub(float64(count))
+	s.reconcileSessionGauge(ctx)
 
 	s.logger.Info("All user sessions revoked", slog.String("user_id", userID.String()))
 	return nil
@@ -240,21 +248,12 @@ func (s *Service) RevokeAllUserSessions(ctx context.Context, userID uuid.UUID) e
 
 // RevokeAllUserSessionsExcept revokes all sessions except the current one
 func (s *Service) RevokeAllUserSessionsExcept(ctx context.Context, userID uuid.UUID, currentSessionID uuid.UUID) error {
-	// Count active sessions before revoking (subtract 1 for the kept session)
-	count, err := s.repo.CountActiveUserSessions(ctx, userID)
-	if err != nil {
-		s.logger.Warn("Failed to count active sessions before revoke-all-except",
-			slog.String("user_id", userID.String()), slog.Any("error", err))
-	}
-
 	reason := "User logout all others"
 	if err := s.repo.RevokeAllUserSessionsExcept(ctx, userID, currentSessionID, &reason); err != nil {
 		return fmt.Errorf("failed to revoke other user sessions: %w", err)
 	}
 
-	if count > 1 {
-		observability.ActiveSessions.Sub(float64(count - 1))
-	}
+	s.reconcileSessionGauge(ctx)
 
 	s.logger.Info("Other user sessions revoked",
 		slog.String("user_id", userID.String()),
@@ -286,6 +285,56 @@ func (s *Service) CleanupExpiredSessions(ctx context.Context) (int, error) {
 		slog.Int64("total_deleted", totalDeleted))
 
 	return int(totalDeleted), nil
+}
+
+// ReconcileSessionGauge sets the active sessions gauge to the actual count from the database.
+// Call this on startup and periodically to keep the gauge accurate.
+func (s *Service) ReconcileSessionGauge(ctx context.Context) {
+	s.reconcileSessionGauge(ctx)
+}
+
+// reconcileSessionGauge queries the real active session count and sets the gauge.
+func (s *Service) reconcileSessionGauge(ctx context.Context) {
+	count, err := s.repo.CountAllActiveSessions(ctx)
+	if err != nil {
+		s.logger.Warn("Failed to reconcile session gauge", slog.Any("error", err))
+		return
+	}
+	observability.ActiveSessions.Set(float64(count))
+}
+
+// evictOldestSessions revokes the N oldest active sessions for a user.
+// Sessions are ordered by last_activity_at DESC, so the tail of the list
+// contains the oldest (least recently active) sessions.
+func (s *Service) evictOldestSessions(ctx context.Context, userID uuid.UUID, count int) error {
+	if count <= 0 {
+		return nil
+	}
+
+	sessions, err := s.repo.ListUserSessions(ctx, userID)
+	if err != nil {
+		return fmt.Errorf("failed to list user sessions for eviction: %w", err)
+	}
+
+	// Sessions are ordered by last_activity_at DESC — evict from the tail (oldest first)
+	evicted := 0
+	reason := "Session limit exceeded"
+	for i := len(sessions) - 1; i >= 0 && evicted < count; i-- {
+		if err := s.repo.RevokeSession(ctx, sessions[i].ID, &reason); err != nil {
+			s.logger.Warn("Failed to evict session",
+				slog.String("session_id", sessions[i].ID.String()),
+				slog.Any("error", err))
+			continue
+		}
+		evicted++
+	}
+
+	s.logger.Info("Evicted oldest sessions",
+		slog.String("user_id", userID.String()),
+		slog.Int("evicted", evicted),
+		slog.Int("requested", count))
+
+	return nil
 }
 
 // Helper methods

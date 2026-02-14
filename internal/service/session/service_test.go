@@ -52,7 +52,7 @@ func TestService_CreateSession(t *testing.T) {
 		IPAddress:  &ipAddr,
 	}
 
-	token, refreshToken, err := service.CreateSession(ctx, userID, deviceInfo, []string{"read", "write"})
+	_, token, refreshToken, err := service.CreateSession(ctx, userID, deviceInfo, []string{"read", "write"})
 	require.NoError(t, err)
 	assert.NotEmpty(t, token)
 	assert.NotEmpty(t, refreshToken)
@@ -69,12 +69,12 @@ func TestService_CreateSession_MaxPerUser(t *testing.T) {
 
 	// Create max sessions
 	for i := 0; i < service.maxPerUser; i++ {
-		_, _, err := service.CreateSession(ctx, userID, deviceInfo, []string{"read"})
+		_, _, _, err := service.CreateSession(ctx, userID, deviceInfo, []string{"read"})
 		require.NoError(t, err)
 	}
 
 	// Creating one more should still succeed (just warns)
-	_, _, err := service.CreateSession(ctx, userID, deviceInfo, []string{"read"})
+	_, _, _, err := service.CreateSession(ctx, userID, deviceInfo, []string{"read"})
 	require.NoError(t, err)
 }
 
@@ -85,7 +85,7 @@ func TestService_ValidateSession(t *testing.T) {
 
 	userID := createTestUser(t, testDB)
 
-	token, _, err := service.CreateSession(ctx, userID, DeviceInfo{}, []string{"read"})
+	_, token, _, err := service.CreateSession(ctx, userID, DeviceInfo{}, []string{"read"})
 	require.NoError(t, err)
 
 	session, err := service.ValidateSession(ctx, token)
@@ -113,7 +113,7 @@ func TestService_ValidateSession_UpdatesActivity(t *testing.T) {
 
 	userID := createTestUser(t, testDB)
 
-	token, _, err := service.CreateSession(ctx, userID, DeviceInfo{}, []string{"read"})
+	_, token, _, err := service.CreateSession(ctx, userID, DeviceInfo{}, []string{"read"})
 	require.NoError(t, err)
 
 	session1, err := service.ValidateSession(ctx, token)
@@ -134,7 +134,7 @@ func TestService_RefreshSession(t *testing.T) {
 
 	userID := createTestUser(t, testDB)
 
-	oldToken, oldRefreshToken, err := service.CreateSession(ctx, userID, DeviceInfo{}, []string{"read"})
+	_, oldToken, oldRefreshToken, err := service.CreateSession(ctx, userID, DeviceInfo{}, []string{"read"})
 	require.NoError(t, err)
 
 	newToken, newRefreshToken, err := service.RefreshSession(ctx, oldRefreshToken)
@@ -178,7 +178,7 @@ func TestService_ListUserSessions(t *testing.T) {
 
 	// Create multiple sessions
 	for range 3 {
-		_, _, err := service.CreateSession(ctx, userID, DeviceInfo{}, []string{"read"})
+		_, _, _, err := service.CreateSession(ctx, userID, DeviceInfo{}, []string{"read"})
 		require.NoError(t, err)
 	}
 
@@ -198,7 +198,7 @@ func TestService_RevokeSession(t *testing.T) {
 
 	userID := createTestUser(t, testDB)
 
-	token, _, err := service.CreateSession(ctx, userID, DeviceInfo{}, []string{"read"})
+	_, token, _, err := service.CreateSession(ctx, userID, DeviceInfo{}, []string{"read"})
 	require.NoError(t, err)
 
 	session, err := service.ValidateSession(ctx, token)
@@ -221,7 +221,7 @@ func TestService_RevokeAllUserSessions(t *testing.T) {
 
 	var tokens []string
 	for range 3 {
-		token, _, err := service.CreateSession(ctx, userID, DeviceInfo{}, []string{"read"})
+		_, token, _, err := service.CreateSession(ctx, userID, DeviceInfo{}, []string{"read"})
 		require.NoError(t, err)
 		tokens = append(tokens, token)
 	}
@@ -250,7 +250,7 @@ func TestService_RevokeAllUserSessionsExcept(t *testing.T) {
 
 	var tokens []string
 	for range 3 {
-		token, _, err := service.CreateSession(ctx, userID, DeviceInfo{}, []string{"read"})
+		_, token, _, err := service.CreateSession(ctx, userID, DeviceInfo{}, []string{"read"})
 		require.NoError(t, err)
 		tokens = append(tokens, token)
 	}
@@ -346,7 +346,7 @@ func TestService_RevokeAllUserSessionsExcept_Integration_CurrentSessionSurvives(
 	// Create 5 sessions
 	tokens := make([]string, 5)
 	for i := range 5 {
-		token, _, err := service.CreateSession(ctx, userID, DeviceInfo{
+		_, token, _, err := service.CreateSession(ctx, userID, DeviceInfo{
 			DeviceName: new(fmt.Sprintf("Device %d", i)),
 		}, []string{"read"})
 		require.NoError(t, err)
@@ -397,7 +397,7 @@ func TestService_CountActiveUserSessions_AfterCreateRevokeCleanupCycle(t *testin
 	// Create 3 sessions
 	var tokens []string
 	for range 3 {
-		token, _, err := service.CreateSession(ctx, userID, DeviceInfo{}, []string{"read"})
+		_, token, _, err := service.CreateSession(ctx, userID, DeviceInfo{}, []string{"read"})
 		require.NoError(t, err)
 		tokens = append(tokens, token)
 	}
@@ -474,7 +474,7 @@ func TestService_GetInactiveSessions_AndRevokeInactive(t *testing.T) {
 	userID := createTestUser(t, testDB)
 
 	// Create a session
-	token, _, err := service.CreateSession(ctx, userID, DeviceInfo{}, []string{"read"})
+	_, token, _, err := service.CreateSession(ctx, userID, DeviceInfo{}, []string{"read"})
 	require.NoError(t, err)
 
 	// Validate to set the last_activity_at
@@ -504,7 +504,7 @@ func TestService_UpdateSessionActivity_Integration(t *testing.T) {
 	userID := createTestUser(t, testDB)
 
 	// Create session
-	token, _, err := service.CreateSession(ctx, userID, DeviceInfo{}, []string{"read"})
+	_, token, _, err := service.CreateSession(ctx, userID, DeviceInfo{}, []string{"read"})
 	require.NoError(t, err)
 
 	// First validation sets initial activity
@@ -556,10 +556,12 @@ func TestService_CreateSession_MaxPerUserBoundary(t *testing.T) {
 	userID := createTestUser(t, testDB)
 	deviceInfo := DeviceInfo{}
 
-	// Create exactly maxPerUser sessions
-	for range 3 {
-		_, _, err := service.CreateSession(ctx, userID, deviceInfo, []string{"read"})
+	// Create exactly maxPerUser sessions, track their IDs
+	sessionIDs := make([]uuid.UUID, 3)
+	for i := range 3 {
+		id, _, _, err := service.CreateSession(ctx, userID, deviceInfo, []string{"read"})
 		require.NoError(t, err)
+		sessionIDs[i] = id
 	}
 
 	// Count should be exactly 3
@@ -567,14 +569,21 @@ func TestService_CreateSession_MaxPerUserBoundary(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, int64(3), count)
 
-	// Creating one more should still work (warns but does not reject)
-	_, _, err = service.CreateSession(ctx, userID, deviceInfo, []string{"read"})
+	// Creating one more should still work but evict the oldest session
+	newID, _, _, err := service.CreateSession(ctx, userID, deviceInfo, []string{"read"})
 	require.NoError(t, err)
+	assert.NotEqual(t, uuid.Nil, newID)
 
-	// Count should now be 4
+	// Count should still be 3 (oldest evicted, new one created)
 	count, err = repo.CountActiveUserSessions(ctx, userID)
 	require.NoError(t, err)
-	assert.Equal(t, int64(4), count)
+	assert.Equal(t, int64(3), count)
+
+	// The oldest session (first created) should have been revoked
+	// GetSessionByID filters revoked sessions, so it returns nil for evicted ones
+	oldest, err := repo.GetSessionByID(ctx, sessionIDs[0])
+	require.NoError(t, err)
+	assert.Nil(t, oldest, "oldest session should be revoked and thus not found as active")
 }
 
 func TestService_RefreshSession_Integration_PreservesDeviceInfo(t *testing.T) {
@@ -592,7 +601,7 @@ func TestService_RefreshSession_Integration_PreservesDeviceInfo(t *testing.T) {
 	}
 
 	// Create session with device info
-	_, refreshToken, err := service.CreateSession(ctx, userID, deviceInfo, []string{"read", "write"})
+	_, _, refreshToken, err := service.CreateSession(ctx, userID, deviceInfo, []string{"read", "write"})
 	require.NoError(t, err)
 
 	// Refresh the session
@@ -618,7 +627,7 @@ func TestService_RefreshSession_Integration_OldRefreshTokenInvalid(t *testing.T)
 
 	userID := createTestUser(t, testDB)
 
-	_, refreshToken, err := service.CreateSession(ctx, userID, DeviceInfo{}, []string{"read"})
+	_, _, refreshToken, err := service.CreateSession(ctx, userID, DeviceInfo{}, []string{"read"})
 	require.NoError(t, err)
 
 	// First refresh succeeds
@@ -651,7 +660,7 @@ func TestService_CachedService_Integration_RevokeInvalidatesCache(t *testing.T) 
 	userID := createTestUser(t, testDB)
 
 	// Create session via cached service
-	token, _, err := cachedSvc.CreateSession(ctx, userID, DeviceInfo{}, []string{"read"})
+	_, token, _, err := cachedSvc.CreateSession(ctx, userID, DeviceInfo{}, []string{"read"})
 	require.NoError(t, err)
 
 	// Validate to populate cache
@@ -688,7 +697,7 @@ func TestService_CachedService_Integration_RevokeAllInvalidatesCache(t *testing.
 	// Create 3 sessions
 	tokens := make([]string, 3)
 	for i := range 3 {
-		token, _, err := cachedSvc.CreateSession(ctx, userID, DeviceInfo{}, []string{"read"})
+		_, token, _, err := cachedSvc.CreateSession(ctx, userID, DeviceInfo{}, []string{"read"})
 		require.NoError(t, err)
 		tokens[i] = token
 	}
@@ -721,7 +730,7 @@ func TestService_ListUserSessions_Integration_SessionInfoFields(t *testing.T) {
 	userID := createTestUser(t, testDB)
 
 	ipAddr := netip.MustParseAddr("172.16.0.1")
-	_, _, err := service.CreateSession(ctx, userID, DeviceInfo{
+	_, _, _, err := service.CreateSession(ctx, userID, DeviceInfo{
 		DeviceName: new("Chrome on MacOS"),
 		UserAgent:  new("Chrome/120"),
 		IPAddress:  &ipAddr,
@@ -796,7 +805,7 @@ func TestService_CreateSession_Integration_MinimalDeviceInfo(t *testing.T) {
 	userID := createTestUser(t, testDB)
 
 	// Create session with nil device info fields
-	token, refreshToken, err := service.CreateSession(ctx, userID, DeviceInfo{
+	_, token, refreshToken, err := service.CreateSession(ctx, userID, DeviceInfo{
 		DeviceName: nil,
 		UserAgent:  nil,
 		IPAddress:  nil,

@@ -340,7 +340,7 @@ func TestCachedService_CreateSession_WithCache(t *testing.T) {
 
 	cached := NewCachedService(svc, l1Cache, logging.NewTestLogger(), 5*time.Minute)
 
-	token, refreshToken, err := cached.CreateSession(
+	_, token, refreshToken, err := cached.CreateSession(
 		context.Background(),
 		userID,
 		DeviceInfo{},
@@ -356,8 +356,8 @@ func TestCachedService_CreateSession_WithCache(t *testing.T) {
 
 	// Verify CreateSession was called on the repo
 	assert.Equal(t, 1, repo.getCallCount("CreateSession"))
-	// CountActiveUserSessions should be called
-	assert.Equal(t, 1, repo.getCallCount("CountActiveUserSessions"))
+	// CountActiveUserSessions called twice: limit check + accurate log count
+	assert.Equal(t, 2, repo.getCallCount("CountActiveUserSessions"))
 }
 
 func TestCachedService_CreateSession_WithoutCache(t *testing.T) {
@@ -385,7 +385,7 @@ func TestCachedService_CreateSession_WithoutCache(t *testing.T) {
 
 	cached := NewCachedService(svc, nil, logging.NewTestLogger(), 5*time.Minute)
 
-	token, refreshToken, err := cached.CreateSession(
+	_, token, refreshToken, err := cached.CreateSession(
 		context.Background(),
 		userID,
 		DeviceInfo{},
@@ -420,7 +420,6 @@ func TestCachedService_RevokeAllUserSessions_WithCache(t *testing.T) {
 	err = cached.RevokeAllUserSessions(context.Background(), userID)
 	require.NoError(t, err)
 
-	assert.Equal(t, 1, repo.getCallCount("CountActiveUserSessions"))
 	assert.Equal(t, 1, repo.getCallCount("RevokeAllUserSessions"))
 }
 
@@ -443,7 +442,6 @@ func TestCachedService_RevokeAllUserSessions_WithoutCache(t *testing.T) {
 	err := cached.RevokeAllUserSessions(context.Background(), userID)
 	require.NoError(t, err)
 
-	assert.Equal(t, 1, repo.getCallCount("CountActiveUserSessions"))
 	assert.Equal(t, 1, repo.getCallCount("RevokeAllUserSessions"))
 }
 
@@ -754,7 +752,7 @@ func TestCachedService_CreateSession_ServiceError(t *testing.T) {
 
 	cached := NewCachedService(svc, l1Cache, logging.NewTestLogger(), 5*time.Minute)
 
-	token, refreshToken, err := cached.CreateSession(
+	_, token, refreshToken, err := cached.CreateSession(
 		context.Background(),
 		uuid.Must(uuid.NewV7()),
 		DeviceInfo{},

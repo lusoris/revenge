@@ -47,7 +47,7 @@ func TestServiceIntegration_FullSessionLifecycle(t *testing.T) {
 	userID := createTestUser(t, testDB)
 
 	// Create session
-	token, refreshToken, err := svc.CreateSession(ctx, userID, testDeviceInfo(), []string{"read", "write"})
+	_, token, refreshToken, err := svc.CreateSession(ctx, userID, testDeviceInfo(), []string{"read", "write"})
 	require.NoError(t, err)
 	assert.NotEmpty(t, token)
 	assert.NotEmpty(t, refreshToken)
@@ -99,7 +99,7 @@ func TestServiceIntegration_ListUserSessions(t *testing.T) {
 			DeviceName: new("Device " + string(rune('A'+i))),
 			IPAddress:  &ip,
 		}
-		_, _, err := svc.CreateSession(ctx, userID, device, []string{"read"})
+		_, _, _, err := svc.CreateSession(ctx, userID, device, []string{"read"})
 		require.NoError(t, err)
 	}
 
@@ -125,7 +125,7 @@ func TestServiceIntegration_RevokeAllUserSessions(t *testing.T) {
 
 	var tokens []string
 	for range 3 {
-		tok, _, err := svc.CreateSession(ctx, userID, testDeviceInfo(), []string{"read"})
+		_, tok, _, err := svc.CreateSession(ctx, userID, testDeviceInfo(), []string{"read"})
 		require.NoError(t, err)
 		tokens = append(tokens, tok)
 	}
@@ -152,7 +152,7 @@ func TestServiceIntegration_RevokeAllExceptCurrent(t *testing.T) {
 	userID := createTestUser(t, testDB)
 
 	// Create "current" session
-	currentToken, _, err := svc.CreateSession(ctx, userID, testDeviceInfo(), []string{"read"})
+	_, currentToken, _, err := svc.CreateSession(ctx, userID, testDeviceInfo(), []string{"read"})
 	require.NoError(t, err)
 	currentSess, err := svc.ValidateSession(ctx, currentToken)
 	require.NoError(t, err)
@@ -160,7 +160,7 @@ func TestServiceIntegration_RevokeAllExceptCurrent(t *testing.T) {
 	// Create other sessions
 	var otherTokens []string
 	for range 2 {
-		tok, _, err := svc.CreateSession(ctx, userID, testDeviceInfo(), []string{"read"})
+		_, tok, _, err := svc.CreateSession(ctx, userID, testDeviceInfo(), []string{"read"})
 		require.NoError(t, err)
 		otherTokens = append(otherTokens, tok)
 	}
@@ -204,7 +204,7 @@ func TestServiceIntegration_CleanupExpiredSessions(t *testing.T) {
 	userID := createTestUser(t, testDB)
 
 	// Create and immediately revoke a session
-	token, _, err := svc.CreateSession(ctx, userID, testDeviceInfo(), []string{"read"})
+	_, token, _, err := svc.CreateSession(ctx, userID, testDeviceInfo(), []string{"read"})
 	require.NoError(t, err)
 
 	sess, err := svc.ValidateSession(ctx, token)
@@ -229,7 +229,7 @@ func TestServiceIntegration_ValidateSession_UpdatesActivity(t *testing.T) {
 	ctx := context.Background()
 	userID := createTestUser(t, testDB)
 
-	token, _, err := svc.CreateSession(ctx, userID, testDeviceInfo(), []string{"read"})
+	_, token, _, err := svc.CreateSession(ctx, userID, testDeviceInfo(), []string{"read"})
 	require.NoError(t, err)
 
 	sess1, err := svc.ValidateSession(ctx, token)
@@ -259,9 +259,9 @@ func TestServiceIntegration_MultipleUsers_Isolated(t *testing.T) {
 	user2 := createTestUser(t, testDB)
 
 	// Create sessions for both users
-	tok1, _, err := svc.CreateSession(ctx, user1, testDeviceInfo(), []string{"read"})
+	_, tok1, _, err := svc.CreateSession(ctx, user1, testDeviceInfo(), []string{"read"})
 	require.NoError(t, err)
-	tok2, _, err := svc.CreateSession(ctx, user2, testDeviceInfo(), []string{"write"})
+	_, tok2, _, err := svc.CreateSession(ctx, user2, testDeviceInfo(), []string{"write"})
 	require.NoError(t, err)
 
 	// Validate user1 token returns user1

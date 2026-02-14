@@ -21,6 +21,7 @@ type Repository interface {
 	ListUserSessions(ctx context.Context, userID uuid.UUID) ([]db.SharedSession, error)
 	ListAllUserSessions(ctx context.Context, userID uuid.UUID) ([]db.SharedSession, error)
 	CountActiveUserSessions(ctx context.Context, userID uuid.UUID) (int64, error)
+	CountAllActiveSessions(ctx context.Context) (int64, error)
 
 	// Session Updates
 	UpdateSessionActivity(ctx context.Context, sessionID uuid.UUID) error

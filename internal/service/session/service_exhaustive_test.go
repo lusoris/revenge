@@ -52,7 +52,7 @@ func TestService_CreateSession_ErrorCountingSessions(t *testing.T) {
 		Return(int64(0), expectedErr).
 		Once()
 
-	token, refreshToken, err := svc.CreateSession(ctx, userID, session.DeviceInfo{}, []string{"read"})
+	_, token, refreshToken, err := svc.CreateSession(ctx, userID, session.DeviceInfo{}, []string{"read"})
 
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), "failed to count user sessions")
@@ -77,7 +77,7 @@ func TestService_CreateSession_ErrorCreatingSession(t *testing.T) {
 		Return(db.SharedSession{}, expectedErr).
 		Once()
 
-	token, refreshToken, err := svc.CreateSession(ctx, userID, session.DeviceInfo{}, []string{"read"})
+	_, token, refreshToken, err := svc.CreateSession(ctx, userID, session.DeviceInfo{}, []string{"read"})
 
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), "failed to create session")
@@ -94,6 +94,11 @@ func TestService_CreateSession_NilDeviceInfo(t *testing.T) {
 	mockRepo.EXPECT().
 		CountActiveUserSessions(ctx, userID).
 		Return(int64(0), nil).
+		Times(2)
+
+	mockRepo.EXPECT().
+		CountAllActiveSessions(ctx).
+		Return(int64(1), nil).
 		Once()
 
 	mockRepo.EXPECT().
@@ -112,7 +117,7 @@ func TestService_CreateSession_NilDeviceInfo(t *testing.T) {
 		IPAddress:  nil,
 	}
 
-	token, refreshToken, err := svc.CreateSession(ctx, userID, deviceInfo, []string{"read"})
+	_, token, refreshToken, err := svc.CreateSession(ctx, userID, deviceInfo, []string{"read"})
 
 	require.NoError(t, err)
 	assert.NotEmpty(t, token)
@@ -128,6 +133,11 @@ func TestService_CreateSession_EmptyScopes(t *testing.T) {
 	mockRepo.EXPECT().
 		CountActiveUserSessions(ctx, userID).
 		Return(int64(0), nil).
+		Times(2)
+
+	mockRepo.EXPECT().
+		CountAllActiveSessions(ctx).
+		Return(int64(1), nil).
 		Once()
 
 	mockRepo.EXPECT().
@@ -137,7 +147,7 @@ func TestService_CreateSession_EmptyScopes(t *testing.T) {
 		Return(db.SharedSession{ID: uuid.Must(uuid.NewV7())}, nil).
 		Once()
 
-	token, refreshToken, err := svc.CreateSession(ctx, userID, session.DeviceInfo{}, []string{})
+	_, token, refreshToken, err := svc.CreateSession(ctx, userID, session.DeviceInfo{}, []string{})
 
 	require.NoError(t, err)
 	assert.NotEmpty(t, token)
@@ -153,6 +163,11 @@ func TestService_CreateSession_NilScopes(t *testing.T) {
 	mockRepo.EXPECT().
 		CountActiveUserSessions(ctx, userID).
 		Return(int64(0), nil).
+		Times(2)
+
+	mockRepo.EXPECT().
+		CountAllActiveSessions(ctx).
+		Return(int64(1), nil).
 		Once()
 
 	mockRepo.EXPECT().
@@ -162,7 +177,7 @@ func TestService_CreateSession_NilScopes(t *testing.T) {
 		Return(db.SharedSession{ID: uuid.Must(uuid.NewV7())}, nil).
 		Once()
 
-	token, refreshToken, err := svc.CreateSession(ctx, userID, session.DeviceInfo{}, nil)
+	_, token, refreshToken, err := svc.CreateSession(ctx, userID, session.DeviceInfo{}, nil)
 
 	require.NoError(t, err)
 	assert.NotEmpty(t, token)
@@ -175,9 +190,31 @@ func TestService_CreateSession_MaxSessionsWarning(t *testing.T) {
 	ctx := context.Background()
 	userID := uuid.Must(uuid.NewV7())
 
-	// Return count equal to max (should still allow creation but log warning)
+	// Return count equal to max (should trigger eviction of oldest session)
 	mockRepo.EXPECT().
 		CountActiveUserSessions(ctx, userID).
+		Return(int64(10), nil).
+		Times(2)
+
+	// Eviction will list sessions to find oldest
+	oldestSessionID := uuid.Must(uuid.NewV7())
+	mockRepo.EXPECT().
+		ListUserSessions(ctx, userID).
+		Return([]db.SharedSession{
+			{ID: uuid.Must(uuid.NewV7())}, // newest (first in list, DESC order)
+			{ID: oldestSessionID},          // oldest (last in list)
+		}, nil).
+		Once()
+
+	// Eviction will revoke the oldest session
+	reason := "Session limit exceeded"
+	mockRepo.EXPECT().
+		RevokeSession(ctx, oldestSessionID, &reason).
+		Return(nil).
+		Once()
+
+	mockRepo.EXPECT().
+		CountAllActiveSessions(ctx).
 		Return(int64(10), nil).
 		Once()
 
@@ -186,7 +223,7 @@ func TestService_CreateSession_MaxSessionsWarning(t *testing.T) {
 		Return(db.SharedSession{ID: uuid.Must(uuid.NewV7())}, nil).
 		Once()
 
-	token, refreshToken, err := svc.CreateSession(ctx, userID, session.DeviceInfo{}, []string{"read"})
+	_, token, refreshToken, err := svc.CreateSession(ctx, userID, session.DeviceInfo{}, []string{"read"})
 
 	require.NoError(t, err)
 	assert.NotEmpty(t, token)
@@ -470,11 +507,6 @@ func TestService_RevokeAllUserSessions_ErrorFromRepository(t *testing.T) {
 	ctx := context.Background()
 	userID := uuid.Must(uuid.NewV7())
 
-	mockRepo.EXPECT().
-		CountActiveUserSessions(ctx, userID).
-		Return(int64(2), nil).
-		Once()
-
 	expectedErr := fmt.Errorf("database error")
 	mockRepo.EXPECT().
 		RevokeAllUserSessions(ctx, userID, mock.AnythingOfType("*string")).
@@ -493,15 +525,15 @@ func TestService_RevokeAllUserSessions_UserWithNoSessions(t *testing.T) {
 	ctx := context.Background()
 	userID := uuid.Must(uuid.NewV7())
 
-	mockRepo.EXPECT().
-		CountActiveUserSessions(ctx, userID).
-		Return(int64(0), nil).
-		Once()
-
 	// Should succeed even if user has no sessions
 	mockRepo.EXPECT().
 		RevokeAllUserSessions(ctx, userID, mock.AnythingOfType("*string")).
 		Return(nil).
+		Once()
+
+	mockRepo.EXPECT().
+		CountAllActiveSessions(ctx).
+		Return(int64(0), nil).
 		Once()
 
 	err := svc.RevokeAllUserSessions(ctx, userID)
@@ -517,11 +549,6 @@ func TestService_RevokeAllUserSessionsExcept_ErrorFromRepository(t *testing.T) {
 	ctx := context.Background()
 	userID := uuid.Must(uuid.NewV7())
 	currentSessionID := uuid.Must(uuid.NewV7())
-
-	mockRepo.EXPECT().
-		CountActiveUserSessions(ctx, userID).
-		Return(int64(3), nil).
-		Once()
 
 	expectedErr := fmt.Errorf("database error")
 	mockRepo.EXPECT().
@@ -610,6 +637,11 @@ func TestService_CreateSession_Success(t *testing.T) {
 	mockRepo.EXPECT().
 		CountActiveUserSessions(ctx, userID).
 		Return(int64(0), nil).
+		Times(2)
+
+	mockRepo.EXPECT().
+		CountAllActiveSessions(ctx).
+		Return(int64(1), nil).
 		Once()
 
 	mockRepo.EXPECT().
@@ -622,7 +654,7 @@ func TestService_CreateSession_Success(t *testing.T) {
 		Return(db.SharedSession{ID: uuid.Must(uuid.NewV7()), UserID: userID}, nil).
 		Once()
 
-	token, refreshToken, err := svc.CreateSession(ctx, userID, session.DeviceInfo{}, []string{"read"})
+	_, token, refreshToken, err := svc.CreateSession(ctx, userID, session.DeviceInfo{}, []string{"read"})
 
 	require.NoError(t, err)
 	assert.NotEmpty(t, token)
@@ -645,6 +677,11 @@ func TestService_CreateSession_WithFullDeviceInfo(t *testing.T) {
 	mockRepo.EXPECT().
 		CountActiveUserSessions(ctx, userID).
 		Return(int64(0), nil).
+		Times(2)
+
+	mockRepo.EXPECT().
+		CountAllActiveSessions(ctx).
+		Return(int64(1), nil).
 		Once()
 
 	mockRepo.EXPECT().
@@ -663,7 +700,7 @@ func TestService_CreateSession_WithFullDeviceInfo(t *testing.T) {
 		IPAddress:  &ipAddr,
 	}
 
-	token, refreshToken, err := svc.CreateSession(ctx, userID, deviceInfo, []string{"read", "write"})
+	_, token, refreshToken, err := svc.CreateSession(ctx, userID, deviceInfo, []string{"read", "write"})
 
 	require.NoError(t, err)
 	assert.NotEmpty(t, token)
@@ -859,6 +896,11 @@ func TestService_RevokeSession_Success(t *testing.T) {
 		Return(nil).
 		Once()
 
+	mockRepo.EXPECT().
+		CountAllActiveSessions(ctx).
+		Return(int64(1), nil).
+		Once()
+
 	err := svc.RevokeSession(ctx, sessionID)
 
 	require.NoError(t, err)
@@ -872,13 +914,13 @@ func TestService_RevokeAllUserSessionsExcept_Success(t *testing.T) {
 	currentSessionID := uuid.Must(uuid.NewV7())
 
 	mockRepo.EXPECT().
-		CountActiveUserSessions(ctx, userID).
-		Return(int64(3), nil).
+		RevokeAllUserSessionsExcept(ctx, userID, currentSessionID, mock.AnythingOfType("*string")).
+		Return(nil).
 		Once()
 
 	mockRepo.EXPECT().
-		RevokeAllUserSessionsExcept(ctx, userID, currentSessionID, mock.AnythingOfType("*string")).
-		Return(nil).
+		CountAllActiveSessions(ctx).
+		Return(int64(1), nil).
 		Once()
 
 	err := svc.RevokeAllUserSessionsExcept(ctx, userID, currentSessionID)
