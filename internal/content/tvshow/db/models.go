@@ -299,6 +299,8 @@ type SharedAuthToken struct {
 	LastUsedAt pgtype.Timestamptz `json:"lastUsedAt"`
 	CreatedAt  time.Time          `json:"createdAt"`
 	UpdatedAt  time.Time          `json:"updatedAt"`
+	// Links this refresh token to the session record it was created with
+	SessionID pgtype.UUID `json:"sessionId"`
 }
 
 // RBAC policies with fine-grained permissions (v0.3.0)

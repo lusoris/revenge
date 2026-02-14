@@ -6,7 +6,6 @@ import (
 	context "context"
 
 	activity "github.com/lusoris/revenge/internal/service/activity"
-
 	mock "github.com/stretchr/testify/mock"
 )
 
