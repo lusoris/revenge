@@ -3,6 +3,7 @@ package library
 import (
 	"log/slog"
 
+	"github.com/lusoris/revenge/internal/infra/cache"
 	"github.com/lusoris/revenge/internal/infra/database/db"
 	infrajobs "github.com/lusoris/revenge/internal/infra/jobs"
 	"github.com/lusoris/revenge/internal/service/activity"
@@ -14,6 +15,7 @@ var Module = fx.Module("library",
 	fx.Provide(
 		newRepository,
 		newService,
+		newCachedService,
 		NewLibraryScanCleanupWorker,
 		newPeriodicLibraryScanWorker,
 	),
@@ -27,6 +29,12 @@ func newRepository(queries *db.Queries) Repository {
 // newService creates a new library service with activity logger.
 func newService(repo Repository, logger *slog.Logger, activityLogger activity.Logger) *Service {
 	return NewService(repo, logger, activityLogger)
+}
+
+// newCachedService wraps the library service with caching.
+// When cache is nil (disabled), CachedService passes through to the underlying Service.
+func newCachedService(svc *Service, c *cache.Cache, logger *slog.Logger) *CachedService {
+	return NewCachedService(svc, c, logger)
 }
 
 // newPeriodicLibraryScanWorker creates the periodic scan worker using the infra jobs client.

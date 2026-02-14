@@ -148,7 +148,7 @@ Design docs exist (SvelteKit 2, Svelte 5, Tailwind CSS 4, shadcn-svelte) but zer
 - [ ] Content request system
 
 ### Infrastructure
-- [ ] Circuit breaker integration (gobreaker dep exists, unused)
-- [ ] Request coalescing (sturdyc dep exists, unused)
+- [x] Circuit breaker for external APIs (gobreaker wired into all 16 req.Client instances via WrapRoundTripFunc)
+- [ ] Request coalescing (sturdyc or similar)
 - [ ] Cache warming on startup
 - [ ] Service self-healing / watchdog

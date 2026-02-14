@@ -126,5 +126,9 @@ node_modules/
 *-preview/
 errors.cov
 ogen
-.workingdir11/
+.workingdir*/
 tests/load/results/
+
+# Test media files
+testdata/media/*.mp4
+testdata/media/*.mkv

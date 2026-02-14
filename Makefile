@@ -10,7 +10,13 @@ GIT_COMMIT=$(shell git rev-parse --short HEAD 2>/dev/null || echo "unknown")
 LDFLAGS=-ldflags "-X main.Version=${VERSION} -X main.BuildTime=${BUILD_TIME} -X main.GitCommit=${GIT_COMMIT}"
 
 # Go 1.26 experimental features
-export GOEXPERIMENT=jsonv2,goroutineleakprofile,simd,runtimesecret
+# Full set for builds (baked into the binary at compile time).
+# goroutineleakprofile, simd, runtimesecret are NOT compatible with
+# -race -coverprofile -covermode=atomic on CGO packages, so test targets
+# use only the compatible subset (jsonv2).
+GOEXPERIMENT_BUILD=jsonv2,goroutineleakprofile,simd,runtimesecret
+GOEXPERIMENT_TEST=jsonv2
+export GOEXPERIMENT=$(GOEXPERIMENT_BUILD)
 
 # Database configuration (override with environment variables)
 DB_HOST?=localhost
@@ -56,7 +62,7 @@ dev: ## Run with hot reload (requires air)
 
 test: ## Run unit tests (fast, no Docker needed)
 	@echo "Running unit tests..."
-	go test -race -coverprofile=coverage.out -covermode=atomic -count=1 ./...
+	GOEXPERIMENT=$(GOEXPERIMENT_TEST) go test -race -coverprofile=coverage.out -covermode=atomic -count=1 ./...
 
 test-short: ## Run unit tests in short mode (skip slow tests)
 	@echo "Running short tests..."
@@ -64,7 +70,7 @@ test-short: ## Run unit tests in short mode (skip slow tests)
 
 test-integration: ## Run integration tests (requires Docker)
 	@echo "Running integration tests..."
-	go test -v -race -tags=integration -count=1 ./tests/integration/...
+	GOEXPERIMENT=$(GOEXPERIMENT_TEST) go test -v -race -tags=integration -count=1 ./tests/integration/...
 
 test-all: test test-integration ## Run all tests (unit + integration)
 
@@ -161,14 +167,14 @@ migrate-create: ## Create a new migration (usage: make migrate-create NAME=creat
 PPROF_HOST?=localhost:9096
 
 bench: ## Run all benchmarks
-	go test -bench=. -benchmem -count=3 -run=^$$ ./...
+	GOEXPERIMENT=$(GOEXPERIMENT_TEST) go test -bench=. -benchmem -count=3 -run=^$$ ./...
 
 bench-cpu: ## Run benchmarks with CPU profile
-	go test -bench=. -cpuprofile=cpu.prof -benchmem -run=^$$ ./internal/...
+	GOEXPERIMENT=$(GOEXPERIMENT_TEST) go test -bench=. -cpuprofile=cpu.prof -benchmem -run=^$$ ./internal/...
 	@echo "CPU profile: cpu.prof — view with: go tool pprof -http=:6060 cpu.prof"
 
 bench-mem: ## Run benchmarks with memory profile
-	go test -bench=. -memprofile=mem.prof -benchmem -run=^$$ ./internal/...
+	GOEXPERIMENT=$(GOEXPERIMENT_TEST) go test -bench=. -memprofile=mem.prof -benchmem -run=^$$ ./internal/...
 	@echo "Memory profile: mem.prof — view with: go tool pprof -http=:6060 mem.prof"
 
 pprof-cpu: ## Capture 30s CPU profile from running instance
