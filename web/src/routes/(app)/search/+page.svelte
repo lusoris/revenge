@@ -55,32 +55,34 @@
 			<div class="h-8 w-8 animate-spin rounded-full border-2 border-neutral-700 border-t-white"></div>
 		</div>
 	{:else if $results.data}
-		{@const { movies, tvshows, total_hits } = $results.data}
+		{@const movieHits = $results.data.movies?.hits ?? []}
+		{@const tvHits = $results.data.tvshows?.hits ?? []}
+		{@const totalHits = ($results.data.movies?.total_hits ?? 0) + ($results.data.tvshows?.total_hits ?? 0)}
 
-		{#if total_hits === 0}
+		{#if totalHits === 0}
 			<div class="py-16 text-center">
 				<p class="text-lg text-neutral-400">No results for "{debounced}"</p>
 			</div>
 		{:else}
-			<p class="mb-4 text-sm text-neutral-500">{total_hits} result{total_hits !== 1 ? 's' : ''}</p>
+			<p class="mb-4 text-sm text-neutral-500">{totalHits} result{totalHits !== 1 ? 's' : ''}</p>
 
-			{#if movies.length}
+			{#if movieHits.length}
 				<section class="mb-8">
 					<h2 class="mb-3 text-lg font-semibold text-white">Movies</h2>
 					<MediaGrid>
-						{#each movies as movie (movie.id)}
-							<MediaCard item={movie} type="movie" />
+						{#each movieHits as hit (hit.document.id)}
+							<MediaCard item={hit.document} type="movie" />
 						{/each}
 					</MediaGrid>
 				</section>
 			{/if}
 
-			{#if tvshows.length}
+			{#if tvHits.length}
 				<section class="mb-8">
 					<h2 class="mb-3 text-lg font-semibold text-white">TV Shows</h2>
 					<MediaGrid>
-						{#each tvshows as show (show.id)}
-							<MediaCard item={show} type="tvshow" />
+						{#each tvHits as hit (hit.document.id)}
+							<MediaCard item={hit.document} type="tvshow" />
 						{/each}
 					</MediaGrid>
 				</section>

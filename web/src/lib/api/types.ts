@@ -93,10 +93,10 @@ export interface Movie {
 }
 
 export interface MovieListResponse {
-	movies: Movie[];
+	items: Movie[];
 	total: number;
-	limit: number;
-	offset: number;
+	page?: number;
+	page_size?: number;
 }
 
 export interface MovieFile {
@@ -155,10 +155,10 @@ export interface TVSeries {
 }
 
 export interface TVShowListResponse {
-	tvshows: TVSeries[];
+	items: TVSeries[];
 	total: number;
-	limit: number;
-	offset: number;
+	page?: number;
+	page_size?: number;
 }
 
 export interface TVSeason {
@@ -290,24 +290,35 @@ export interface PlaybackProfile {
 
 // ─── Search ──────────────────────────────────────────────────────────────────
 
+export interface SearchHit {
+	document: Movie;
+	score?: number;
+	highlights?: Record<string, string[]>;
+}
+
+export interface TVShowSearchHit {
+	document: TVSeries;
+	score?: number;
+	highlights?: Record<string, string[]>;
+}
+
 export interface SearchResults {
-	hits: Movie[];
+	hits: SearchHit[];
 	total_hits: number;
 	total_pages: number;
 	current_page: number;
 }
 
 export interface TVShowSearchResults {
-	hits: TVSeries[];
+	hits: TVShowSearchHit[];
 	total_hits: number;
 	total_pages: number;
 	current_page: number;
 }
 
 export interface MultiSearchResults {
-	movies: Movie[];
-	tvshows: TVSeries[];
-	total_hits: number;
+	movies?: SearchResults;
+	tvshows?: TVShowSearchResults;
 }
 
 export interface AutocompleteResults {

@@ -13,7 +13,7 @@
 		queryFn: ({ pageParam = 0 }) =>
 			moviesApi.listMovies({ limit: PAGE_SIZE, offset: pageParam, order_by: sortBy }),
 		getNextPageParam: (lastPage, allPages) => {
-			const fetched = allPages.reduce((n, p) => n + p.movies.length, 0);
+			const fetched = allPages.reduce((n, p) => n + p.items.length, 0);
 			return fetched < lastPage.total ? fetched : undefined;
 		},
 		initialPageParam: 0
@@ -25,7 +25,7 @@
 		}
 	}
 
-	const allMovies = $derived(($query.data?.pages ?? []).flatMap((p) => p.movies));
+	const allMovies = $derived(($query.data?.pages ?? []).flatMap((p) => p.items));
 	const total = $derived($query.data?.pages?.[0]?.total ?? 0);
 </script>
 

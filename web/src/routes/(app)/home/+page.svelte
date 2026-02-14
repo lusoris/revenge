@@ -70,7 +70,7 @@
 	{#if $recentMovies.data}
 		<MediaRow
 			title="Recently Added Movies"
-			items={$recentMovies.data.movies}
+			items={$recentMovies.data.items}
 			type="movie"
 			href="/movies"
 		/>
@@ -80,7 +80,7 @@
 	{#if $recentTVShows.data}
 		<MediaRow
 			title="Recently Added TV Shows"
-			items={$recentTVShows.data.tvshows}
+			items={$recentTVShows.data.items}
 			type="tvshow"
 			href="/tvshows"
 		/>
@@ -96,7 +96,7 @@
 	{/if}
 
 	<!-- Empty state -->
-	{#if !$recentMovies.isPending && !$recentTVShows.isPending && !$recentMovies.data?.movies?.length && !$recentTVShows.data?.tvshows?.length}
+	{#if !$recentMovies.isPending && !$recentTVShows.isPending && !$recentMovies.data?.items?.length && !$recentTVShows.data?.items?.length}
 		<div class="py-16 text-center">
 			<p class="text-lg text-neutral-400">Your library is empty.</p>
 			<p class="mt-1 text-sm text-neutral-600">
