@@ -57,6 +57,7 @@ func NewPostgreSQLContainer(t *testing.T) *PostgreSQLContainer {
 				WithStartupTimeout(60*time.Second),
 			wait.ForListeningPort("5432/tcp"),
 		),
+		AutoRemove: true,
 	}
 
 	// Start container
@@ -124,12 +125,19 @@ func NewPostgreSQLContainer(t *testing.T) *PostgreSQLContainer {
 		t.Fatalf("failed to create database pool: %v", err)
 	}
 
-	return &PostgreSQLContainer{
+	pg := &PostgreSQLContainer{
 		container: container,
 		Pool:      pool,
 		URL:       dbURL,
 		Config:    cfg,
 	}
+
+	// Auto-cleanup when test ends (safety net for callers who forget defer)
+	t.Cleanup(func() {
+		pg.Close()
+	})
+
+	return pg
 }
 
 // Close stops the PostgreSQL container and closes the pool.
@@ -199,6 +207,7 @@ func NewDragonflyContainer(t *testing.T) *DragonflyContainer {
 				WithStartupTimeout(60*time.Second),
 			wait.ForListeningPort("6379/tcp"),
 		),
+		AutoRemove: true,
 	}
 
 	// Start container
@@ -226,12 +235,18 @@ func NewDragonflyContainer(t *testing.T) *DragonflyContainer {
 	// Build connection URL (Redis-compatible)
 	url := fmt.Sprintf("redis://%s:%s", host, port.Port())
 
-	return &DragonflyContainer{
+	df := &DragonflyContainer{
 		container: container,
 		URL:       url,
 		Host:      host,
 		Port:      port.Port(),
 	}
+
+	t.Cleanup(func() {
+		df.Close()
+	})
+
+	return df
 }
 
 // Close stops the Dragonfly container.
@@ -288,6 +303,7 @@ func NewTypesenseContainer(t *testing.T) *TypesenseContainer {
 				WithStartupTimeout(60*time.Second),
 			wait.ForListeningPort("8108/tcp"),
 		),
+		AutoRemove: true,
 	}
 
 	// Start container
@@ -315,13 +331,19 @@ func NewTypesenseContainer(t *testing.T) *TypesenseContainer {
 	// Build connection URL
 	url := fmt.Sprintf("http://%s:%s", host, port.Port())
 
-	return &TypesenseContainer{
+	ts := &TypesenseContainer{
 		container: container,
 		URL:       url,
 		Host:      host,
 		Port:      port.Port(),
 		APIKey:    apiKey,
 	}
+
+	t.Cleanup(func() {
+		ts.Close()
+	})
+
+	return ts
 }
 
 // Close stops the Typesense container.

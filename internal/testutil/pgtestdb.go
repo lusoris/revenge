@@ -47,6 +47,11 @@ func startSharedContainer(ctx context.Context) error {
 					WithOccurrence(2).
 					WithStartupTimeout(60*time.Second),
 			),
+			testcontainers.CustomizeRequest(testcontainers.GenericContainerRequest{
+				ContainerRequest: testcontainers.ContainerRequest{
+					AutoRemove: true,
+				},
+			}),
 		)
 		if err != nil {
 			sharedContainerErr = fmt.Errorf("failed to start postgres container: %w", err)
