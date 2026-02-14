@@ -132,18 +132,18 @@ func TestCache_Set_TTLBranches(t *testing.T) {
 			description: "Longer TTL stores in L1",
 		},
 		{
-			name:        "TTL shorter than L1 TTL deletes from L1",
+			name:        "TTL shorter than L1 TTL stores in L1",
 			ttl:         1 * time.Second,
 			l1TTL:       5 * time.Minute,
-			expectInL1:  false,
-			description: "Short TTL skips L1 to prevent stale reads",
+			expectInL1:  true,
+			description: "L1 has no per-key TTL, all items are stored",
 		},
 		{
-			name:        "sub-second TTL deletes from L1",
+			name:        "sub-second TTL stores in L1",
 			ttl:         100 * time.Millisecond,
 			l1TTL:       5 * time.Minute,
-			expectInL1:  false,
-			description: "Sub-second TTL skips L1",
+			expectInL1:  true,
+			description: "L1 has no per-key TTL, all items are stored",
 		},
 	}
 

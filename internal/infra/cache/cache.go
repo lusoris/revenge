@@ -68,7 +68,13 @@ func (c *Cache) Get(ctx context.Context, key string) ([]byte, error) {
 	}
 
 	cmd := c.client.rueidisClient.B().Get().Key(key).Cache()
-	resp := c.client.rueidisClient.DoCache(ctx, cmd, c.l1TTL)
+	// Use l1TTL as rueidis client-side cache TTL; if zero (unconfigured),
+	// fall back to DefaultL1TTL so rueidis CSC is actually used.
+	cscTTL := c.l1TTL
+	if cscTTL <= 0 {
+		cscTTL = DefaultL1TTL
+	}
+	resp := c.client.rueidisClient.DoCache(ctx, cmd, cscTTL)
 
 	if err := resp.Error(); err != nil {
 		observability.RecordCacheMiss(c.name, "l2")
@@ -86,14 +92,17 @@ func (c *Cache) Get(ctx context.Context, key string) ([]byte, error) {
 
 	observability.RecordCacheHit(c.name, "l2")
 
-	// Populate L1 on L2 hit
+	// Populate L1 on L2 hit and update size metric
 	c.l1.Set(key, val)
+	observability.CacheSize.WithLabelValues(c.name).Set(float64(c.l1.Size()))
 
 	return val, nil
 }
 
 // Set stores a value in both L1 and L2 caches.
-// For TTLs shorter than L1's TTL, skips L1 to ensure accurate expiration.
+// L1 always receives the value — it has no per-key TTL and relies on
+// server-pushed invalidations (RESP3 client tracking) plus size-based
+// eviction (W-TinyLFU) to stay fresh. L2 handles TTL-based expiration.
 func (c *Cache) Set(ctx context.Context, key string, value []byte, ttl time.Duration) error {
 	if c == nil {
 		return nil
@@ -104,15 +113,11 @@ func (c *Cache) Set(ctx context.Context, key string, value []byte, ttl time.Dura
 		observability.CacheOperationDuration.WithLabelValues(c.name, "set").Observe(time.Since(start).Seconds())
 	}()
 
-	// Only use L1 if TTL is longer than or equal to L1's TTL
-	// This ensures short-lived items expire accurately in L2
-	if ttl == 0 || ttl >= c.l1TTL {
-		c.l1.Set(key, value)
-		observability.CacheSize.WithLabelValues(c.name).Set(float64(c.l1.Size()))
-	} else {
-		// For short TTLs, remove from L1 to prevent stale reads
-		c.l1.Delete(key)
-	}
+	// Always populate L1 — otter has no per-key TTL, entries are evicted
+	// by the W-TinyLFU policy when capacity is reached, and invalidated
+	// by server push when the key changes in L2.
+	c.l1.Set(key, value)
+	observability.CacheSize.WithLabelValues(c.name).Set(float64(c.l1.Size()))
 
 	// Store in L2 if available
 	if c.client != nil && c.client.rueidisClient != nil {

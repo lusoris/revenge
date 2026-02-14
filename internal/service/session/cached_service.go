@@ -84,11 +84,11 @@ func (s *CachedService) ValidateSession(ctx context.Context, token string) (*db.
 
 // CreateSession creates a new session with write-through caching.
 // The session is written to both the database and cache simultaneously.
-func (s *CachedService) CreateSession(ctx context.Context, userID uuid.UUID, deviceInfo DeviceInfo, scopes []string) (string, string, error) {
+func (s *CachedService) CreateSession(ctx context.Context, userID uuid.UUID, deviceInfo DeviceInfo, scopes []string) (uuid.UUID, string, string, error) {
 	// Create session in database
-	token, refreshToken, err := s.Service.CreateSession(ctx, userID, deviceInfo, scopes)
+	sessionID, token, refreshToken, err := s.Service.CreateSession(ctx, userID, deviceInfo, scopes)
 	if err != nil {
-		return "", "", err
+		return uuid.Nil, "", "", err
 	}
 
 	// Write-through: cache the new session immediately
@@ -113,7 +113,7 @@ func (s *CachedService) CreateSession(ctx context.Context, userID uuid.UUID, dev
 		}
 	}
 
-	return token, refreshToken, nil
+	return sessionID, token, refreshToken, nil
 }
 
 // RevokeSession revokes a session and invalidates cache.

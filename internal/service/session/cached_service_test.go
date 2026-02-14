@@ -287,3 +287,8 @@ func (m *mockRepository) RevokeInactiveSessions(ctx context.Context, inactiveSin
 	m.incCall("RevokeInactiveSessions")
 	return nil
 }
+
+func (m *mockRepository) CountAllActiveSessions(ctx context.Context) (int64, error) {
+	m.incCall("CountAllActiveSessions")
+	return 0, nil
+}

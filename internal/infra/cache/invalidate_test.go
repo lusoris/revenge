@@ -493,7 +493,7 @@ func TestNewNamedCache(t *testing.T) {
 	assert.Equal(t, "movies", cache.name)
 }
 
-// TestCache_SetShortTTL tests that short TTLs skip L1
+// TestCache_SetShortTTL tests that all TTLs are stored in L1
 func TestCache_SetShortTTL(t *testing.T) {
 	client := &Client{
 		config: &config.Config{
@@ -511,13 +511,12 @@ func TestCache_SetShortTTL(t *testing.T) {
 
 	ctx := context.Background()
 
-	// Set with TTL shorter than L1 TTL - should delete from L1
+	// Set with TTL shorter than L1 TTL - L1 has no per-key TTL so all items are stored
 	err = cache.Set(ctx, "short_ttl", []byte("value"), 10*time.Second)
 	require.NoError(t, err)
 
-	// Should NOT be in L1 (TTL < L1 TTL causes delete)
 	_, ok := cache.l1.Get("short_ttl")
-	assert.False(t, ok, "Short TTL should skip L1 to prevent stale reads")
+	assert.True(t, ok, "All items should be stored in L1 regardless of TTL")
 
 	// Set with TTL equal to L1 TTL - should be in L1
 	err = cache.Set(ctx, "equal_ttl", []byte("value"), 1*time.Minute)
@@ -555,7 +554,7 @@ func TestCache_SetSubSecondTTL(t *testing.T) {
 	err = cache.Set(ctx, "subsecond", []byte("value"), 500*time.Millisecond)
 	require.NoError(t, err)
 
-	// Should NOT be in L1 (short TTL)
+	// L1 has no per-key TTL, all items are stored
 	_, ok := cache.l1.Get("subsecond")
-	assert.False(t, ok, "Sub-second TTL should skip L1")
+	assert.True(t, ok, "All items should be stored in L1 regardless of TTL")
 }

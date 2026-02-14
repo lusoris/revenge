@@ -7,7 +7,7 @@ import (
 
 // Get implements the type-safe cache-aside pattern using generics.
 // It first checks the cache (via GetJSON), and on miss calls the loader
-// function, stores the result asynchronously, and returns it.
+// function, stores the result synchronously, and returns it.
 //
 // If c is nil, the loader is called directly (no caching).
 //
@@ -34,12 +34,11 @@ func Get[T any](ctx context.Context, c *Cache, key string, ttl time.Duration, lo
 		return zero, err
 	}
 
-	// Store in cache asynchronously (fire-and-forget)
-	go func() {
-		cacheCtx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
-		defer cancel()
-		_ = c.SetJSON(cacheCtx, key, result, ttl)
-	}()
+	// Store in cache synchronously — L1 (otter) Set is O(1) (~100ns)
+	// and L2 (Dragonfly) Set takes <1ms on local connections.
+	// Previous async fire-and-forget caused L1 entries to be lost,
+	// requiring an extra L2 roundtrip to warm L1 on first access.
+	_ = c.SetJSON(ctx, key, result, ttl)
 
 	return result, nil
 }

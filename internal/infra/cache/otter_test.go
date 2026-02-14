@@ -309,3 +309,21 @@ func TestSimpleGlobPrefix(t *testing.T) {
 		})
 	}
 }
+
+func TestL1Cache_ByteSlice_ZeroTTL(t *testing.T) {
+	// Matches production config: NewL1Cache[string, []byte](0, 0)
+	// maxSize=0 defaults to 10000, ttl=0 means no expiry
+	cache, err := NewL1Cache[string, []byte](0, 0)
+	require.NoError(t, err)
+	defer cache.Close()
+
+	key := "movie:list:abc123"
+	val := []byte(`{"test": true}`)
+
+	cache.Set(key, val)
+
+	got, ok := cache.Get(key)
+	assert.True(t, ok, "L1 Get should find the value immediately after Set")
+	assert.Equal(t, val, got)
+	assert.Equal(t, 1, cache.Size(), "EstimatedSize should be 1 after one Set")
+}
