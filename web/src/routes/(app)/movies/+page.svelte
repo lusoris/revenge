@@ -8,8 +8,8 @@
 
 	const PAGE_SIZE = 30;
 
-	const sortByStore = writable('created_at');
-	let sortBy = $state('created_at');
+	const sortByStore = writable('added');
+	let sortBy = $state('added');
 	$effect(() => {
 		sortByStore.set(sortBy);
 	});
@@ -54,10 +54,10 @@
 			bind:value={sortBy}
 			class="rounded-lg border border-neutral-800 bg-neutral-900 px-3 py-1.5 text-sm text-neutral-300 outline-none"
 		>
-			<option value="created_at">Recently Added</option>
+			<option value="added">Recently Added</option>
 			<option value="title">Title</option>
-			<option value="release_date">Release Date</option>
-			<option value="vote_average">Rating</option>
+			<option value="year">Release Year</option>
+			<option value="rating">Rating</option>
 		</select>
 	</div>
 

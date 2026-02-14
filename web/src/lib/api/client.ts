@@ -86,7 +86,7 @@ async function doRefresh(): Promise<boolean> {
 	if (!rt) return false;
 
 	try {
-		const res = await fetch(`${API_BASE}/v1/sessions/refresh`, {
+		const res = await fetch(`${API_BASE}/v1/auth/refresh`, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ refresh_token: rt })
@@ -98,7 +98,9 @@ async function doRefresh(): Promise<boolean> {
 		}
 
 		const data = await res.json();
-		setTokens(data.access_token, data.refresh_token, data.expires_in);
+		// /auth/refresh returns only access_token + expires_in (no new refresh_token)
+		// Keep existing refresh token if the response doesn't include a new one
+		setTokens(data.access_token, data.refresh_token ?? rt, data.expires_in);
 		return true;
 	} catch {
 		clearTokens();
