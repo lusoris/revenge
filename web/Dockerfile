@@ -13,11 +13,11 @@ RUN pnpm install --frozen-lockfile 2>/dev/null || pnpm install
 COPY . .
 RUN pnpm build
 
-# Runtime stage — nginx serving static files
-FROM nginx:alpine
+# Runtime stage — nginx with brotli module for pre-compressed static assets
+FROM fholzer/nginx-brotli:latest
 
 # Remove default nginx config
-RUN rm /etc/nginx/conf.d/default.conf
+RUN rm -f /etc/nginx/conf.d/default.conf
 
 # Copy custom nginx config
 COPY nginx.conf /etc/nginx/nginx.conf
@@ -34,6 +34,6 @@ USER nginx
 EXPOSE 3000
 
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-	CMD wget --no-verbose --tries=1 --spider http://localhost:3000/health || exit 1
+	CMD wget --no-verbose --tries=1 --spider http://127.0.0.1:3000/health || exit 1
 
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["-g", "daemon off;"]
