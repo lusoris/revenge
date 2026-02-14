@@ -3,7 +3,7 @@
 import { check, group, sleep } from 'k6';
 import { Counter, Rate, Trend } from 'k6/metrics';
 import { PROFILES, THRESHOLDS } from './config.js';
-import { authGet, extractItems, login, randomFrom } from './helpers.js';
+import { authGet, ensureUserPool, extractItems, getToken, login, randomFrom, vuUser } from './helpers.js';
 
 // Custom metrics
 const endpointErrors = new Counter('endpoint_errors');
@@ -33,8 +33,11 @@ let libraryIds = [];
 let sessionIds = [];
 
 export function setup() {
-    // Login and get initial data
-    const token = login();
+    // Create/ensure multi-user pool
+    const userPool = ensureUserPool();
+
+    // Login as first user to discover content IDs — token is NOT shared with VUs
+    const token = login(userPool[0]);
     if (!token) {
         throw new Error('Failed to login during setup');
     }
@@ -75,11 +78,17 @@ export function setup() {
 
     console.log(`Setup complete: ${movieIds.length} movies, ${tvshowIds.length} tvshows, ${libraryIds.length} libraries`);
 
-    return { token, movieIds, tvshowIds, seasonIds, episodeIds, libraryIds, sessionIds };
+    return { movieIds, tvshowIds, seasonIds, episodeIds, libraryIds, sessionIds, userPool };
 }
 
 export default function(data) {
-    const token = data.token;
+    // Each VU gets its own user from the pool + own token
+    const user = vuUser(data.userPool);
+    const token = getToken(user);
+    if (!token) {
+        console.error('VU login failed, skipping iteration');
+        return;
+    }
     const movieId = randomFrom(data.movieIds) || '00000000-0000-0000-0000-000000000001';
     const tvshowId = randomFrom(data.tvshowIds) || '00000000-0000-0000-0000-000000000001';
     const seasonId = randomFrom(data.seasonIds) || '00000000-0000-0000-0000-000000000001';

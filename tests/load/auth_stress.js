@@ -4,8 +4,8 @@
 import { check, group, sleep } from 'k6';
 import http from 'k6/http';
 import { Counter, Rate, Trend } from 'k6/metrics';
-import { API_BASE, PROFILES, TEST_USER } from './config.js';
-import { randomString, sleepWithJitter, vuIP } from './helpers.js';
+import { API_BASE, PROFILES } from './config.js';
+import { ensureUserPool, randomString, sleepWithJitter, vuIP, vuUser } from './helpers.js';
 
 // Metrics
 const loginAttempts = new Counter('auth_login_attempts');
@@ -28,10 +28,13 @@ export const options = {
 };
 
 export function setup() {
-    // Verify basic auth works
+    // Create/ensure multi-user pool
+    const userPool = ensureUserPool();
+
+    // Verify basic auth works with first user
     const res = http.post(
         `${API_BASE}/auth/login`,
-        JSON.stringify(TEST_USER),
+        JSON.stringify(userPool[0]),
         { headers: { 'Content-Type': 'application/json', 'X-Forwarded-For': '10.255.255.254' } }
     );
 
@@ -41,16 +44,17 @@ export function setup() {
 
     const body = JSON.parse(res.body);
     console.log('Auth setup verified');
-    return { baseRefreshToken: body.refresh_token };
+    return { baseRefreshToken: body.refresh_token, userPool };
 }
 
 export default function(data) {
+    const user = vuUser(data.userPool);
     // Randomly choose auth operation
     const operations = [
-        { weight: 40, fn: () => testLogin() },
-        { weight: 30, fn: () => testRefresh(data) },
-        { weight: 20, fn: () => testSessionOps() },
-        { weight: 10, fn: () => testMFAStatus() },
+        { weight: 40, fn: () => testLogin(user) },
+        { weight: 30, fn: () => testRefresh(data, user) },
+        { weight: 20, fn: () => testSessionOps(user) },
+        { weight: 10, fn: () => testMFAStatus(user) },
     ];
 
     // Weighted selection
@@ -67,7 +71,7 @@ export default function(data) {
     sleep(sleepWithJitter(0.2, 0.1));
 }
 
-function testLogin() {
+function testLogin(user) {
     group('Login Flow', () => {
         const start = Date.now();
 
@@ -76,7 +80,7 @@ function testLogin() {
 
         let res = http.post(
             `${API_BASE}/auth/login`,
-            JSON.stringify(TEST_USER),
+            JSON.stringify(user),
             { headers: xffHeaders, tags: { name: 'login' } }
         );
 
@@ -116,14 +120,14 @@ function testLogin() {
     });
 }
 
-function testRefresh(data) {
+function testRefresh(data, user) {
     group('Token Refresh', () => {
         const xffHeaders = { 'Content-Type': 'application/json', 'X-Forwarded-For': vuIP() };
 
         // First login to get fresh tokens
         const loginRes = http.post(
             `${API_BASE}/auth/login`,
-            JSON.stringify(TEST_USER),
+            JSON.stringify(user),
             { headers: xffHeaders }
         );
 
@@ -172,13 +176,13 @@ function testRefresh(data) {
     });
 }
 
-function testSessionOps() {
+function testSessionOps(user) {
     group('Session Operations', () => {
         const ip = vuIP();
         // Login first
         const loginRes = http.post(
             `${API_BASE}/auth/login`,
-            JSON.stringify(TEST_USER),
+            JSON.stringify(user),
             { headers: { 'Content-Type': 'application/json', 'X-Forwarded-For': ip } }
         );
 
@@ -203,19 +207,23 @@ function testSessionOps() {
 
         sleep(sleepWithJitter(0.1));
 
-        // Session refresh
-        res = http.post(`${API_BASE}/sessions/refresh`, null, { headers, tags: { name: 'session_refresh' } });
+        // Session refresh (requires refresh_token in body)
+        res = http.post(
+            `${API_BASE}/sessions/refresh`,
+            JSON.stringify({ refresh_token: tokens.refresh_token }),
+            { headers, tags: { name: 'session_refresh' } }
+        );
         check(res, { 'session refresh': (r) => r.status === 200 });
     });
 }
 
-function testMFAStatus() {
+function testMFAStatus(user) {
     group('MFA Status Check', () => {
         const ip = vuIP();
         // Login first
         const loginRes = http.post(
             `${API_BASE}/auth/login`,
-            JSON.stringify(TEST_USER),
+            JSON.stringify(user),
             { headers: { 'Content-Type': 'application/json', 'X-Forwarded-For': ip } }
         );
 
@@ -232,10 +240,10 @@ function testMFAStatus() {
         const res = http.get(`${API_BASE}/mfa/status`, { headers, tags: { name: 'mfa_status' } });
         check(res, {
             'mfa status returns': (r) => r.status === 200,
-            'has enabled field': (r) => {
+            'has mfa fields': (r) => {
                 try {
                     const body = JSON.parse(r.body);
-                    return body.enabled !== undefined;
+                    return body.has_totp !== undefined || body.require_mfa !== undefined;
                 } catch { return false; }
             },
         });

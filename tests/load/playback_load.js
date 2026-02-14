@@ -8,11 +8,14 @@ import {
     authDelete,
     authGet,
     authPost,
+    ensureUserPool,
     extractItems,
+    getToken,
     login,
     randomFrom,
     randomInt,
     sleepWithJitter,
+    vuUser,
     weightedRandom,
 } from './helpers.js';
 
@@ -48,7 +51,10 @@ const SCENARIOS = [
 ];
 
 export function setup() {
-    const token = login();
+    // Create/ensure multi-user pool
+    const userPool = ensureUserPool();
+
+    const token = login(userPool[0]);
     if (!token) {
         throw new Error('Setup login failed');
     }
@@ -84,13 +90,27 @@ export function setup() {
     }
 
     console.log(`Setup: ${movieIds.length} movies, ${episodeIds.length} episodes for playback`);
-    return { token, movieIds, episodeIds };
+    if (movieIds.length === 0 && episodeIds.length === 0) {
+        throw new Error(
+            'No movies or episodes found. Run tests/load/seed_playback_data.sh to insert test content, or ensure a library scan has completed.'
+        );
+    }
+    return { movieIds, episodeIds, userPool };
 }
 
 export default function (data) {
+    // Each VU gets its own user from the pool + own token via per-VU login cache
+    const user = vuUser(data.userPool);
+    const token = getToken(user);
+    if (!token) {
+        console.error('VU login failed, skipping iteration');
+        return;
+    }
+    const vuData = { ...data, token };
+
     const scenario = weightedRandom(SCENARIOS);
     try {
-        scenario.fn(data);
+        scenario.fn(vuData);
     } catch (e) {
         console.error(`Scenario ${scenario.name} failed: ${e.message}`);
         sessionLifecycleErrors.add(1, { scenario: scenario.name });

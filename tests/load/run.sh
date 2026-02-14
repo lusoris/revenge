@@ -42,6 +42,13 @@ echo "Target:   ${BASE_URL:-http://localhost:8096}"
 echo "========================================"
 echo ""
 
+# Auto-seed playback test data if running playback_load
+if [[ "$TEST" == "playback_load" ]]; then
+    echo "Seeding playback test data..."
+    "${SCRIPT_DIR}/seed_playback_data.sh"
+    echo ""
+fi
+
 # Run k6
 k6 run \
     --env PROFILE="$PROFILE" \

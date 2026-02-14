@@ -2,7 +2,7 @@
 export const BASE_URL = __ENV.BASE_URL || 'http://localhost:8096';
 export const API_BASE = `${BASE_URL}/api/v1`;
 
-// Default test credentials
+// Default test credentials (single-user fallback)
 export const TEST_USER = {
     username: __ENV.TEST_USER || 'dbg_ext1',
     password: __ENV.TEST_PASS || 'TestPass123!',
@@ -13,6 +13,24 @@ export const ADMIN_USER = {
     username: __ENV.ADMIN_USER || 'admin',
     password: __ENV.ADMIN_PASS || 'Admin123!',
 };
+
+// Number of load test users to create/use (distributed across VUs)
+export const USER_POOL_SIZE = parseInt(__ENV.USER_POOL_SIZE || '20');
+
+// Load test user pool — generated in setup(), distributed across VUs
+// Each user: { username: 'loadtest_01', password: 'TestPass123!' }
+export function buildUserPool(size = USER_POOL_SIZE) {
+    const pool = [];
+    for (let i = 1; i <= size; i++) {
+        const idx = String(i).padStart(2, '0');
+        pool.push({
+            username: `loadtest_${idx}`,
+            email: `lt${idx}@loadtest.local`,
+            password: 'TestPass123!',
+        });
+    }
+    return pool;
+}
 
 // Thresholds for different load profiles
 // Note: http_req_failed counts non-2xx as failures, but 404/403 are valid API responses

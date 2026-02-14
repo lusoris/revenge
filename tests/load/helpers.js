@@ -2,10 +2,65 @@
 import { check } from 'k6';
 import exec from 'k6/execution';
 import http from 'k6/http';
-import { API_BASE, TEST_USER } from './config.js';
+import { API_BASE, TEST_USER, buildUserPool } from './config.js';
 
-// Cache tokens to avoid excessive logins
+// Per-VU token cache (each VU has its own JS runtime in k6)
 let cachedTokens = {};
+
+/**
+ * Ensure all load test users exist by registering them.
+ * Call this from setup() — registration is idempotent (409 = already exists).
+ * @param {number} poolSize - Number of users to create
+ * @returns {Array} Array of {username, password} objects
+ */
+export function ensureUserPool(poolSize) {
+    const pool = buildUserPool(poolSize);
+    for (const user of pool) {
+        const res = http.post(
+            `${API_BASE}/auth/register`,
+            JSON.stringify({
+                username: user.username,
+                email: user.email,
+                password: user.password,
+            }),
+            {
+                headers: { 'Content-Type': 'application/json' },
+                tags: { name: 'setup_register' },
+            }
+        );
+        // 201 = created, 409 = already exists — both are fine
+        // Server may return 400 with code:409 in body for duplicates
+        if (res.status !== 201 && res.status !== 409 && res.status !== 400) {
+            console.warn(`Failed to create user ${user.username}: ${res.status} ${res.body}`);
+        }
+    }
+    console.log(`User pool ready: ${pool.length} users`);
+    return pool;
+}
+
+/**
+ * Get the user assigned to the current VU from the pool.
+ * Distributes users round-robin across VUs.
+ * @param {Array} userPool - Array of {username, password} from setup()
+ * @returns {Object} {username, password}
+ */
+export function vuUser(userPool) {
+    if (!userPool || userPool.length === 0) {
+        return TEST_USER;
+    }
+    const idx = ((exec.vu.idInTest || 1) - 1) % userPool.length;
+    return userPool[idx];
+}
+
+/**
+ * Get a per-VU access token, logging in lazily on first call.
+ * Use this instead of data.token to ensure each VU has its own session.
+ * @param {Object} user - User credentials {username, password}
+ * @returns {string} Access token
+ */
+export function getToken(user = TEST_USER) {
+    return login(user);
+}
 
 /**
  * Generate a unique synthetic IP per VU.
@@ -177,7 +232,7 @@ export function checkJSON(res) {
 export function extractItems(res) {
     try {
         const body = JSON.parse(res.body);
-        return body.items || body.data || body.movies || body.tvshows || body.sessions || [];
+        return body.items || body.data || body.movies || body.tvshows || body.sessions || body.libraries || body.episodes || [];
     } catch {
         return [];
     }

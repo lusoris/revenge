@@ -5,9 +5,11 @@ import { Counter, Trend } from 'k6/metrics';
 import { PROFILES } from './config.js';
 import {
     authGet,
+    ensureUserPool,
     extractItems,
+    getToken,
     login,
-    randomFrom, sleepWithJitter, weightedRandom
+    randomFrom, sleepWithJitter, vuUser, weightedRandom
 } from './helpers.js';
 
 // Metrics
@@ -46,7 +48,11 @@ const SCENARIOS = [
 ];
 
 export function setup() {
-    const token = login();
+    // Create/ensure multi-user pool
+    const userPool = ensureUserPool();
+
+    // Login as first user to discover content IDs — token is NOT shared with VUs
+    const token = login(userPool[0]);
     if (!token) {
         throw new Error('Setup login failed');
     }
@@ -79,15 +85,24 @@ export function setup() {
     }
 
     console.log(`Setup: ${movieIds.length} movies, ${tvshowIds.length} shows, ${seasonIds.length} seasons`);
-    return { token, movieIds, tvshowIds, seasonIds };
+    return { movieIds, tvshowIds, seasonIds, userPool };
 }
 
 export function browserSession(data) {
+    // Each VU gets its own user from the pool + own token via per-VU login cache
+    const user = vuUser(data.userPool);
+    const token = getToken(user);
+    if (!token) {
+        console.error('VU login failed, skipping iteration');
+        return;
+    }
+    const vuData = { ...data, token };
+
     const scenario = weightedRandom(SCENARIOS);
     const start = Date.now();
 
     try {
-        scenario.fn(data);
+        scenario.fn(vuData);
         scenarioCounter.add(1, { scenario: scenario.name });
         scenarioLatency.add(Date.now() - start, { scenario: scenario.name });
     } catch (e) {

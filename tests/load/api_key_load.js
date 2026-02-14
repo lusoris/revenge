@@ -9,11 +9,14 @@ import {
     authDelete,
     authGet,
     authPost,
+    ensureUserPool,
+    getToken,
     login,
     randomFrom,
     randomInt,
     randomString,
     sleepWithJitter,
+    vuUser,
     weightedRandom
 } from './helpers.js';
 
@@ -49,7 +52,10 @@ const SCENARIOS = [
 ];
 
 export function setup() {
-    const token = login();
+    // Create/ensure multi-user pool
+    const userPool = ensureUserPool();
+
+    const token = login(userPool[0]);
     if (!token) {
         throw new Error('Setup login failed');
     }
@@ -93,13 +99,22 @@ export function setup() {
     }
 
     console.log(`Setup: ${apiKeys.length} pre-created API keys, ${movieIds.length} movies`);
-    return { token, apiKeys, keyIds, movieIds };
+    return { apiKeys, keyIds, movieIds, userPool };
 }
 
 export default function (data) {
+    // Each VU gets its own user from the pool + own token via per-VU login cache
+    const user = vuUser(data.userPool);
+    const token = getToken(user);
+    if (!token) {
+        console.error('VU login failed, skipping iteration');
+        return;
+    }
+    const vuData = { ...data, token };
+
     const scenario = weightedRandom(SCENARIOS);
     try {
-        scenario.fn(data);
+        scenario.fn(vuData);
     } catch (e) {
         console.error(`Scenario ${scenario.name} failed: ${e.message}`);
     }
@@ -325,7 +340,7 @@ function keyManagement(data) {
 
 export function teardown(data) {
     // Clean up pre-created pool keys
-    const token = data.token;
+    const token = login(data.userPool[0]);
     for (const keyId of data.keyIds) {
         authDelete(`/apikeys/${keyId}`, token);
     }

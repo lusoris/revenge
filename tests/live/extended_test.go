@@ -277,28 +277,28 @@ func TestLive_LibraryPermissions(t *testing.T) {
 	t.Run("find_library", func(t *testing.T) {
 		status, body := doJSON(t, "GET", "/api/v1/libraries", tok, nil)
 		assert.Equal(t, 200, status)
-		if items, ok := body["items"].([]interface{}); ok && len(items) > 0 {
-			if item, ok := items[0].(map[string]interface{}); ok {
+		if libs, ok := body["libraries"].([]interface{}); ok && len(libs) > 0 {
+			if item, ok := libs[0].(map[string]interface{}); ok {
 				libraryID, _ = item["id"].(string)
 			}
 		}
 		if libraryID == "" {
-			// Create a library
+			// Create a library (fields match CreateLibraryRequest schema)
 			createStatus, createBody := doJSON(t, "POST", "/api/v1/libraries", tok, map[string]interface{}{
-				"name":         "Test Library",
-				"type":         "movie",
-				"paths":        []string{"/media/movies"},
-				"agent":        "tmdb",
-				"scan_enabled": false,
+				"name":              "Test Library",
+				"type":              "movie",
+				"paths":             []string{"/media/movies"},
+				"metadata_provider": "tmdb",
 			})
-			if createStatus == 201 || createStatus == 200 {
-				libraryID, _ = createBody["id"].(string)
-			}
+			require.True(t, createStatus == 201 || createStatus == 200,
+				"create library should succeed (got %d): %v", createStatus, createBody)
+			libraryID, _ = createBody["id"].(string)
+			require.NotEmpty(t, libraryID, "library ID should not be empty")
 		}
 	})
 
 	if libraryID == "" {
-		t.Skip("no library available to test permissions")
+		t.Fatal("no library available to test permissions — find_library should have created one")
 	}
 
 	t.Run("get_library_details", func(t *testing.T) {
@@ -316,12 +316,13 @@ func TestLive_LibraryPermissions(t *testing.T) {
 	// Grant permission to a user
 	t.Run("grant_user_permission", func(t *testing.T) {
 		user := registerAndLogin(t)
-		status, _ := doJSON(t, "PUT",
-			"/api/v1/libraries/"+libraryID+"/permissions/"+user.userID,
+		status, _ := doJSON(t, "POST",
+			"/api/v1/libraries/"+libraryID+"/permissions",
 			tok, map[string]interface{}{
-				"can_access": true,
+				"user_id":    user.userID,
+				"permission": "view",
 			})
-		assert.True(t, status == 200 || status == 204 || status == 201,
+		assert.True(t, status == 200 || status == 201,
 			"grant permission should succeed (got %d)", status)
 	})
 
@@ -334,7 +335,9 @@ func TestLive_LibraryPermissions(t *testing.T) {
 
 	// Trigger scan (won't actually find files but should accept the request)
 	t.Run("trigger_scan", func(t *testing.T) {
-		status, _ := doJSON(t, "POST", "/api/v1/libraries/"+libraryID+"/scan", tok, nil)
+		status, _ := doJSON(t, "POST", "/api/v1/libraries/"+libraryID+"/scan", tok, map[string]interface{}{
+			"scan_type": "full",
+		})
 		assert.True(t, status == 200 || status == 202 || status == 204 || status == 404,
 			"trigger scan should be accepted (got %d)", status)
 	})

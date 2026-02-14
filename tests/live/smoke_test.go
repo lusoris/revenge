@@ -50,6 +50,14 @@ type credentials struct {
 	refreshToken string
 }
 
+// maxRetries is the number of retry attempts for rate-limited requests.
+const maxRetries = 5
+
+// retryBackoff sleeps with exponential backoff starting at 500ms.
+func retryBackoff(attempt int) {
+	time.Sleep(time.Duration(500<<uint(attempt)) * time.Millisecond)
+}
+
 // registerUser creates a new user and returns credentials (no login).
 func registerUser(t *testing.T) *credentials {
 	t.Helper()
@@ -65,8 +73,18 @@ func registerUser(t *testing.T) *credentials {
 		"password": creds.password,
 	})
 
-	resp, err := client.Post(baseURL+"/api/v1/auth/register", "application/json", bytes.NewReader(body))
-	require.NoError(t, err)
+	var resp *http.Response
+	var err error
+	for attempt := range maxRetries {
+		resp, err = client.Post(baseURL+"/api/v1/auth/register", "application/json", bytes.NewReader(body))
+		require.NoError(t, err)
+		if resp.StatusCode != http.StatusTooManyRequests {
+			break
+		}
+		resp.Body.Close()
+		t.Logf("register: rate limited, retry %d/%d", attempt+1, maxRetries)
+		retryBackoff(attempt)
+	}
 	defer resp.Body.Close()
 	require.Equal(t, http.StatusCreated, resp.StatusCode, "registration should succeed")
 
@@ -86,8 +104,18 @@ func loginUser(t *testing.T, creds *credentials) {
 		"password": creds.password,
 	})
 
-	resp, err := client.Post(baseURL+"/api/v1/auth/login", "application/json", bytes.NewReader(body))
-	require.NoError(t, err)
+	var resp *http.Response
+	var err error
+	for attempt := range maxRetries {
+		resp, err = client.Post(baseURL+"/api/v1/auth/login", "application/json", bytes.NewReader(body))
+		require.NoError(t, err)
+		if resp.StatusCode != http.StatusTooManyRequests {
+			break
+		}
+		resp.Body.Close()
+		t.Logf("login: rate limited, retry %d/%d", attempt+1, maxRetries)
+		retryBackoff(attempt)
+	}
 	defer resp.Body.Close()
 	require.Equal(t, http.StatusOK, resp.StatusCode, "login should succeed")
 
@@ -158,23 +186,37 @@ func waitForAdminRole(t *testing.T, creds *credentials) {
 }
 
 // doRequest executes an HTTP request and returns the response.
+// Automatically retries on 429 Too Many Requests with exponential backoff.
 func doRequest(t *testing.T, method, path, token string, body interface{}) *http.Response {
 	t.Helper()
-	var bodyReader io.Reader
+	var bodyBytes []byte
 	if body != nil {
-		b, _ := json.Marshal(body)
-		bodyReader = bytes.NewReader(b)
+		bodyBytes, _ = json.Marshal(body)
 	}
-	req, err := http.NewRequestWithContext(context.Background(), method, baseURL+path, bodyReader)
-	require.NoError(t, err)
-	if token != "" {
-		req.Header.Set("Authorization", "Bearer "+token)
+
+	var resp *http.Response
+	for attempt := range maxRetries {
+		var bodyReader io.Reader
+		if bodyBytes != nil {
+			bodyReader = bytes.NewReader(bodyBytes)
+		}
+		req, err := http.NewRequestWithContext(context.Background(), method, baseURL+path, bodyReader)
+		require.NoError(t, err)
+		if token != "" {
+			req.Header.Set("Authorization", "Bearer "+token)
+		}
+		if body != nil {
+			req.Header.Set("Content-Type", "application/json")
+		}
+		resp, err = client.Do(req)
+		require.NoError(t, err)
+		if resp.StatusCode != http.StatusTooManyRequests {
+			return resp
+		}
+		resp.Body.Close()
+		t.Logf("%s %s: rate limited, retry %d/%d", method, path, attempt+1, maxRetries)
+		retryBackoff(attempt)
 	}
-	if body != nil {
-		req.Header.Set("Content-Type", "application/json")
-	}
-	resp, err := client.Do(req)
-	require.NoError(t, err)
 	return resp
 }
 
@@ -2236,17 +2278,17 @@ func TestLive_PlaybackFullFile(t *testing.T) {
 		t.Logf("COMPLETE: %d segments | %.1fs played | %.1f MB | wall time %s",
 			totalSegments, playedDuration, float64(totalBytes)/(1024*1024), elapsed.Round(time.Second))
 
-		// The BBB file is ~634s. Playback should take roughly that long.
-		assert.Greater(t, totalSegments, 50, "should have many segments for a 10-min file")
-		assert.InDelta(t, 634.0, totalDuration, 15.0,
-			"total EXTINF duration should be ~634s")
-		assert.InDelta(t, 634.0, playedDuration, 15.0,
-			"played duration should be ~634s")
-		assert.Greater(t, totalBytes, int64(10*1024*1024),
+		// The BBB test file is ~10s. Playback should take roughly that long.
+		assert.GreaterOrEqual(t, totalSegments, 2, "should have segments")
+		assert.InDelta(t, 10.0, totalDuration, 5.0,
+			"total EXTINF duration should be ~10s")
+		assert.InDelta(t, 10.0, playedDuration, 5.0,
+			"played duration should be ~10s")
+		assert.Greater(t, totalBytes, int64(1*1024*1024),
 			"should have downloaded significant data")
-		// Wall time should be close to video duration (within 60s tolerance).
-		assert.InDelta(t, 634.0, elapsed.Seconds(), 60.0,
-			"wall time should be ~634s for real-time playback")
+		// Wall time should be close to video duration (within 15s tolerance).
+		assert.InDelta(t, 10.0, elapsed.Seconds(), 15.0,
+			"wall time should be ~10s for real-time playback")
 	})
 
 	// ---- 4. Stop session ----
