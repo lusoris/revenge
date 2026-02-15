@@ -4,6 +4,7 @@
 	import * as tvshowsApi from '$api/endpoints/tvshows';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
+	import CastCarousel from '$components/media/CastCarousel.svelte';
 	import { createQuery } from '@tanstack/svelte-query';
 
 	const showId = $derived(page.params.id);
@@ -52,12 +53,11 @@
 	);
 
 	async function playEpisode(episodeId: string) {
-		const filesData = await tvshowsApi.getEpisodeFiles(episodeId);
-		if (!filesData?.length) return;
 		const session = await playbackApi.startPlayback({
-			episode_file_id: filesData[0].id
+			media_type: 'episode',
+			media_id: episodeId
 		});
-		goto(`/play/${session.id}`);
+		goto(`/play/${session.session_id}`);
 	}
 
 	async function playNext() {
@@ -203,30 +203,6 @@
 
 	<!-- Cast -->
 	{#if cast.data?.items?.length}
-		<section class="mb-8">
-			<h2 class="mb-3 text-lg font-semibold text-white">Cast</h2>
-			<div class="flex gap-3 overflow-x-auto pb-2">
-				{#each cast.data.items.slice(0, 20) as person (person.id)}
-					<div class="w-24 flex-shrink-0 text-center">
-						{#if person.profile_path}
-							<img
-								src={imageUrl('profile', 'w185', person.profile_path)}
-								alt={person.name}
-								class="mx-auto h-24 w-24 rounded-full object-cover"
-								loading="lazy"
-							/>
-						{:else}
-							<div class="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-neutral-800 text-neutral-600">
-								👤
-							</div>
-						{/if}
-						<p class="mt-1 truncate text-xs font-medium text-neutral-300">{person.name}</p>
-						{#if person.character}
-							<p class="truncate text-xs text-neutral-600">{person.character}</p>
-						{/if}
-					</div>
-				{/each}
-			</div>
-		</section>
+		<CastCarousel items={cast.data.items.slice(0, 20)} />
 	{/if}
 {/if}

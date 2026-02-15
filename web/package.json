@@ -21,6 +21,7 @@
     "@tailwindcss/vite": "^4.0.0",
     "@types/node": "^22.0.0",
     "bits-ui": "^2.15.5",
+    "embla-carousel-svelte": "^8.6.0",
     "eslint": "^9.0.0",
     "prettier": "^3.4.0",
     "prettier-plugin-svelte": "^3.3.0",

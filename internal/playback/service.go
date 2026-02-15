@@ -75,8 +75,26 @@ func (s *Service) StartSession(ctx context.Context, userID uuid.UUID, req *Start
 		return nil, fmt.Errorf("failed to probe media: %w", err)
 	}
 
-	// 3. Analyze transcode decision
-	decision := transcode.AnalyzeMedia(info, s.profiles)
+	// 3. Analyze transcode decision (with client capabilities)
+	var clientCaps *transcode.ClientCapabilities
+	profile := req.ClientProfile
+	if profile == nil && req.UserAgent != "" {
+		profile = ProfileFromUserAgent(req.UserAgent)
+	}
+	if profile == nil {
+		// No client info at all — use conservative default (no DV, basic codecs)
+		def := DefaultBrowserProfile()
+		profile = &def
+	}
+	if profile != nil {
+		clientCaps = &transcode.ClientCapabilities{
+			VideoCodecs:         profile.VideoCodecs,
+			AudioCodecs:         profile.AudioCodecs,
+			SupportsDolbyVision: profile.SupportsDolbyVision,
+			SupportsHDR10:       profile.SupportsHDR10,
+		}
+	}
+	decision := transcode.AnalyzeMedia(info, s.profiles, clientCaps)
 
 	// 4. Create session
 	sessionID := uuid.Must(uuid.NewV7())
@@ -110,20 +128,25 @@ func (s *Service) StartSession(ctx context.Context, userID uuid.UUID, req *Start
 		return nil, fmt.Errorf("failed to create segment dir: %w", err)
 	}
 
-	// 6. Start video-only FFmpeg pipelines per quality profile (async, non-blocking)
+	// 6. Start the "original" profile eagerly — it's a remux (no transcode),
+	// so it starts producing segments almost instantly. This is the default
+	// quality the player will load first. Lower-quality transcodes (1080p, 720p,
+	// 480p) are started on-demand when the player requests them.
 	for _, pd := range decision.Profiles {
-		if _, err := s.pipeline.StartVideoSegmenting(ctx, sessionID, filePath, segmentDir, pd, req.StartPosition); err != nil {
-			s.logger.Error("failed to start video segmenting",
-				slog.String("session_id", sessionID.String()),
-				slog.String("profile", pd.Name),
-				slog.String("error", err.Error()),
-			)
+		if pd.Name == "original" {
+			if _, err := s.pipeline.StartVideoSegmenting(ctx, sessionID, filePath, segmentDir, pd, req.StartPosition); err != nil {
+				s.logger.Error("failed to start original profile",
+					slog.String("session_id", sessionID.String()),
+					slog.String("error", err.Error()),
+				)
+			}
+			break
 		}
 	}
 
 	// 7. Start separate audio renditions — one per audio track.
 	// Each track is segmented independently so HLS.js only downloads the active track.
-	// HLS-compatible codecs (AAC, AC-3, E-AC-3) are copied, others transcoded to AAC.
+	// Browser-decodable codecs (AAC, MP3, Opus, FLAC) are copied, others transcoded to AAC.
 	for _, as := range info.AudioStreams {
 		codec, bitrate := audioRenditionCodec(as.Codec)
 		if _, err := s.pipeline.StartAudioRendition(ctx, sessionID, filePath, segmentDir, as.Index, codec, bitrate, req.StartPosition); err != nil {
@@ -332,14 +355,57 @@ func SessionToResponse(sess *Session) *PlaybackSessionResponse {
 	}
 }
 
+// EnsureVideoProfile starts the transcode job for a video profile if not already running.
+// Called on-demand when the player requests a specific quality level's media playlist.
+// Returns true if the profile was already running or successfully started.
+func (s *Service) EnsureVideoProfile(ctx context.Context, sess *Session, profileName string) bool {
+	// Check if already running
+	if _, ok := s.pipeline.GetProcess(sess.ID, profileName); ok {
+		return true
+	}
+
+	// Find the profile decision
+	var pd *transcode.ProfileDecision
+	for i := range sess.TranscodeDecision.Profiles {
+		if sess.TranscodeDecision.Profiles[i].Name == profileName {
+			pd = &sess.TranscodeDecision.Profiles[i]
+			break
+		}
+	}
+	if pd == nil {
+		s.logger.Warn("unknown profile requested",
+			slog.String("session_id", sess.ID.String()),
+			slog.String("profile", profileName),
+		)
+		return false
+	}
+
+	if _, err := s.pipeline.StartVideoSegmenting(ctx, sess.ID, sess.FilePath, sess.SegmentDir, *pd, sess.StartPosition); err != nil {
+		s.logger.Error("failed to start video segmenting on demand",
+			slog.String("session_id", sess.ID.String()),
+			slog.String("profile", profileName),
+			slog.String("error", err.Error()),
+		)
+		return false
+	}
+
+	s.logger.Info("video profile started on demand",
+		slog.String("session_id", sess.ID.String()),
+		slog.String("profile", profileName),
+	)
+	return true
+}
+
 // audioRenditionCodec determines the output codec and bitrate for an audio rendition.
-// HLS-compatible codecs are copied at original quality, others transcoded to AAC.
+// Only codecs that browsers can decode via MSE are passed through. AC-3, E-AC-3,
+// TrueHD, and DTS cannot be decoded by Chrome/Firefox and must be transcoded.
 func audioRenditionCodec(sourceCodec string) (codec string, bitrate int) {
 	switch sourceCodec {
-	case "aac", "mp3", "ac3", "eac3":
+	case "aac", "mp3", "opus", "flac":
+		// Browsers natively support these via MSE
 		return "copy", 0
 	default:
-		// DTS, TrueHD, FLAC, etc. → transcode to AAC at good quality
+		// AC-3, E-AC-3, TrueHD, DTS, PCM, etc. → transcode to AAC
 		return "aac", 256
 	}
 }

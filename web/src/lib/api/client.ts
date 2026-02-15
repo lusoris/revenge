@@ -242,6 +242,8 @@ export function imageUrl(
 	path: string
 ): string {
 	if (!path) return '';
+	// If the path is already a full URL (e.g. TheTVDB), use it directly
+	if (path.startsWith('http://') || path.startsWith('https://')) return path;
 	// Strip leading slash if present
 	const cleanPath = path.startsWith('/') ? path.slice(1) : path;
 	return `${API_BASE}/v1/images/${type}/${size}/${cleanPath}`;

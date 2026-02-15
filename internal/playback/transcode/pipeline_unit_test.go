@@ -292,7 +292,7 @@ func TestAnalyzeProfile_SizedProfileWithZeroSourceHeight(t *testing.T) {
 	}
 
 	profiles := GetEnabledProfiles([]string{"720p"})
-	d := AnalyzeMedia(info, profiles)
+	d := AnalyzeMedia(info, profiles, nil)
 
 	require.Len(t, d.Profiles, 1)
 	p := d.Profiles[0]
@@ -305,7 +305,7 @@ func TestAnalyzeProfile_SizedProfileWithZeroSourceHeight(t *testing.T) {
 
 func TestAnalyzeProfile_SizedProfileSmallerSourceIncompatibleCodec(t *testing.T) {
 	info := &movie.MediaInfo{
-		VideoCodec: "hevc",
+		VideoCodec: "vp9",
 		Width:      854,
 		Height:     480,
 		AudioStreams: []movie.AudioStreamInfo{
@@ -314,7 +314,7 @@ func TestAnalyzeProfile_SizedProfileSmallerSourceIncompatibleCodec(t *testing.T)
 	}
 
 	profiles := GetEnabledProfiles([]string{"720p"})
-	d := AnalyzeMedia(info, profiles)
+	d := AnalyzeMedia(info, profiles, nil)
 
 	require.Len(t, d.Profiles, 1)
 	p := d.Profiles[0]

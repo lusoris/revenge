@@ -7,20 +7,39 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strconv"
+	"strings"
 
 	"github.com/asticode/go-astiav"
 )
 
-// ExtractToWebVTT extracts a subtitle track from a media file to WebVTT format
-// using astiav's in-process FFmpeg libraries (no subprocess).
-// trackIndex is the subtitle stream index (0-based within subtitle streams).
+// vttCue represents a single WebVTT cue (subtitle event).
+type vttCue struct {
+	startMs int64
+	endMs   int64
+	text    string
+}
+
+// assTagRegex strips ASS/SSA override tags like {\b1}, {\i0}, {\pos(x,y)}, etc.
+var assTagRegex = regexp.MustCompile(`\{\\[^}]*\}`)
+
+// ExtractToWebVTT extracts a subtitle track from a media file and converts it
+// to WebVTT format. Supports text-based subtitle codecs: SRT (SubRip),
+// ASS/SSA (Advanced SubStation Alpha), and WebVTT passthrough.
+//
+// The extraction reads raw demuxed packets and converts them to WebVTT cues
+// directly, bypassing the FFmpeg WebVTT muxer (which rejects non-WebVTT input
+// codecs). This approach is faster and more reliable for text subtitles.
+//
+// trackIndex is the subtitle stream index (0-based relative to subtitle streams).
 func ExtractToWebVTT(ctx context.Context, inputFile, outputDir string, trackIndex int) (string, error) {
-	if err := os.MkdirAll(outputDir, 0o750); err != nil {
+	subsDir := filepath.Join(outputDir, "subs")
+	if err := os.MkdirAll(subsDir, 0o750); err != nil {
 		return "", fmt.Errorf("failed to create subtitle output dir: %w", err)
 	}
 
-	outputFile := filepath.Join(outputDir, strconv.Itoa(trackIndex)+".vtt")
+	outputFile := filepath.Join(subsDir, strconv.Itoa(trackIndex)+".vtt")
 
 	// Open input
 	inputFmtCtx := astiav.AllocFormatContext()
@@ -38,7 +57,7 @@ func ExtractToWebVTT(ctx context.Context, inputFile, outputDir string, trackInde
 		return "", fmt.Errorf("failed to find stream info: %w", err)
 	}
 
-	// Find the target subtitle stream (by relative index within subtitle streams)
+	// Find the target subtitle stream by relative index within subtitle streams.
 	var subStream *astiav.Stream
 	subIdx := 0
 	for _, s := range inputFmtCtx.Streams() {
@@ -54,66 +73,20 @@ func ExtractToWebVTT(ctx context.Context, inputFile, outputDir string, trackInde
 		return "", fmt.Errorf("subtitle track %d not found", trackIndex)
 	}
 
-	// Find decoder
-	decoder := astiav.FindDecoder(subStream.CodecParameters().CodecID())
-	if decoder == nil {
-		return "", fmt.Errorf("decoder not found for subtitle codec %s", subStream.CodecParameters().CodecID().Name())
-	}
+	codecID := subStream.CodecParameters().CodecID()
 
-	decCtx := astiav.AllocCodecContext(decoder)
-	if decCtx == nil {
-		return "", errors.New("failed to allocate decoder codec context")
-	}
-	defer decCtx.Free()
+	// Determine if the source is ASS/SSA (needs dialogue field extraction).
+	isASS := codecID == astiav.CodecIDAss || codecID == astiav.CodecIDSsa
 
-	if err := subStream.CodecParameters().ToCodecContext(decCtx); err != nil {
-		return "", fmt.Errorf("failed to copy codec params to decoder: %w", err)
-	}
-	if err := decCtx.Open(decoder, nil); err != nil {
-		return "", fmt.Errorf("failed to open subtitle decoder: %w", err)
-	}
-
-	// Open output (WebVTT muxer)
-	outputFmtCtx, err := astiav.AllocOutputFormatContext(nil, "webvtt", outputFile)
-	if err != nil {
-		return "", fmt.Errorf("failed to allocate output format context: %w", err)
-	}
-	if outputFmtCtx == nil {
-		return "", errors.New("output format context is nil")
-	}
-	defer outputFmtCtx.Free()
-
-	// Create output stream — for webvtt we copy the subtitle codec params
-	outStream := outputFmtCtx.NewStream(nil)
-	if outStream == nil {
-		return "", errors.New("failed to create output stream")
-	}
-	if err := subStream.CodecParameters().Copy(outStream.CodecParameters()); err != nil {
-		return "", fmt.Errorf("failed to copy codec parameters: %w", err)
-	}
-	outStream.CodecParameters().SetCodecTag(0)
-
-	// Open IO context
-	if !outputFmtCtx.OutputFormat().Flags().Has(astiav.IOFormatFlagNofile) {
-		ioCtx, err := astiav.OpenIOContext(outputFile, astiav.NewIOContextFlags(astiav.IOContextFlagWrite), nil, nil)
-		if err != nil {
-			return "", fmt.Errorf("failed to open output IO context: %w", err)
-		}
-		defer func() { _ = ioCtx.Close() }()
-		outputFmtCtx.SetPb(ioCtx)
-	}
-
-	// Write header
-	if err := outputFmtCtx.WriteHeader(nil); err != nil {
-		return "", fmt.Errorf("failed to write header: %w", err)
-	}
-
-	// Read packets and remux subtitle
+	// Read all subtitle packets and convert to WebVTT cues.
 	pkt := astiav.AllocPacket()
 	if pkt == nil {
 		return "", errors.New("failed to allocate packet")
 	}
 	defer pkt.Free()
+
+	timeBase := subStream.TimeBase()
+	var cues []vttCue
 
 	for {
 		if ctx.Err() != nil {
@@ -127,28 +100,109 @@ func ExtractToWebVTT(ctx context.Context, inputFile, outputDir string, trackInde
 			return "", fmt.Errorf("failed to read frame: %w", err)
 		}
 
-		// Only process packets from our subtitle stream
+		// Only process packets from our subtitle stream.
 		if pkt.StreamIndex() != subStream.Index() {
 			pkt.Unref()
 			continue
 		}
 
-		// Remap stream index and rescale timestamps
-		pkt.SetStreamIndex(outStream.Index())
-		pkt.RescaleTs(subStream.TimeBase(), outStream.TimeBase())
-		pkt.SetPos(-1)
-
-		if err := outputFmtCtx.WriteInterleavedFrame(pkt); err != nil {
+		// Extract timing from packet PTS and duration.
+		pts := pkt.Pts()
+		dur := pkt.Duration()
+		if pts == astiav.NoPtsValue {
 			pkt.Unref()
-			return "", fmt.Errorf("failed to write subtitle packet: %w", err)
+			continue
 		}
+
+		startMs := ptsToMillis(pts, timeBase)
+		endMs := startMs
+		if dur > 0 {
+			endMs = ptsToMillis(pts+dur, timeBase)
+		}
+
+		// Extract text from packet data.
+		data := string(pkt.Data())
+
+		var text string
+		if isASS {
+			text = extractASSText(data)
+		} else {
+			// SRT, WebVTT, and other text formats: raw data is the text.
+			text = data
+		}
+
+		text = strings.TrimSpace(text)
+		if text != "" {
+			cues = append(cues, vttCue{
+				startMs: startMs,
+				endMs:   endMs,
+				text:    text,
+			})
+		}
+
 		pkt.Unref()
 	}
 
-	// Write trailer
-	if err := outputFmtCtx.WriteTrailer(); err != nil {
-		return "", fmt.Errorf("failed to write trailer: %w", err)
+	// Write WebVTT file directly (no FFmpeg muxer needed).
+	f, err := os.Create(outputFile) //nolint:gosec // path is constructed internally
+	if err != nil {
+		return "", fmt.Errorf("failed to create WebVTT file: %w", err)
+	}
+	defer f.Close()
+
+	if _, err := fmt.Fprint(f, "WEBVTT\n\n"); err != nil {
+		return "", fmt.Errorf("failed to write WebVTT header: %w", err)
+	}
+
+	for i, cue := range cues {
+		if _, err := fmt.Fprintf(f, "%d\n%s --> %s\n%s\n\n",
+			i+1,
+			formatVTTTime(cue.startMs),
+			formatVTTTime(cue.endMs),
+			cue.text,
+		); err != nil {
+			return "", fmt.Errorf("failed to write cue %d: %w", i+1, err)
+		}
 	}
 
 	return outputFile, nil
+}
+
+// ptsToMillis converts a PTS value with a given time base to milliseconds.
+func ptsToMillis(pts int64, tb astiav.Rational) int64 {
+	return pts * int64(tb.Num()) * 1000 / int64(tb.Den())
+}
+
+// formatVTTTime formats milliseconds as a WebVTT timestamp: HH:MM:SS.mmm
+func formatVTTTime(ms int64) string {
+	if ms < 0 {
+		ms = 0
+	}
+	h := ms / 3600000
+	ms %= 3600000
+	m := ms / 60000
+	ms %= 60000
+	s := ms / 1000
+	ms %= 1000
+	return fmt.Sprintf("%02d:%02d:%02d.%03d", h, m, s, ms)
+}
+
+// extractASSText extracts plain text from an ASS/SSA dialogue event line.
+// ASS event packet format: ReadOrder,Layer,Style,Name,MarginL,MarginR,MarginV,Effect,Text
+func extractASSText(data string) string {
+	// The Text field is everything after the 8th comma.
+	parts := strings.SplitN(data, ",", 9)
+	if len(parts) < 9 {
+		// Fallback: strip tags from the whole string.
+		return stripASSTags(data)
+	}
+	return stripASSTags(parts[8])
+}
+
+// stripASSTags removes ASS override tags and converts ASS newlines to real newlines.
+func stripASSTags(s string) string {
+	s = assTagRegex.ReplaceAllString(s, "")
+	s = strings.ReplaceAll(s, "\\N", "\n")
+	s = strings.ReplaceAll(s, "\\n", "\n")
+	return strings.TrimSpace(s)
 }

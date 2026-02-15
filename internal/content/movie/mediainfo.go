@@ -105,6 +105,9 @@ func (p *MediaInfoProber) processVideoStream(stream *astiav.Stream, info *MediaI
 	// Determine dynamic range
 	info.DynamicRange = detectDynamicRange(codecParams)
 
+	// Build RFC 6381 CODECS string from extradata (hvcC / avcC)
+	info.VideoCodecString = buildVideoCodecString(codecID, codecParams)
+
 	// Bitrate
 	if codecParams.BitRate() > 0 {
 		info.VideoBitrateKbps = codecParams.BitRate() / 1000
@@ -344,18 +347,180 @@ func detectDynamicRange(codecParams *astiav.CodecParameters) string {
 	}
 }
 
-// isDolbyVision checks if the stream contains Dolby Vision metadata
+// isDolbyVision checks if the stream contains Dolby Vision metadata.
+//
+// Detection heuristics in order of reliability:
+// 1. Codec tag: dvh1/dvhe (HEVC DV) or dva1/dav1 (AV1 DV) — definitive.
+// 2. hvcC constraint byte: DV Profile 8 content uses constraint byte 6 = 0x90
+//    (general_non_packed_constraint_flag=0). Standard HEVC Main 10 uses 0xB0.
+//    This catches DV-in-MKV where the codec tag may be just hev1/hvc1.
+//
+// Note: go-astiav v0.40.0 doesn't expose AV_PKT_DATA_DOVI_CONF side data accessors,
+// so we can't check DOVI_CONF directly. The above heuristics are sufficient for
+// Profile 8 (HEVC + HDR10 fallback) which is the most common DV streaming format.
 func isDolbyVision(codecParams *astiav.CodecParameters) bool {
-	// Check side data for Dolby Vision RPU
-	sideData := codecParams.SideData()
-	if sideData == nil {
-		return false
+	// Check 1: codec tag (FourCC)
+	tag := uint32(codecParams.CodecTag())
+	switch tag {
+	case
+		0x31687664, // dvh1  (Dolby Vision HEVC, hvcC-style)
+		0x65687664, // dvhe  (Dolby Vision HEVC, hevC-style)
+		0x31617664, // dva1  (Dolby Vision AV1)
+		0x31766164: // dav1  (Dolby Vision AV1 alt)
+		return true
 	}
 
-	// Check if we can detect DOVI config in side data
-	// The API for iterating side data varies - for now, we'll use a simple heuristic
-	// Full Dolby Vision detection would require checking for specific NAL units
+	// Check 2: hvcC constraint flags for DV Profile 8
+	// In the HEVCDecoderConfigurationRecord, byte 6 is the first byte of
+	// general_constraint_indicator_flags. DV Profile 8 sets this to 0x90
+	// (missing general_non_packed_constraint_flag, bit 5). Standard HEVC Main 10
+	// with PQ transfer uses 0xB0 (bit 5 set). This is the same byte that
+	// patchHvcCConstraints() fixes in the playback pipeline.
+	if codecParams.CodecID() == astiav.CodecIDHevc {
+		extradata := codecParams.ExtraData()
+		if len(extradata) >= 13 {
+			constraintByte := extradata[6]
+			// 0x90 = 10010000: DV Profile 8 pattern
+			// Bit 7 set (general_progressive_source_flag), bit 4 set (general_frame_only_constraint_flag)
+			// Bit 5 NOT set (general_non_packed_constraint_flag) — this is the DV tell
+			if constraintByte == 0x90 {
+				return true
+			}
+		}
+	}
+
 	return false
+}
+
+// buildVideoCodecString builds an RFC 6381 CODECS string from codec extradata.
+// For HEVC it parses the HEVCDecoderConfigurationRecord (ISO 14496-15 Section 8.3.3.1)
+// and produces the correct hvc1.{A}.{B}.{C}.{D} string per Section E.3.
+// Returns empty string if extradata is missing or unparseable — caller should fall back.
+func buildVideoCodecString(codecID astiav.CodecID, codecParams *astiav.CodecParameters) string {
+	switch codecID.Name() {
+	case "hevc":
+		return buildHEVCCodecString(codecParams.ExtraData())
+	case "h264":
+		return buildH264CodecString(codecParams.ExtraData())
+	default:
+		return ""
+	}
+}
+
+// buildHEVCCodecString parses the HEVCDecoderConfigurationRecord and builds
+// the RFC 6381 codec string: hvc1.{A}.{B}.{C}.{D}
+//
+// Record layout (ISO 14496-15 Section 8.3.3.1):
+//
+//	Byte 0:    configurationVersion (1)
+//	Byte 1:    [general_profile_space(2) | general_tier_flag(1) | general_profile_idc(5)]
+//	Bytes 2-5: general_profile_compatibility_flags (32 bits, MSB first)
+//	Bytes 6-11: general_constraint_indicator_flags (48 bits / 6 bytes)
+//	Byte 12:   general_level_idc
+//
+// CODECS string format (ISO 14496-15 Section E.3):
+//
+//	A = {profile_space_char}{general_profile_idc}  (space char: empty/A/B/C for 0/1/2/3)
+//	B = general_profile_compatibility_flags as hex, with REVERSED bit order
+//	C = {general_tier_flag: L or H}{general_level_idc}
+//	D = constraint bytes as hex, dot-separated, trailing zero bytes omitted
+func buildHEVCCodecString(extradata []byte) string {
+	if len(extradata) < 13 {
+		return ""
+	}
+
+	// Byte 1: profile_space (bits 7-6), tier_flag (bit 5), profile_idc (bits 4-0)
+	profileSpace := (extradata[1] >> 6) & 0x03
+	tierFlag := (extradata[1] >> 5) & 0x01
+	profileIDC := extradata[1] & 0x1F
+
+	// Bytes 2-5: general_profile_compatibility_flags (big-endian)
+	compatFlags := uint32(extradata[2])<<24 | uint32(extradata[3])<<16 | uint32(extradata[4])<<8 | uint32(extradata[5])
+
+	// Reverse the bit order of the 32-bit compatibility flags per spec
+	reversed := reverseBits32(compatFlags)
+
+	// Bytes 6-11: constraint_indicator_flags (6 bytes)
+	constraints := extradata[6:12]
+
+	// Byte 12: general_level_idc
+	levelIDC := extradata[12]
+
+	// Build component A: profile_space prefix + profile_idc
+	spacePrefix := ""
+	switch profileSpace {
+	case 1:
+		spacePrefix = "A"
+	case 2:
+		spacePrefix = "B"
+	case 3:
+		spacePrefix = "C"
+	}
+
+	// Build component C: tier + level
+	tierChar := "L"
+	if tierFlag == 1 {
+		tierChar = "H"
+	}
+
+	// Build component D: constraint bytes, trailing zeros omitted, dot-separated
+	constraintStr := buildConstraintString(constraints)
+
+	codecStr := fmt.Sprintf("hvc1.%s%d.%X.%s%d", spacePrefix, profileIDC, reversed, tierChar, levelIDC)
+	if constraintStr != "" {
+		codecStr += "." + constraintStr
+	}
+
+	return codecStr
+}
+
+// buildH264CodecString parses the AVCDecoderConfigurationRecord and builds
+// the RFC 6381 codec string: avc1.PPCCLL (profile, constraint, level as hex).
+//
+// Record layout (ISO 14496-15):
+//
+//	Byte 0: configurationVersion
+//	Byte 1: AVCProfileIndication
+//	Byte 2: profile_compatibility (constraint_set flags)
+//	Byte 3: AVCLevelIndication
+func buildH264CodecString(extradata []byte) string {
+	if len(extradata) < 4 {
+		return ""
+	}
+	return fmt.Sprintf("avc1.%02X%02X%02X", extradata[1], extradata[2], extradata[3])
+}
+
+// reverseBits32 reverses the bit order of a 32-bit value.
+// The HEVC CODECS string spec requires the compatibility flags to be
+// bit-reversed before hex encoding.
+func reverseBits32(v uint32) uint32 {
+	var r uint32
+	for i := 0; i < 32; i++ {
+		r = (r << 1) | (v & 1)
+		v >>= 1
+	}
+	return r
+}
+
+// buildConstraintString encodes 6 constraint bytes as dot-separated hex,
+// omitting trailing zero bytes.
+func buildConstraintString(constraints []byte) string {
+	// Find last non-zero byte
+	last := -1
+	for i := len(constraints) - 1; i >= 0; i-- {
+		if constraints[i] != 0 {
+			last = i
+			break
+		}
+	}
+	if last < 0 {
+		return ""
+	}
+	parts := make([]string, 0, last+1)
+	for i := 0; i <= last; i++ {
+		parts = append(parts, fmt.Sprintf("%02X", constraints[i]))
+	}
+	return strings.Join(parts, ".")
 }
 
 // NOTE: ToMovieFileInfo, GetAudioLanguages, GetSubtitleLanguages, and GetDurationFormatted

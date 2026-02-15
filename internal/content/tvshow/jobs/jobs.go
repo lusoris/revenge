@@ -286,13 +286,29 @@ func (w *LibraryScanWorker) processFile(ctx context.Context, sr scanner.ScanResu
 			w.logger.Warn("failed to enrich series", slog.Any("error", err))
 		}
 
-		// Create series
-		params := seriesToCreateParams(newSeries)
-		created, err := w.service.CreateSeries(ctx, params)
-		if err != nil {
-			return fmt.Errorf("create series: %w", err)
+		// Cross-reference check: a Sonarr sync may have already created this
+		// series (keyed by sonarr_id/tvdb_id) before the filesystem scan ran.
+		// Look up by TVDB ID, TMDB ID, or IMDB ID to avoid duplicates.
+		if existing := w.findExistingByExternalID(ctx, newSeries); existing != nil {
+			w.logger.Info("found existing series via external ID, merging metadata",
+				slog.String("series", existing.Title),
+				slog.String("id", existing.ID.String()))
+			// Merge TMDB metadata into the existing (Sonarr-created) record
+			if updated, err := w.mergeMetadata(ctx, existing, newSeries); err != nil {
+				w.logger.Warn("failed to merge metadata into existing series", slog.Any("error", err))
+				series = existing
+			} else {
+				series = updated
+			}
+		} else {
+			// Create series
+			params := seriesToCreateParams(newSeries)
+			created, err := w.service.CreateSeries(ctx, params)
+			if err != nil {
+				return fmt.Errorf("create series: %w", err)
+			}
+			series = created
 		}
-		series = created
 	}
 
 	// Find or create season
@@ -1323,4 +1339,81 @@ func seriesToCreateParams(s *tvshow.Series) tvshow.CreateSeriesParams {
 		params.Popularity = &p
 	}
 	return params
+}
+
+// findExistingByExternalID looks up a series by its external IDs (TVDB, TMDB, IMDB)
+// to detect entries created by other sync paths (e.g. Sonarr) that represent
+// the same show but were keyed differently.
+func (w *LibraryScanWorker) findExistingByExternalID(ctx context.Context, newSeries *tvshow.Series) *tvshow.Series {
+	// Try TVDB ID first (Sonarr always sets this)
+	if newSeries.TVDbID != nil && *newSeries.TVDbID > 0 {
+		if existing, err := w.service.GetSeriesByTVDbID(ctx, *newSeries.TVDbID); err == nil {
+			return existing
+		}
+	}
+
+	// Try TMDB ID
+	if newSeries.TMDbID != nil && *newSeries.TMDbID > 0 {
+		if existing, err := w.service.GetSeriesByTMDbID(ctx, *newSeries.TMDbID); err == nil {
+			return existing
+		}
+	}
+
+	return nil
+}
+
+// mergeMetadata updates an existing series record with richer metadata from
+// a metadata provider (TMDB). This fills in fields that the original sync
+// source (e.g. Sonarr) didn't provide—like TMDB ID, poster path, vote
+// average, overview, etc.—without overwriting fields that already have values.
+func (w *LibraryScanWorker) mergeMetadata(ctx context.Context, existing *tvshow.Series, enriched *tvshow.Series) (*tvshow.Series, error) {
+	update := tvshow.UpdateSeriesParams{
+		ID: existing.ID,
+	}
+
+	// Fill in missing external IDs
+	if existing.TMDbID == nil && enriched.TMDbID != nil {
+		update.TMDbID = enriched.TMDbID
+	}
+	if existing.TVDbID == nil && enriched.TVDbID != nil {
+		update.TVDbID = enriched.TVDbID
+	}
+	if (existing.IMDbID == nil || *existing.IMDbID == "") && enriched.IMDbID != nil {
+		update.IMDbID = enriched.IMDbID
+	}
+
+	// Prefer TMDB poster/backdrop (relative paths work with image proxy)
+	if enriched.PosterPath != nil {
+		update.PosterPath = enriched.PosterPath
+	}
+	if enriched.BackdropPath != nil {
+		update.BackdropPath = enriched.BackdropPath
+	}
+
+	// Fill in missing fields from the richer metadata source
+	if (existing.Overview == nil || *existing.Overview == "") && enriched.Overview != nil {
+		update.Overview = enriched.Overview
+	}
+	if (existing.Tagline == nil || *existing.Tagline == "") && enriched.Tagline != nil {
+		update.Tagline = enriched.Tagline
+	}
+	if enriched.VoteAverage != nil {
+		v := enriched.VoteAverage.String()
+		update.VoteAverage = &v
+	}
+	if enriched.VoteCount != nil {
+		update.VoteCount = enriched.VoteCount
+	}
+	if enriched.Popularity != nil {
+		p := enriched.Popularity.String()
+		update.Popularity = &p
+	}
+	if (existing.Homepage == nil || *existing.Homepage == "") && enriched.Homepage != nil {
+		update.Homepage = enriched.Homepage
+	}
+	if (existing.TrailerURL == nil || *existing.TrailerURL == "") && enriched.TrailerURL != nil {
+		update.TrailerURL = enriched.TrailerURL
+	}
+
+	return w.service.UpdateSeries(ctx, update)
 }

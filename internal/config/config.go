@@ -925,7 +925,7 @@ func Defaults() map[string]any {
 		"playback.transcode.enabled":         true,
 		"playback.transcode.hw_accel":        "none",
 		"playback.transcode.hw_accel_device": "",
-		"playback.transcode.profiles":        []string{"original", "1080p", "720p", "480p"},
+		"playback.transcode.profiles":        []string{"original", "4k", "1080p", "720p", "480p"},
 
 		// Raft defaults (disabled by default for single-node deployments)
 		"raft.enabled":   false,

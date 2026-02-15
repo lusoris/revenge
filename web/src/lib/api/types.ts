@@ -164,7 +164,8 @@ export interface MovieWatched {
 
 export interface TVSeries {
 	id: string;
-	name: string;
+	title: string;
+	name?: string; // deprecated, use title
 	original_name?: string;
 	overview?: string;
 	first_air_date?: string;
@@ -263,8 +264,9 @@ export interface SubtitleTrack {
 	language: string;
 	title?: string;
 	codec?: string;
-	forced?: boolean;
-	default?: boolean;
+	url?: string;
+	is_forced?: boolean;
+	is_default?: boolean;
 }
 
 export interface AudioTrack {
@@ -273,7 +275,8 @@ export interface AudioTrack {
 	title?: string;
 	codec?: string;
 	channels?: number;
-	default?: boolean;
+	layout?: string;
+	is_default?: boolean;
 }
 
 export interface Credit {
@@ -294,29 +297,32 @@ export interface CreditListResponse {
 // ─── Playback ────────────────────────────────────────────────────────────────
 
 export interface StartPlaybackRequest {
-	movie_file_id?: string;
-	episode_file_id?: string;
-	audio_track_index?: number;
-	subtitle_track_index?: number;
-	start_position_seconds?: number;
+	media_type: 'movie' | 'episode';
+	media_id: string;
+	file_id?: string;
+	audio_track?: number;
+	subtitle_track?: number;
+	start_position?: number;
 }
 
 export interface PlaybackSession {
-	id: string;
+	session_id: string;
 	master_playlist_url: string;
 	profiles: PlaybackProfile[];
 	audio_tracks: AudioTrack[];
 	subtitle_tracks: SubtitleTrack[];
 	duration_seconds: number;
-	start_position_seconds: number;
+	start_position?: number;
 	created_at: string;
+	expires_at: string;
 }
 
 export interface PlaybackProfile {
 	name: string;
-	resolution: string;
+	width: number;
+	height: number;
 	bitrate: number;
-	codec: string;
+	is_original: boolean;
 }
 
 // ─── Search ──────────────────────────────────────────────────────────────────
@@ -353,15 +359,7 @@ export interface MultiSearchResults {
 }
 
 export interface AutocompleteResults {
-	suggestions: AutocompleteSuggestion[];
-}
-
-export interface AutocompleteSuggestion {
-	id: string;
-	title: string;
-	type: 'movie' | 'tvshow';
-	year?: string;
-	poster_path?: string;
+	suggestions: string[];
 }
 
 // ─── Libraries ───────────────────────────────────────────────────────────────

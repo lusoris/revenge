@@ -41,12 +41,14 @@ type Session struct {
 
 // StartPlaybackRequest is the input for creating a playback session.
 type StartPlaybackRequest struct {
-	MediaType     MediaType  `json:"media_type"`
-	MediaID       uuid.UUID  `json:"media_id"`
-	FileID        *uuid.UUID `json:"file_id,omitempty"`
-	AudioTrack    int        `json:"audio_track"`
-	SubtitleTrack *int       `json:"subtitle_track,omitempty"`
-	StartPosition int        `json:"start_position"` // seconds
+	MediaType     MediaType      `json:"media_type"`
+	MediaID       uuid.UUID      `json:"media_id"`
+	FileID        *uuid.UUID     `json:"file_id,omitempty"`
+	AudioTrack    int            `json:"audio_track"`
+	SubtitleTrack *int           `json:"subtitle_track,omitempty"`
+	StartPosition int            `json:"start_position"` // seconds
+	ClientProfile *ClientProfile `json:"client_profile,omitempty"`
+	UserAgent     string         `json:"-"` // populated from HTTP header, not request body
 }
 
 // PlaybackSessionResponse is the API response for a playback session.

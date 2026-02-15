@@ -38,6 +38,7 @@ type MediaInfo struct {
 	ColorTransfer    string
 	ColorRange       string
 	DynamicRange     string // SDR, HDR10, HDR10+, Dolby Vision, HLG
+	VideoCodecString string // RFC 6381 CODECS string, e.g. "hvc1.2.4.L150.90"
 	VideoBitrateKbps int64
 
 	// Audio streams

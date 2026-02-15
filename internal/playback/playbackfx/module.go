@@ -57,12 +57,13 @@ func providePipelineManager(cfg *config.Config, logger *slog.Logger) (*transcode
 	)
 }
 
-func provideStreamHandler(cfg *config.Config, sessions *playback.SessionManager, logger *slog.Logger) (*hls.StreamHandler, error) {
+func provideStreamHandler(cfg *config.Config, sessions *playback.SessionManager, playbackSvc *playback.Service, logger *slog.Logger) (*hls.StreamHandler, error) {
 	if !cfg.Playback.Enabled || sessions == nil {
 		return nil, nil
 	}
 	return hls.NewStreamHandler(
 		sessions,
+		playbackSvc,
 		logger.With(slog.String("component", "playback.hls")),
 	)
 }

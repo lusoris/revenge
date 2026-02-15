@@ -23,7 +23,7 @@ func newTestHandler(t *testing.T) (*StreamHandler, *playback.SessionManager) {
 	require.NoError(t, err)
 	t.Cleanup(sm.Close)
 
-	handler, err := NewStreamHandler(sm, logger)
+	handler, err := NewStreamHandler(sm, nil, logger)
 	require.NoError(t, err)
 	t.Cleanup(handler.Close)
 

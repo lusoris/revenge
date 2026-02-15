@@ -195,7 +195,7 @@ func TestDefaults_PlaybackKeys(t *testing.T) {
 	assert.Equal(t, true, defaults["playback.transcode.enabled"])
 	assert.Equal(t, "none", defaults["playback.transcode.hw_accel"])
 	assert.Equal(t, "", defaults["playback.transcode.hw_accel_device"])
-	assert.Equal(t, []string{"original", "1080p", "720p", "480p"}, defaults["playback.transcode.profiles"])
+	assert.Equal(t, []string{"original", "4k", "1080p", "720p", "480p"}, defaults["playback.transcode.profiles"])
 }
 
 func TestDefaults_IntegrationsRadarrKeys(t *testing.T) {

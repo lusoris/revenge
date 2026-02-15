@@ -10,18 +10,19 @@ import (
 
 func TestGenerateMasterPlaylist_Basic(t *testing.T) {
 	profiles := []ProfileVariant{
-		{Name: "original", Width: 1920, Height: 1080, Bandwidth: 8000000},
-		{Name: "720p", Width: 1280, Height: 720, Bandwidth: 3000000},
-		{Name: "480p", Width: 854, Height: 480, Bandwidth: 1500000},
+		{Name: "original", Width: 1920, Height: 1080, Bandwidth: 8000000, VideoCodec: "h264"},
+		{Name: "720p", Width: 1280, Height: 720, Bandwidth: 3000000, VideoCodec: "libx264"},
+		{Name: "480p", Width: 854, Height: 480, Bandwidth: 1500000, VideoCodec: "libx264"},
 	}
 
 	playlist := GenerateMasterPlaylist(profiles, nil, nil)
 
 	assert.Contains(t, playlist, "#EXTM3U")
-	assert.Contains(t, playlist, "#EXT-X-VERSION:3")
-	assert.Contains(t, playlist, `BANDWIDTH=8000000,RESOLUTION=1920x1080,NAME="original"`)
+	assert.Contains(t, playlist, "#EXT-X-VERSION:7")
+	assert.Contains(t, playlist, "#EXT-X-INDEPENDENT-SEGMENTS")
+	assert.Contains(t, playlist, `CODECS="avc1.640028"`)
 	assert.Contains(t, playlist, "original/index.m3u8")
-	assert.Contains(t, playlist, `BANDWIDTH=3000000,RESOLUTION=1280x720,NAME="720p"`)
+	assert.Contains(t, playlist, `CODECS="avc1.64001f"`)
 	assert.Contains(t, playlist, "720p/index.m3u8")
 	assert.Contains(t, playlist, "480p/index.m3u8")
 
@@ -31,7 +32,7 @@ func TestGenerateMasterPlaylist_Basic(t *testing.T) {
 
 func TestGenerateMasterPlaylist_WithSubtitles(t *testing.T) {
 	profiles := []ProfileVariant{
-		{Name: "original", Width: 1920, Height: 1080, Bandwidth: 8000000},
+		{Name: "original", Width: 1920, Height: 1080, Bandwidth: 8000000, VideoCodec: "h264"},
 	}
 	subtitles := []SubtitleVariant{
 		{Index: 0, Name: "English", Language: "en", IsDefault: true},
@@ -56,11 +57,11 @@ func TestGenerateMasterPlaylist_EmptyProfiles(t *testing.T) {
 
 func TestGenerateMasterPlaylist_WithAudioTracks(t *testing.T) {
 	profiles := []ProfileVariant{
-		{Name: "original", Width: 1920, Height: 1080, Bandwidth: 8000000},
+		{Name: "original", Width: 1920, Height: 1080, Bandwidth: 8000000, VideoCodec: "hevc"},
 	}
 	audio := []AudioVariant{
-		{Index: 0, Name: "English 5.1", Language: "en", Channels: 6, IsDefault: true},
-		{Index: 1, Name: "German", Language: "de", Channels: 2, IsDefault: false},
+		{Index: 0, Name: "English 5.1", Language: "en", Channels: 6, IsDefault: true, Codec: "eac3"},
+		{Index: 1, Name: "German", Language: "de", Channels: 2, IsDefault: false, Codec: "aac"},
 	}
 
 	playlist := GenerateMasterPlaylist(profiles, audio, nil)

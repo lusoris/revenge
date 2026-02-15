@@ -11389,6 +11389,52 @@ components:
           type: integer
           default: 0
           description: Start position in seconds (for resume)
+        client_profile:
+          $ref: '#/components/schemas/ClientProfile'
+
+    ClientProfile:
+      type: object
+      description: |
+        Client media capabilities. The frontend probes actual device support
+        via MediaSource.isTypeSupported() / canPlayType() and sends the results.
+        If omitted, the server detects capabilities from User-Agent as a fallback.
+      properties:
+        video_codecs:
+          type: array
+          items:
+            type: string
+          description: Video codecs the client can decode (e.g. ["h264","hevc","av1"])
+          example: ["h264", "hevc"]
+        audio_codecs:
+          type: array
+          items:
+            type: string
+          description: Audio codecs the client can decode (e.g. ["aac","mp3","opus"])
+          example: ["aac", "mp3", "opus", "flac"]
+        supports_hdr10:
+          type: boolean
+          default: false
+          description: Whether the client can display HDR10 content
+        supports_hlg:
+          type: boolean
+          default: false
+          description: Whether the client can display HLG content
+        supports_dolby_vision:
+          type: boolean
+          default: false
+          description: Whether the client can display Dolby Vision content
+        max_width:
+          type: integer
+          description: Maximum video width the client supports (0 = unlimited)
+        max_height:
+          type: integer
+          description: Maximum video height the client supports (0 = unlimited)
+        max_bitrate_kbps:
+          type: integer
+          description: Maximum total bitrate in kbps (0 = unlimited)
+        max_audio_channels:
+          type: integer
+          description: Maximum audio channel count (e.g. 2 for stereo, 6 for 5.1)
 
     PlaybackSession:
       type: object

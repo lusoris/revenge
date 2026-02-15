@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log/slog"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -11,6 +12,12 @@ import (
 
 	"github.com/asticode/go-astiav"
 )
+
+// codecTagHVC1 is the FourCC codec tag for 'hvc1' HEVC sample entry.
+// MKTAG('h','v','c','1') = 'h' | ('v'<<8) | ('c'<<16) | ('1'<<24) = 0x31637668.
+// Forces VPS/SPS/PPS into the init segment (hvcC box) instead of inline in segments,
+// which is required for HLS fMP4 and MSE/SourceBuffer compatibility.
+const codecTagHVC1 astiav.CodecTag = 0x31637668
 
 // streamMapping maps an input stream to its decoder, encoder, filter graph, and output stream.
 type streamMapping struct {
@@ -23,6 +30,7 @@ type streamMapping struct {
 	buffersinkCtx *astiav.BuffersinkFilterContext
 	filterFrame   *astiav.Frame
 	encPkt        *astiav.Packet
+	bsfCtx        *astiav.BitStreamFilterContext // optional BSF for remux (e.g. DV NAL stripping)
 	needsDecode   bool
 	mediaType     astiav.MediaType
 }
@@ -59,6 +67,9 @@ type TranscodeJob struct {
 	AudioStreamIndex int // -1 to disable audio
 	SeekSeconds      int
 
+	// DV handling
+	StripDolbyVision bool // strip DV RPU NALs + patch hvcC for non-DV clients
+
 	// Lifecycle
 	Done        chan struct{}
 	Err         error
@@ -74,22 +85,23 @@ type TranscodeJob struct {
 
 // TranscodeJobConfig holds the configuration for creating a TranscodeJob.
 type TranscodeJobConfig struct {
-	InputFile        string
-	OutputDir        string
-	SessionID        string
-	Profile          string
-	VideoCodec       string
-	AudioCodec       string
-	Width            int
-	Height           int
-	VideoBitrate     int
-	AudioBitrate     int
-	CRF              int
-	Preset           string
-	SegmentDuration  int
-	VideoStreamIndex int // -1 to disable
-	AudioStreamIndex int // -1 to disable
-	SeekSeconds      int
+	InputFile         string
+	OutputDir         string
+	SessionID         string
+	Profile           string
+	VideoCodec        string
+	AudioCodec        string
+	Width             int
+	Height            int
+	VideoBitrate      int
+	AudioBitrate      int
+	CRF               int
+	Preset            string
+	SegmentDuration   int
+	VideoStreamIndex  int // -1 to disable
+	AudioStreamIndex  int // -1 to disable
+	SeekSeconds       int
+	StripDolbyVision  bool // strip DV RPU NALs + patch hvcC for non-DV clients
 }
 
 // NewTranscodeJob creates a new transcode job from the given config.
@@ -108,7 +120,7 @@ func NewTranscodeJob(cfg TranscodeJobConfig) *TranscodeJob {
 	}
 
 	outputFile := filepath.Join(cfg.OutputDir, "index.m3u8")
-	segPattern := filepath.Join(cfg.OutputDir, "seg-%05d.ts")
+	segPattern := filepath.Join(cfg.OutputDir, "seg-%05d.m4s")
 
 	isTranscode := (cfg.VideoCodec != "copy" && cfg.VideoCodec != "") || (cfg.AudioCodec != "copy" && cfg.AudioCodec != "")
 
@@ -131,6 +143,7 @@ func NewTranscodeJob(cfg TranscodeJobConfig) *TranscodeJob {
 		VideoStreamIndex: cfg.VideoStreamIndex,
 		AudioStreamIndex: cfg.AudioStreamIndex,
 		SeekSeconds:      cfg.SeekSeconds,
+		StripDolbyVision: cfg.StripDolbyVision,
 		Done:             make(chan struct{}),
 		IsTranscode:      isTranscode,
 	}
@@ -290,6 +303,11 @@ func (j *TranscodeJob) Run(ctx context.Context) error {
 		_ = opts.Set("hls_playlist_type", "event", searchFlags)
 		_ = opts.Set("hls_segment_filename", j.SegmentPattern, searchFlags)
 		_ = opts.Set("start_number", "0", searchFlags)
+		// Use fMP4 segments instead of MPEG-TS for HEVC/AV1/modern codec support.
+		// fMP4 (fragmented MP4) is required by HLS spec for H.265, AV1, and
+		// provides better seeking, codec flexibility, and lower overhead.
+		_ = opts.Set("hls_segment_type", "fmp4", searchFlags)
+		_ = opts.Set("hls_fmp4_init_filename", "init.mp4", searchFlags)
 	}
 
 	// --- Create output streams and encoders ---
@@ -313,7 +331,49 @@ func (j *TranscodeJob) Run(ctx context.Context) error {
 			if err := is.CodecParameters().Copy(sm.outputStream.CodecParameters()); err != nil {
 				return fmt.Errorf("failed to copy codec parameters: %w", err)
 			}
-			sm.outputStream.CodecParameters().SetCodecTag(0)
+
+			outCP := sm.outputStream.CodecParameters()
+			// For HEVC video in fMP4/HLS, force the 'hvc1' sample entry tag.
+			// FFmpeg defaults to 'hev1' which stores parameter sets (VPS/SPS/PPS)
+			// inline in segments. 'hvc1' stores them only in the init segment,
+			// which is required by Apple HLS spec and for MSE/SourceBuffer compat.
+			// Without this, browsers reject fMP4 data with bufferAppendingError
+			// because the CODECS string says 'hvc1' but the actual box is 'hev1'.
+			if outCP.CodecID() == astiav.CodecIDHevc && sm.mediaType == astiav.MediaTypeVideo {
+				// Force the 'hvc1' sample entry tag for HEVC in fMP4/HLS.
+				// FFmpeg defaults to 'hev1', but 'hvc1' stores parameter sets
+				// only in init.mp4 which is required for MSE/SourceBuffer compat.
+				outCP.SetCodecTag(codecTagHVC1)
+
+				if j.StripDolbyVision {
+					// Patch the hvcC extradata BEFORE WriteHeader to clean DV artifacts.
+					// DV Profile 8 uses constraint byte 0x90 which Chrome rejects.
+					// We set the general_non_packed_constraint_flag (bit 5) to convert
+					// 0x90 → 0xB0 which is standard HEVC Main 10 with PQ.
+					patchHvcCConstraints(outCP)
+
+					// Strip DOVI_CONF side data to prevent 'dby1' ftyp brand.
+					// FFmpeg's fMP4 muxer checks for DOVI_CONF on the codec params
+					// and adds 'dby1' as a compatible brand when present — Chrome
+					// sees this and refuses the stream.
+					stripDOVIConfSideData(outCP)
+
+					// Strip Dolby Vision RPU NALs from HEVC segments.
+					// Uses dovi_rpu BSF with strip=1 which removes DV RPU data blocks
+					// (NAL types 62/63) — required for Chrome/Firefox MSE compat.
+					if bsfCtx, err := setupDVRemovalFilter(is); err != nil {
+						slog.Warn("failed to setup DV removal BSF, continuing without", "error", err)
+					} else if bsfCtx != nil {
+						sm.bsfCtx = bsfCtx
+						cleanups = append(cleanups, bsfCtx.Free)
+						slog.Info("DV stripping enabled for HEVC remux",
+							"session", j.SessionID, "profile", j.Profile, "bsf", "dovi_rpu")
+					}
+				}
+			} else {
+				outCP.SetCodecTag(0)
+			}
+
 			sm.outputStream.SetTimeBase(is.TimeBase())
 		}
 	}
@@ -389,16 +449,38 @@ func (j *TranscodeJob) Run(ctx context.Context) error {
 				return fmt.Errorf("decode/filter/encode failed: %w", err)
 			}
 		} else {
-			// Remux: just rescale timestamps and write
+			// Remux: optionally apply BSF (e.g. DV NAL stripping), then write
 			pkt.SetStreamIndex(sm.outputStream.Index())
 			pkt.RescaleTs(sm.inputStream.TimeBase(), sm.outputStream.TimeBase())
 			pkt.SetPos(-1)
 
-			if err := outputFmtCtx.WriteInterleavedFrame(pkt); err != nil {
-				if ctx.Err() != nil {
-					break
+			if sm.bsfCtx != nil {
+				// Run packet through bitstream filter
+				if err := sm.bsfCtx.SendPacket(pkt); err != nil {
+					pkt.Unref()
+					if ctx.Err() != nil {
+						break
+					}
+					return fmt.Errorf("bsf send packet failed: %w", err)
 				}
-				return fmt.Errorf("failed to write interleaved frame: %w", err)
+				for {
+					if err := sm.bsfCtx.ReceivePacket(pkt); err != nil {
+						break // EAGAIN or EOF — done with this packet
+					}
+					if err := outputFmtCtx.WriteInterleavedFrame(pkt); err != nil {
+						if ctx.Err() != nil {
+							break
+						}
+						return fmt.Errorf("failed to write interleaved frame: %w", err)
+					}
+				}
+			} else {
+				if err := outputFmtCtx.WriteInterleavedFrame(pkt); err != nil {
+					if ctx.Err() != nil {
+						break
+					}
+					return fmt.Errorf("failed to write interleaved frame: %w", err)
+				}
 			}
 		}
 
@@ -627,7 +709,14 @@ func (j *TranscodeJob) setupFilters(sm *streamMapping, cleanups *[]func()) error
 		bscp.SetSampleRate(sm.decCodecCtx.SampleRate())
 		bscp.SetTimeBase(sm.decCodecCtx.TimeBase())
 
-		filterDesc = fmt.Sprintf("aformat=sample_fmts=%s:channel_layouts=%s",
+		// Audio filter chain for transcoding:
+		// 1. aresample: resample + fix discontinuous timestamps (async=1)
+		// 2. aformat: convert to encoder's sample format and channel layout
+		// 3. asetnsamples: split into exactly 1024-sample frames for AAC encoder
+		// 4. asetpts: regenerate clean monotonic PTS from sample count
+		//    (fMP4 muxer is strict about monotonically increasing DTS)
+		filterDesc = fmt.Sprintf(
+			"aresample=async=1,aformat=sample_fmts=%s:channel_layouts=%s,asetnsamples=n=1024,asetpts=N/SR/TB",
 			sm.encCodecCtx.SampleFormat().Name(),
 			sm.encCodecCtx.ChannelLayout().String(),
 		)
@@ -835,6 +924,164 @@ func countStreamsBefore(fmtCtx *astiav.FormatContext, beforeIndex int, mediaType
 		}
 	}
 	return count
+}
+
+// patchHvcCConstraints fixes the general_constraint_indicator_flags in the
+// HEVCDecoderConfigurationRecord (hvcC extradata) for Dolby Vision sources.
+//
+// DV content has constraint byte 0x90 at offset 6 (general_non_packed_constraint_flag=0).
+// Chrome's MSE refuses to create a SourceBuffer when the hvcC declares these
+// DV-specific constraints. Standard HEVC uses 0xB0 (general_non_packed_constraint_flag=1).
+//
+// This function patches THREE locations:
+// 1. The outer hvcC header at byte 6
+// 2. The VPS NALU's profile_tier_level constraint byte
+// 3. The SPS NALU's profile_tier_level constraint byte
+//
+// Chrome's MSE decoder parses VPS/SPS NALUs inside hvcC, so all must be patched.
+//
+// HEVCDecoderConfigurationRecord layout (ISO/IEC 14496-15):
+//
+//	Byte 0:    configurationVersion
+//	Byte 1:    profile_space(2) | tier_flag(1) | profile_idc(5)
+//	Bytes 2-5: general_profile_compatibility_flags
+//	Bytes 6-11: general_constraint_indicator_flags  ← byte 6 is patched
+//	Byte 12:   general_level_idc
+//	...
+//	Byte 22:   numOfArrays
+//	followed by arrays of VPS, SPS, PPS NALUs
+func patchHvcCConstraints(cp *astiav.CodecParameters) {
+	extradata := cp.ExtraData()
+	if len(extradata) < 23 {
+		return // not a valid hvcC record
+	}
+
+	patched := make([]byte, len(extradata))
+	copy(patched, extradata)
+	patchCount := 0
+
+	// 1. Patch outer hvcC header constraint byte (offset 6)
+	if patched[6]&0x20 == 0 {
+		before := patched[6]
+		patched[6] |= 0x20
+		slog.Debug("patched hvcC header constraint byte",
+			"before", fmt.Sprintf("0x%02X", before),
+			"after", fmt.Sprintf("0x%02X", patched[6]))
+		patchCount++
+	}
+
+	// 2. Patch VPS and SPS NALUs inside hvcC
+	// Parse NALU arrays starting at byte 22
+	numArrays := int(patched[22])
+	pos := 23
+	for i := 0; i < numArrays && pos+3 <= len(patched); i++ {
+		nalType := patched[pos] & 0x3F
+		numNALUs := int(patched[pos+1])<<8 | int(patched[pos+2])
+		pos += 3
+
+		for j := 0; j < numNALUs && pos+2 <= len(patched); j++ {
+			naluLen := int(patched[pos])<<8 | int(patched[pos+1])
+			naluStart := pos + 2 // start of actual NALU data
+			naluEnd := naluStart + naluLen
+			if naluEnd > len(patched) {
+				break
+			}
+
+			// VPS (type 32) and SPS (type 33) both have profile_tier_level
+			// The constraint byte is at offset 9 within the NALU (after NAL header + other fields)
+			// VPS: NAL header(2) + vps_id/max_layers(2) + profile_tier_level starts
+			// SPS: NAL header(2) + sps_video_parameter_set_id(4bits) + ... profile_tier_level
+			// Both have constraint_indicator_flags at similar relative position
+			if nalType == 32 || nalType == 33 { // VPS or SPS
+				// profile_tier_level in VPS/SPS: constraint bytes start at byte 5 after syntax start
+				// For VPS: starts around byte 6 of NALU
+				// For SPS: starts around byte 5-6 of NALU (after nal_header + sps_video_parameter_set_id)
+				// The pattern 02 20 00 00 03 00 XX where XX is constraint byte
+				// We look for the pattern and patch byte after "00 03 00"
+				for k := naluStart; k < naluEnd-6; k++ {
+					// Look for profile_tier_level pattern:
+					// profile_space(2) + tier(1) + profile_idc(5) = 0x02 for Main 10
+					// then profile_compat_flags(32-bit) often 20 00 00 03 or similar
+					// then constraint bytes starting with 00 90 (DV) or 00 B0 (standard)
+					// The "03" is RBSP escape, followed by the original byte
+					// Raw bytes: 00 03 00 90 means escaped 00 90
+					if patched[k] == 0x00 && patched[k+1] == 0x03 && patched[k+2] == 0x00 {
+						// Check if byte at k+3 is 0x90 (DV constraint)
+						if patched[k+3] == 0x90 {
+							patched[k+3] = 0xB0
+							slog.Debug("patched NALU constraint byte",
+								"nal_type", nalType, "offset", k+3,
+								"before", "0x90", "after", "0xB0")
+							patchCount++
+						}
+					}
+				}
+			}
+			pos = naluEnd
+		}
+	}
+
+	if patchCount > 0 {
+		if err := cp.SetExtraData(patched); err != nil {
+			slog.Warn("failed to patch hvcC constraint flags", "error", err)
+		} else {
+			slog.Info("patched hvcC constraint flags for DV removal",
+				"patch_count", patchCount)
+		}
+	}
+}
+
+// setupDVRemovalFilter creates a bitstream filter to strip Dolby Vision metadata
+// from HEVC streams. This uses dovi_rpu with strip=1 which removes both the DOVI
+// configuration record and RPU data blocks (NAL unit types 62/63) from the stream.
+// This is critical for Chrome/Firefox MSE compatibility — DV RPU NALs in segments
+// cause bufferAppendingError because the browser can't decode them.
+// Falls back to filter_units (NAL-only stripping) if dovi_rpu is unavailable.
+func setupDVRemovalFilter(inputStream *astiav.Stream) (*astiav.BitStreamFilterContext, error) {
+	// Primary: dovi_rpu with strip=1 (strips RPU NALs + cleans DOVI config record)
+	bsfName := "dovi_rpu"
+	optKey := "strip"
+	optVal := "1"
+
+	bsf := astiav.FindBitStreamFilterByName(bsfName)
+	if bsf == nil {
+		// Fallback: filter_units (strips NALs only, no config cleanup)
+		bsfName = "filter_units"
+		optKey = "remove_types"
+		optVal = "62|63"
+		bsf = astiav.FindBitStreamFilterByName(bsfName)
+	}
+	if bsf == nil {
+		return nil, nil // no suitable BSF available, skip
+	}
+
+	slog.Info("setting up DV removal BSF", "bsf", bsfName)
+
+	bsfCtx, err := astiav.AllocBitStreamFilterContext(bsf)
+	if err != nil {
+		return nil, fmt.Errorf("alloc BSF context (%s): %w", bsfName, err)
+	}
+
+	// Copy input codec parameters to the BSF
+	if err := inputStream.CodecParameters().Copy(bsfCtx.InputCodecParameters()); err != nil {
+		bsfCtx.Free()
+		return nil, fmt.Errorf("copy codec params to BSF: %w", err)
+	}
+	bsfCtx.SetInputTimeBase(inputStream.TimeBase())
+
+	// Configure the BSF option
+	if pd := bsfCtx.PrivateData(); pd != nil {
+		opts := pd.Options()
+		searchFlags := astiav.NewOptionSearchFlags()
+		_ = opts.Set(optKey, optVal, searchFlags)
+	}
+
+	if err := bsfCtx.Initialize(); err != nil {
+		bsfCtx.Free()
+		return nil, fmt.Errorf("init BSF (%s): %w", bsfName, err)
+	}
+
+	return bsfCtx, nil
 }
 
 // findStreamByType returns true if a stream of the given type already exists in the mapping.

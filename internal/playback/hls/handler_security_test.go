@@ -38,13 +38,13 @@ func TestIsSafePathComponent(t *testing.T) {
 		// Safe
 		{name: "simple name", input: "original", safe: true},
 		{name: "720p", input: "720p", safe: true},
-		{name: "segment file", input: "seg-00001.ts", safe: true},
+		{name: "segment file", input: "seg-00001.m4s", safe: true},
 		{name: "single char", input: "a", safe: true},
 		{name: "with hyphen", input: "my-profile", safe: true},
 		{name: "with underscore", input: "my_profile", safe: true},
 		{name: "with number", input: "42", safe: true},
 		{name: "index.m3u8", input: "index.m3u8", safe: true},
-		{name: "single dot in name", input: "file.ts", safe: true},
+		{name: "single dot in name", input: "file.m4s", safe: true},
 	}
 
 	for _, tc := range tests {
@@ -87,10 +87,10 @@ func TestStreamHandler_SegmentPathTraversal(t *testing.T) {
 		name string
 		path string
 	}{
-		{"dot dot profile", base + "/../../../etc/passwd/seg-00000.ts"},
+		{"dot dot profile", base + "/../../../etc/passwd/seg-00000.m4s"},
 		{"dot dot segment file", base + "/original/..%2F..%2Fsecret.txt"},
-		{"backslash in profile", base + `/original\..\..\seg-00000.ts`},
-		{"dot dot in profile name", base + "/../seg-00000.ts"},
+		{"backslash in profile", base + `/original\..\..\seg-00000.m4s`},
+		{"dot dot in profile name", base + "/../seg-00000.m4s"},
 	}
 
 	for _, tc := range attacks {
@@ -239,7 +239,7 @@ func TestStreamHandler_MethodNotAllowed_AllPaths(t *testing.T) {
 	paths := []string{
 		base + "/master.m3u8",
 		base + "/original/index.m3u8",
-		base + "/original/seg-00000.ts",
+		base + "/original/seg-00000.m4s",
 		base + "/audio/0/index.m3u8",
 		base + "/subs/0.vtt",
 	}
@@ -283,7 +283,7 @@ func TestStreamHandler_SegmentImmutableCacheHeader(t *testing.T) {
 	segDir := t.TempDir()
 	profileDir := filepath.Join(segDir, "original")
 	require.NoError(t, os.MkdirAll(profileDir, 0o755))
-	require.NoError(t, os.WriteFile(filepath.Join(profileDir, "seg-00000.ts"), []byte("ts-data"), 0o644))
+	require.NoError(t, os.WriteFile(filepath.Join(profileDir, "seg-00000.m4s"), []byte("fmp4-data"), 0o644))
 
 	sess := &playback.Session{
 		ID:         uuid.Must(uuid.NewV7()),
@@ -300,7 +300,7 @@ func TestStreamHandler_SegmentImmutableCacheHeader(t *testing.T) {
 	require.NoError(t, sm.Create(sess))
 
 	req := httptest.NewRequest(http.MethodGet,
-		"/api/v1/playback/stream/"+sess.ID.String()+"/original/seg-00000.ts", nil)
+		"/api/v1/playback/stream/"+sess.ID.String()+"/original/seg-00000.m4s", nil)
 	rec := httptest.NewRecorder()
 
 	handler.ServeHTTP(rec, req)

@@ -16,6 +16,7 @@ import (
 // Registered at /api/v1/playback/stream/{sessionId}/...
 type StreamHandler struct {
 	sessions    *playback.SessionManager
+	playbackSvc *playback.Service          // for on-demand profile startup
 	masterCache *cache.L1Cache[uuid.UUID, string]  // session → master playlist
 	mediaCache  *cache.L1Cache[string, mediaEntry] // session:profile → media playlist
 	logger      *slog.Logger
@@ -27,7 +28,7 @@ type mediaEntry struct {
 }
 
 // NewStreamHandler creates a new HLS stream handler.
-func NewStreamHandler(sessions *playback.SessionManager, logger *slog.Logger) (*StreamHandler, error) {
+func NewStreamHandler(sessions *playback.SessionManager, playbackSvc *playback.Service, logger *slog.Logger) (*StreamHandler, error) {
 	masterCache, err := cache.NewL1Cache[uuid.UUID, string](1000, 30*time.Minute)
 	if err != nil {
 		return nil, err
@@ -40,6 +41,7 @@ func NewStreamHandler(sessions *playback.SessionManager, logger *slog.Logger) (*
 
 	return &StreamHandler{
 		sessions:    sessions,
+		playbackSvc: playbackSvc,
 		masterCache: masterCache,
 		mediaCache:  mediaCache,
 		logger:      logger,
@@ -50,9 +52,11 @@ func NewStreamHandler(sessions *playback.SessionManager, logger *slog.Logger) (*
 //
 //	GET .../master.m3u8                          → master playlist
 //	GET .../{profile}/index.m3u8                 → video media playlist
-//	GET .../{profile}/seg-NNNNN.ts               → video segment (zero-copy)
+//	GET .../{profile}/init.mp4                   → video fMP4 init segment
+//	GET .../{profile}/seg-NNNNN.m4s              → video fMP4 segment
 //	GET .../audio/{track}/index.m3u8             → audio rendition playlist
-//	GET .../audio/{track}/seg-NNNNN.ts           → audio rendition segment (zero-copy)
+//	GET .../audio/{track}/init.mp4               → audio fMP4 init segment
+//	GET .../audio/{track}/seg-NNNNN.m4s          → audio fMP4 segment
 //	GET .../subs/{track}.vtt                     → subtitle track (full file)
 func (h *StreamHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
@@ -97,14 +101,23 @@ func (h *StreamHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		h.serveSubtitle(w, r, session, remaining)
 
 	case strings.HasPrefix(remaining, "audio/"):
-		// Audio rendition: audio/{track}/index.m3u8 or audio/{track}/seg-NNNNN.ts
+		// Audio rendition: audio/{track}/index.m3u8 or audio/{track}/seg-NNNNN.m4s or audio/{track}/init.mp4
 		h.serveAudioRendition(w, r, session, strings.TrimPrefix(remaining, "audio/"))
 
 	case strings.HasSuffix(remaining, "/index.m3u8"):
 		profile := strings.TrimSuffix(remaining, "/index.m3u8")
 		h.serveMediaPlaylist(w, r, session, profile)
 
-	case strings.Contains(remaining, "/seg-") && strings.HasSuffix(remaining, ".ts"):
+	case strings.HasSuffix(remaining, "/init.mp4"):
+		// fMP4 init segment (contains codec initialization data)
+		profile := strings.TrimSuffix(remaining, "/init.mp4")
+		if !isSafePathComponent(profile) {
+			http.Error(w, "invalid profile", http.StatusBadRequest)
+			return
+		}
+		h.serveInitSegment(w, r, session, profile)
+
+	case strings.Contains(remaining, "/seg-") && strings.HasSuffix(remaining, ".m4s"):
 		slashPos := strings.IndexByte(remaining, '/')
 		if slashPos > 0 {
 			h.serveSegment(w, r, session, remaining[:slashPos], remaining[slashPos+1:])
@@ -128,24 +141,45 @@ func (h *StreamHandler) serveMasterPlaylist(w http.ResponseWriter, _ *http.Reque
 
 	// Generate master playlist
 	profiles := make([]ProfileVariant, 0, len(session.TranscodeDecision.Profiles))
+	sourceVideoBitrateKbps := session.TranscodeDecision.SourceVideoBitrateKbps
 	for _, pd := range session.TranscodeDecision.Profiles {
-		bw := estimateBandwidth(pd, 0, 0) // use defaults for unknown source bitrate
+		bw := estimateBandwidth(pd, int64(sourceVideoBitrateKbps), 0)
+		// Determine the effective video codec for CODECS string.
+		// "copy" means source codec passthrough.
+		vcodec := pd.VideoCodec
+		var codecString string
+		if vcodec == "copy" {
+			vcodec = session.TranscodeDecision.SourceVideoCodec
+			// Use the real RFC 6381 string parsed from extradata.
+			// For HEVC, replace DV-tainted constraint bytes with standard B0.
+			// Dolby Vision content has constraint indicator 0x90 which Chrome/Firefox
+			// reject via isTypeSupported(). Jellyfin always uses B0 (progressive,
+			// non-packed, frame-only) which is universally accepted by browsers.
+			codecString = cleanHEVCCodecString(session.TranscodeDecision.SourceVideoCodecString)
+		}
 		profiles = append(profiles, ProfileVariant{
-			Name:      pd.Name,
-			Width:     pd.Width,
-			Height:    pd.Height,
-			Bandwidth: bw,
+			Name:            pd.Name,
+			Width:           pd.Width,
+			Height:          pd.Height,
+			Bandwidth:       bw,
+			VideoCodec:      vcodec,
+			VideoCodecString: codecString,
 		})
 	}
 
 	audioVariants := make([]AudioVariant, 0, len(session.AudioTracks))
 	for _, at := range session.AudioTracks {
+		// Use the output codec for CODECS attribute, not the source codec.
+		// Codecs that browsers can't decode via MSE (AC-3, E-AC-3, TrueHD)
+		// are transcoded to AAC by the audio rendition pipeline.
+		outputCodec := browserOutputCodec(at.Codec)
 		audioVariants = append(audioVariants, AudioVariant{
 			Index:     at.Index,
 			Name:      audioDisplayName(at),
 			Language:  at.Language,
 			Channels:  at.Channels,
 			IsDefault: at.IsDefault,
+			Codec:     outputCodec,
 		})
 	}
 
@@ -167,7 +201,7 @@ func (h *StreamHandler) serveMasterPlaylist(w http.ResponseWriter, _ *http.Reque
 	_, _ = w.Write([]byte(playlist))
 }
 
-func (h *StreamHandler) serveMediaPlaylist(w http.ResponseWriter, _ *http.Request, session *playback.Session, profile string) {
+func (h *StreamHandler) serveMediaPlaylist(w http.ResponseWriter, r *http.Request, session *playback.Session, profile string) {
 	// Validate profile to prevent path traversal (CWE-22).
 	// Profile may contain a single slash for audio renditions (e.g. "audio/0"),
 	// but each component must be safe.
@@ -176,6 +210,12 @@ func (h *StreamHandler) serveMediaPlaylist(w http.ResponseWriter, _ *http.Reques
 			http.Error(w, "invalid profile", http.StatusBadRequest)
 			return
 		}
+	}
+
+	// Ensure the video transcode for this profile is running (on-demand start).
+	// Audio renditions (audio/*) are started eagerly at session creation.
+	if !strings.HasPrefix(profile, "audio/") && h.playbackSvc != nil {
+		h.playbackSvc.EnsureVideoProfile(r.Context(), session, profile)
 	}
 
 	cacheKey := session.ID.String() + ":" + profile
@@ -208,7 +248,7 @@ func (h *StreamHandler) serveMediaPlaylist(w http.ResponseWriter, _ *http.Reques
 }
 
 func (h *StreamHandler) serveAudioRendition(w http.ResponseWriter, r *http.Request, session *playback.Session, remaining string) {
-	// remaining = "{track}/index.m3u8" or "{track}/seg-NNNNN.ts"
+	// remaining = "{track}/index.m3u8" or "{track}/seg-NNNNN.m4s" or "{track}/init.mp4"
 	before, after, ok := strings.Cut(remaining, "/")
 	if !ok {
 		http.NotFound(w, r)
@@ -227,14 +267,24 @@ func (h *StreamHandler) serveAudioRendition(w http.ResponseWriter, r *http.Reque
 	if file == "index.m3u8" {
 		// Audio rendition playlist — reuse media playlist caching
 		h.serveMediaPlaylist(w, r, session, "audio/"+trackStr)
-	} else if strings.HasPrefix(file, "seg-") && strings.HasSuffix(file, ".ts") {
-		// Audio rendition segment — zero-copy serve
+	} else if file == "init.mp4" {
+		// Audio fMP4 init segment
+		if !isSafePathComponent(trackStr) {
+			http.Error(w, "invalid path", http.StatusBadRequest)
+			return
+		}
+		initPath := AudioRenditionSegmentPath(session.SegmentDir, trackIndex, "init.mp4")
+		w.Header().Set("Content-Type", "video/mp4")
+		w.Header().Set("Cache-Control", "public, max-age=31536000, immutable")
+		http.ServeFile(w, r, initPath)
+	} else if strings.HasPrefix(file, "seg-") && strings.HasSuffix(file, ".m4s") {
+		// Audio rendition fMP4 segment — zero-copy serve
 		if !isSafePathComponent(file) {
 			http.Error(w, "invalid path", http.StatusBadRequest)
 			return
 		}
 		segPath := AudioRenditionSegmentPath(session.SegmentDir, trackIndex, file)
-		w.Header().Set("Content-Type", "video/mp2t")
+		w.Header().Set("Content-Type", "video/mp4")
 		w.Header().Set("Cache-Control", "public, max-age=31536000, immutable")
 		http.ServeFile(w, r, segPath)
 	} else {
@@ -251,10 +301,23 @@ func (h *StreamHandler) serveSegment(w http.ResponseWriter, r *http.Request, ses
 
 	segPath := SegmentPath(session.SegmentDir, profile, segmentFile)
 
-	w.Header().Set("Content-Type", "video/mp2t")
+	w.Header().Set("Content-Type", "video/mp4")
 	w.Header().Set("Cache-Control", "public, max-age=31536000, immutable") // Segments are immutable
 	// http.ServeFile handles If-Modified-Since, Range requests, and sendfile(2) zero-copy
 	http.ServeFile(w, r, segPath)
+}
+
+func (h *StreamHandler) serveInitSegment(w http.ResponseWriter, r *http.Request, session *playback.Session, profile string) {
+	if !isSafePathComponent(profile) {
+		http.Error(w, "invalid profile", http.StatusBadRequest)
+		return
+	}
+
+	initPath := SegmentPath(session.SegmentDir, profile, "init.mp4")
+
+	w.Header().Set("Content-Type", "video/mp4")
+	w.Header().Set("Cache-Control", "public, max-age=31536000, immutable")
+	http.ServeFile(w, r, initPath)
 }
 
 func (h *StreamHandler) serveSubtitle(w http.ResponseWriter, r *http.Request, session *playback.Session, remaining string) {
@@ -292,6 +355,18 @@ func subtitleDisplayName(st playback.SubtitleTrackInfo) string {
 		return st.Language
 	}
 	return "Track " + strconv.Itoa(st.Index)
+}
+
+// browserOutputCodec returns the codec that the audio rendition pipeline
+// actually outputs. Browser MSE supports AAC, MP3, Opus, FLAC natively.
+// Other codecs (AC-3, E-AC-3, TrueHD, DTS, etc.) are transcoded to AAC.
+func browserOutputCodec(sourceCodec string) string {
+	switch sourceCodec {
+	case "aac", "mp3", "opus", "flac":
+		return sourceCodec
+	default:
+		return "aac"
+	}
 }
 
 // isSafePathComponent validates that a path component does not contain

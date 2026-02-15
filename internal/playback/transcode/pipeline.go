@@ -7,14 +7,19 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"sync"
 	"time"
 
+	"github.com/asticode/go-astiav"
 	"github.com/google/uuid"
 	"github.com/maypok86/otter/v2"
 
 	"github.com/lusoris/revenge/internal/infra/cache"
 	"github.com/lusoris/revenge/internal/infra/observability"
 )
+
+// initLibavOnce ensures libav log level is set exactly once.
+var initLibavOnce sync.Once
 
 // PipelineManager manages running transcode jobs per session+profile.
 // Jobs run in-process using astiav (libavcodec/libavformat/libavfilter)
@@ -27,6 +32,23 @@ type PipelineManager struct {
 
 // NewPipelineManager creates a new pipeline manager.
 func NewPipelineManager(segmentDuration int, logger *slog.Logger) (*PipelineManager, error) {
+	// Redirect libav/ffmpeg C library output through structured slog logger
+	// instead of raw stderr writes. This ensures consistent log formatting.
+	// LogLevelError suppresses the extremely noisy "packet with pts X has duration 0"
+	// warnings from the HLS muxer that flood the logs during normal transcoding.
+	initLibavOnce.Do(func() {
+		astiav.SetLogLevel(astiav.LogLevelError)
+		libavLogger := logger.With(slog.String("component", "libav"))
+		astiav.SetLogCallback(func(c astiav.Classer, l astiav.LogLevel, format, msg string) {
+			msg = strings.TrimRight(msg, "\n\r")
+			if msg == "" {
+				return
+			}
+
+			libavLogger.Log(context.Background(), slog.LevelError, msg)
+		})
+	})
+
 	pm := &PipelineManager{
 		segmentDuration: segmentDuration,
 		logger:          logger,
@@ -86,6 +108,7 @@ func (pm *PipelineManager) StartVideoSegmenting(ctx context.Context, sessionID u
 		VideoStreamIndex: 0,  // first video stream
 		AudioStreamIndex: -1, // disable audio
 		SeekSeconds:      seekSeconds,
+		StripDolbyVision: pd.StripDolbyVision,
 	})
 
 	return pm.startJob(ctx, job, key, sessionID, pd.Name, pd.VideoCodec, pd.NeedsTranscode)
@@ -196,7 +219,7 @@ func (pm *PipelineManager) StopProcess(sessionID uuid.UUID, profile string) erro
 
 // StopAllForSession stops all transcode jobs for a session (video + audio renditions).
 func (pm *PipelineManager) StopAllForSession(sessionID uuid.UUID) {
-	profiles := []string{"original", "1080p", "720p", "480p"}
+	profiles := []string{"original", "4k", "1080p", "720p", "480p"}
 	for _, p := range profiles {
 		_ = pm.StopProcess(sessionID, p)
 	}

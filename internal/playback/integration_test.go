@@ -163,7 +163,7 @@ func TestIntegration_TranscodeDecision(t *testing.T) {
 	require.NoError(t, err)
 
 	profiles := transcode.GetEnabledProfiles([]string{"original", "1080p", "720p"})
-	decision := transcode.AnalyzeMedia(info, profiles)
+	decision := transcode.AnalyzeMedia(info, profiles, nil)
 
 	// H.264 is HLS-compatible, MP3 is HLS-compatible
 	assert.True(t, decision.CanRemux)
@@ -243,7 +243,7 @@ func TestIntegration_SessionLifecycle(t *testing.T) {
 			return false
 		}
 		for _, e := range entries {
-			if strings.HasSuffix(e.Name(), ".ts") {
+			if strings.HasSuffix(e.Name(), ".m4s") {
 				return true
 			}
 		}
@@ -251,7 +251,7 @@ func TestIntegration_SessionLifecycle(t *testing.T) {
 	}, 15*time.Second, 200*time.Millisecond, "FFmpeg should produce at least one segment")
 
 	// --- Serve master playlist via HTTP handler ---
-	handler, err := hls.NewStreamHandler(sm, testLogger())
+	handler, err := hls.NewStreamHandler(sm, nil, testLogger())
 	require.NoError(t, err)
 	t.Cleanup(handler.Close)
 
@@ -281,18 +281,18 @@ func TestIntegration_SessionLifecycle(t *testing.T) {
 	mediaBody := mediaRec.Body.String()
 	assert.Contains(t, mediaBody, "#EXTM3U")
 	assert.Contains(t, mediaBody, "#EXTINF:")
-	assert.Contains(t, mediaBody, "seg-00000.ts")
+	assert.Contains(t, mediaBody, "seg-00000.m4s")
 
 	t.Logf("Media playlist:\n%s", mediaBody)
 
 	// --- Serve a real segment ---
 	segReq := httptest.NewRequest(http.MethodGet,
-		"/api/v1/playback/stream/"+sess.ID.String()+"/original/seg-00000.ts", nil)
+		"/api/v1/playback/stream/"+sess.ID.String()+"/original/seg-00000.m4s", nil)
 	segRec := httptest.NewRecorder()
 	handler.ServeHTTP(segRec, segReq)
 
 	require.Equal(t, http.StatusOK, segRec.Code)
-	assert.Equal(t, "video/mp2t", segRec.Header().Get("Content-Type"))
+	assert.Equal(t, "video/mp4", segRec.Header().Get("Content-Type"))
 	assert.Greater(t, segRec.Body.Len(), 1000, "segment should contain real video data")
 	assert.Contains(t, segRec.Header().Get("Cache-Control"), "immutable")
 
@@ -305,7 +305,7 @@ func TestIntegration_SessionLifecycle(t *testing.T) {
 			return false
 		}
 		for _, e := range entries {
-			if strings.HasSuffix(e.Name(), ".ts") {
+			if strings.HasSuffix(e.Name(), ".m4s") {
 				return true
 			}
 		}
@@ -313,12 +313,12 @@ func TestIntegration_SessionLifecycle(t *testing.T) {
 	}, 15*time.Second, 200*time.Millisecond, "audio rendition should produce segments")
 
 	audioSegReq := httptest.NewRequest(http.MethodGet,
-		"/api/v1/playback/stream/"+sess.ID.String()+"/audio/0/seg-00000.ts", nil)
+		"/api/v1/playback/stream/"+sess.ID.String()+"/audio/0/seg-00000.m4s", nil)
 	audioSegRec := httptest.NewRecorder()
 	handler.ServeHTTP(audioSegRec, audioSegReq)
 
 	assert.Equal(t, http.StatusOK, audioSegRec.Code)
-	assert.Equal(t, "video/mp2t", audioSegRec.Header().Get("Content-Type"))
+	assert.Equal(t, "video/mp4", audioSegRec.Header().Get("Content-Type"))
 	assert.Greater(t, audioSegRec.Body.Len(), 100, "audio segment should contain real data")
 
 	// --- Stop session ---
@@ -360,7 +360,7 @@ func TestIntegration_SeekStart(t *testing.T) {
 			return false
 		}
 		for _, e := range entries {
-			if strings.HasSuffix(e.Name(), ".ts") {
+			if strings.HasSuffix(e.Name(), ".m4s") {
 				return true
 			}
 		}
@@ -513,7 +513,7 @@ func TestIntegration_PathTraversalSecurity(t *testing.T) {
 	require.NoError(t, err)
 	t.Cleanup(sm.Close)
 
-	handler, err := hls.NewStreamHandler(sm, logger)
+	handler, err := hls.NewStreamHandler(sm, nil, logger)
 	require.NoError(t, err)
 	t.Cleanup(handler.Close)
 
@@ -545,8 +545,8 @@ func TestIntegration_PathTraversalSecurity(t *testing.T) {
 		name string
 		path string
 	}{
-		{"segment traversal up", base + "/../../../etc/passwd/seg-00000.ts"},
-		{"segment dot-dot", base + "/..%2f..%2f..%2fetc%2fpasswd/seg-00000.ts"},
+		{"segment traversal up", base + "/../../../etc/passwd/seg-00000.m4s"},
+		{"segment dot-dot", base + "/..%2f..%2f..%2fetc%2fpasswd/seg-00000.m4s"},
 		{"profile dot-dot", base + "/../../etc/passwd/index.m3u8"},
 		{"media playlist traversal", base + "/../../../etc/passwd/index.m3u8"},
 		{"audio traversal", base + "/audio/../../../etc/passwd/index.m3u8"},
@@ -604,7 +604,7 @@ func TestIntegration_MultipleAudioRenditions(t *testing.T) {
 				return false
 			}
 			for _, e := range entries {
-				if strings.HasSuffix(e.Name(), ".ts") {
+				if strings.HasSuffix(e.Name(), ".m4s") {
 					return true
 				}
 			}
@@ -614,7 +614,7 @@ func TestIntegration_MultipleAudioRenditions(t *testing.T) {
 	}
 
 	// Serve audio via HTTP handler
-	handler, err := hls.NewStreamHandler(sm, testLogger())
+	handler, err := hls.NewStreamHandler(sm, nil, testLogger())
 	require.NoError(t, err)
 	t.Cleanup(handler.Close)
 

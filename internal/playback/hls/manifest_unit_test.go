@@ -89,16 +89,30 @@ func TestEstimateBandwidth_AllBranches(t *testing.T) {
 	t.Run("both zero uses defaults", func(t *testing.T) {
 		pd := transcode.ProfileDecision{VideoBitrate: 0, AudioBitrate: 0}
 		bw := estimateBandwidth(pd, 0, 0)
-		// Default: 5000000 video + 192000 audio
-		expected := bwCalc(5000000, 192000)
+		// Default: 2_000_000 video (Height=0 fallback) + 192000 audio
+		expected := bwCalc(2_000_000, 192000)
 		assert.Equal(t, expected, bw)
 	})
 
 	t.Run("video zero no source uses default video", func(t *testing.T) {
 		pd := transcode.ProfileDecision{VideoBitrate: 0, AudioBitrate: 128}
 		bw := estimateBandwidth(pd, 0, 0)
-		// Default video 5000000 + 128*1000
-		expected := bwCalc(5000000, 128*1000)
+		// Default video 2_000_000 (Height=0) + 128*1000
+		expected := bwCalc(2_000_000, 128*1000)
+		assert.Equal(t, expected, bw)
+	})
+
+	t.Run("4K copy profile uses 40 Mbps default", func(t *testing.T) {
+		pd := transcode.ProfileDecision{VideoBitrate: 0, AudioBitrate: 192, Height: 2160}
+		bw := estimateBandwidth(pd, 0, 0)
+		expected := bwCalc(40_000_000, 192*1000)
+		assert.Equal(t, expected, bw)
+	})
+
+	t.Run("1080p copy profile uses 10 Mbps default", func(t *testing.T) {
+		pd := transcode.ProfileDecision{VideoBitrate: 0, AudioBitrate: 192, Height: 1080}
+		bw := estimateBandwidth(pd, 0, 0)
+		expected := bwCalc(10_000_000, 192*1000)
 		assert.Equal(t, expected, bw)
 	})
 
@@ -152,11 +166,11 @@ func TestAudioRenditionSegmentPath(t *testing.T) {
 
 func TestGenerateMasterPlaylist_WithAudioAndSubtitles(t *testing.T) {
 	profiles := []ProfileVariant{
-		{Name: "original", Width: 1920, Height: 1080, Bandwidth: 8000000},
-		{Name: "720p", Width: 1280, Height: 720, Bandwidth: 3000000},
+		{Name: "original", Width: 1920, Height: 1080, Bandwidth: 8000000, VideoCodec: "h264"},
+		{Name: "720p", Width: 1280, Height: 720, Bandwidth: 3000000, VideoCodec: "libx264"},
 	}
 	audio := []AudioVariant{
-		{Index: 0, Name: "English 5.1", Language: "en", Channels: 6, IsDefault: true},
+		{Index: 0, Name: "English 5.1", Language: "en", Channels: 6, IsDefault: true, Codec: "aac"},
 	}
 	subtitles := []SubtitleVariant{
 		{Index: 0, Name: "English", Language: "en", IsDefault: true},
@@ -168,14 +182,15 @@ func TestGenerateMasterPlaylist_WithAudioAndSubtitles(t *testing.T) {
 	assert.Contains(t, playlist, `AUDIO="audio"`)
 	assert.Contains(t, playlist, `SUBTITLES="subs"`)
 
-	// Verify both variant stream lines reference both groups
-	assert.Contains(t, playlist, `BANDWIDTH=8000000,RESOLUTION=1920x1080,NAME="original",AUDIO="audio",SUBTITLES="subs"`)
-	assert.Contains(t, playlist, `BANDWIDTH=3000000,RESOLUTION=1280x720,NAME="720p",AUDIO="audio",SUBTITLES="subs"`)
+	// Verify CODECS are present with audio codec included
+	assert.Contains(t, playlist, `CODECS="avc1.640028,mp4a.40.2"`)
+	assert.Contains(t, playlist, `CODECS="avc1.64001f,mp4a.40.2"`)
+	assert.Contains(t, playlist, `AUDIO="audio",SUBTITLES="subs"`)
 }
 
 func TestGenerateMasterPlaylist_NoAudioNoSubtitles(t *testing.T) {
 	profiles := []ProfileVariant{
-		{Name: "original", Width: 1920, Height: 1080, Bandwidth: 5000000},
+		{Name: "original", Width: 1920, Height: 1080, Bandwidth: 5000000, VideoCodec: "h264"},
 	}
 
 	playlist := GenerateMasterPlaylist(profiles, nil, nil)
@@ -199,4 +214,59 @@ func TestGenerateMasterPlaylist_MultipleAudioDefaultSelection(t *testing.T) {
 	assert.Contains(t, playlist, `NAME="English",DEFAULT=NO,AUTOSELECT=NO`)
 	assert.Contains(t, playlist, `NAME="Spanish",DEFAULT=YES,AUTOSELECT=YES`)
 	assert.Contains(t, playlist, `NAME="French",DEFAULT=NO,AUTOSELECT=NO`)
+}
+
+func TestCleanHEVCCodecString(t *testing.T) {
+	tests := []struct {
+		name     string
+		input    string
+		expected string
+	}{
+		{
+			name:     "DV Main 10 L150 constraint 90 stripped",
+			input:    "hvc1.2.4.L150.90",
+			expected: "hvc1.2.4.L150",
+		},
+		{
+			name:     "DV Main 10 H153 constraint 90 stripped",
+			input:    "hvc1.2.4.H153.90",
+			expected: "hvc1.2.4.H153",
+		},
+		{
+			name:     "standard B0 stripped",
+			input:    "hvc1.1.6.L120.B0",
+			expected: "hvc1.1.6.L120",
+		},
+		{
+			name:     "multi-byte constraints stripped",
+			input:    "hvc1.2.4.L150.90.00.00",
+			expected: "hvc1.2.4.L150",
+		},
+		{
+			name:     "hev1 prefix also cleaned",
+			input:    "hev1.2.4.L150.90",
+			expected: "hev1.2.4.L150",
+		},
+		{
+			name:     "no constraint part unchanged",
+			input:    "hvc1.2.4.L150",
+			expected: "hvc1.2.4.L150",
+		},
+		{
+			name:     "non-HEVC string unchanged",
+			input:    "avc1.640028",
+			expected: "avc1.640028",
+		},
+		{
+			name:     "empty string unchanged",
+			input:    "",
+			expected: "",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equal(t, tt.expected, cleanHEVCCodecString(tt.input))
+		})
+	}
 }

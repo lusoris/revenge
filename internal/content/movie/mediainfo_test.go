@@ -172,3 +172,128 @@ func TestMediaInfoProber_Probe_Integration(t *testing.T) {
 	assert.Greater(t, info.Height, 0)
 	assert.Greater(t, info.DurationSeconds, 0.0)
 }
+
+func TestBuildHEVCCodecString(t *testing.T) {
+	tests := []struct {
+		name      string
+		extradata []byte
+		expected  string
+	}{
+		{
+			name: "Main 10 Profile, Level 5.0 (DV Profile 8) - real hvcC",
+			// Byte 1: 0x02 → space=0, tier=0, profile_idc=2
+			// Bytes 2-5: 0x20000000 → compat_flags (bit 29 set)
+			// Bytes 6-11: 0x90 0x00 0x00 0x00 0x00 0x00 → constraints
+			// Byte 12: 0x96 = 150 → Level 5.0
+			extradata: []byte{
+				0x01,                               // configurationVersion
+				0x02,                               // profile_space=0, tier=0, profile_idc=2
+				0x20, 0x00, 0x00, 0x00,             // general_profile_compatibility_flags
+				0x90, 0x00, 0x00, 0x00, 0x00, 0x00, // general_constraint_indicator_flags
+				0x96,                               // general_level_idc = 150
+			},
+			expected: "hvc1.2.4.L150.90",
+		},
+		{
+			name: "Main Profile, Level 4.0",
+			// Byte 1: 0x01 → space=0, tier=0, profile_idc=1
+			// Bytes 2-5: 0x60000000 → compat_flags (bits 30,29 set) → reversed = 0x6
+			// Bytes 6-11: 0xB0 0x00 0x00 0x00 0x00 0x00
+			// Byte 12: 120 → Level 4.0
+			extradata: []byte{
+				0x01,
+				0x01,
+				0x60, 0x00, 0x00, 0x00,
+				0xB0, 0x00, 0x00, 0x00, 0x00, 0x00,
+				0x78,
+			},
+			expected: "hvc1.1.6.L120.B0",
+		},
+		{
+			name: "High Tier, Main 10 Profile, Level 5.1",
+			// Byte 1: 0x22 → space=0, tier=1, profile_idc=2
+			extradata: []byte{
+				0x01,
+				0x22,                               // tier=1, profile_idc=2
+				0x20, 0x00, 0x00, 0x00,             // compat_flags
+				0x90, 0x00, 0x00, 0x00, 0x00, 0x00,
+				0x99,                               // level_idc = 153 (Level 5.1)
+			},
+			expected: "hvc1.2.4.H153.90",
+		},
+		{
+			name:      "Short extradata returns empty",
+			extradata: []byte{0x01, 0x02},
+			expected:  "",
+		},
+		{
+			name:      "Nil extradata returns empty",
+			extradata: nil,
+			expected:  "",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := buildHEVCCodecString(tt.extradata)
+			assert.Equal(t, tt.expected, result)
+		})
+	}
+}
+
+func TestBuildH264CodecString(t *testing.T) {
+	tests := []struct {
+		name      string
+		extradata []byte
+		expected  string
+	}{
+		{
+			name:      "High Profile, Level 4.0",
+			extradata: []byte{0x01, 0x64, 0x00, 0x28},
+			expected:  "avc1.640028",
+		},
+		{
+			name:      "Constrained Baseline, Level 3.1",
+			extradata: []byte{0x01, 0x42, 0xC0, 0x1F},
+			expected:  "avc1.42C01F",
+		},
+		{
+			name:      "Short extradata returns empty",
+			extradata: []byte{0x01, 0x64},
+			expected:  "",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := buildH264CodecString(tt.extradata)
+			assert.Equal(t, tt.expected, result)
+		})
+	}
+}
+
+func TestReverseBits32(t *testing.T) {
+	tests := []struct {
+		name     string
+		input    uint32
+		expected uint32
+	}{
+		{
+			name:     "HEVC Main 10 compat flags",
+			input:    0x20000000, // bit 29 set
+			expected: 0x00000004, // bit 2 set
+		},
+		{
+			name:     "HEVC Main compat flags",
+			input:    0x60000000, // bits 30,29 set
+			expected: 0x00000006, // bits 2,1 set
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := reverseBits32(tt.input)
+			assert.Equal(t, tt.expected, result)
+		})
+	}
+}

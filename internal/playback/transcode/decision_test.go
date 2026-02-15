@@ -20,7 +20,7 @@ func TestAnalyzeMedia_H264AAC_CanRemux(t *testing.T) {
 	}
 
 	profiles := GetEnabledProfiles([]string{"original", "720p", "480p"})
-	d := AnalyzeMedia(info, profiles)
+	d := AnalyzeMedia(info, profiles, nil)
 
 	assert.True(t, d.CanRemux, "H.264+AAC should be remuxable")
 	assert.Equal(t, "h264", d.SourceVideoCodec)
@@ -41,7 +41,7 @@ func TestAnalyzeMedia_H264AAC_CanRemux(t *testing.T) {
 	assert.Equal(t, "libx264", p720.VideoCodec)
 }
 
-func TestAnalyzeMedia_HEVC_MustTranscode(t *testing.T) {
+func TestAnalyzeMedia_HEVC_CanRemux(t *testing.T) {
 	info := &movie.MediaInfo{
 		VideoCodec:       "hevc",
 		Width:            3840,
@@ -53,24 +53,23 @@ func TestAnalyzeMedia_HEVC_MustTranscode(t *testing.T) {
 	}
 
 	profiles := GetEnabledProfiles([]string{"original", "1080p", "720p"})
-	d := AnalyzeMedia(info, profiles)
+	d := AnalyzeMedia(info, profiles, nil)
 
-	assert.False(t, d.CanRemux, "HEVC should not be remuxable")
+	// Video is HEVC (fMP4-compatible) but audio is E-AC-3 (not browser-decodable)
+	assert.False(t, d.CanRemux, "HEVC+EAC3 can't fully remux because browsers can't decode EAC3")
 	assert.Equal(t, "hevc", d.SourceVideoCodec)
 
-	// All profiles need video transcode (HEVC → H.264)
-	for _, p := range d.Profiles {
-		assert.True(t, p.NeedsTranscode, "profile %s should need transcode", p.Name)
-		assert.Equal(t, "libx264", p.VideoCodec)
-	}
-
-	// Original profile: eac3 is HLS-compatible so audio is copied
+	// Original profile: video copied (HEVC fMP4), audio transcoded to AAC
 	orig := d.Profiles[0]
 	assert.Equal(t, "original", orig.Name)
-	assert.Equal(t, "copy", orig.AudioCodec, "eac3 is HLS-compatible, should copy")
+	assert.True(t, orig.NeedsTranscode, "must transcode because audio needs AAC conversion")
+	assert.Equal(t, "copy", orig.VideoCodec, "HEVC should be copied in fMP4")
+	assert.Equal(t, "aac", orig.AudioCodec, "eac3 must be transcoded to AAC for browsers")
 
-	// Sized profiles: audio transcoded to AAC for consistency
+	// Sized profiles that are smaller than source: must transcode video (scale down)
 	for _, p := range d.Profiles[1:] {
+		assert.True(t, p.NeedsTranscode, "sized profile %s should need transcode for scaling", p.Name)
+		assert.Equal(t, "libx264", p.VideoCodec, "sized profile uses libx264 for scaling")
 		assert.Equal(t, "aac", p.AudioCodec, "sized profile %s should transcode audio", p.Name)
 	}
 }
@@ -87,7 +86,7 @@ func TestAnalyzeMedia_H264DTS_MixedRemux(t *testing.T) {
 	}
 
 	profiles := GetEnabledProfiles([]string{"original"})
-	d := AnalyzeMedia(info, profiles)
+	d := AnalyzeMedia(info, profiles, nil)
 
 	assert.False(t, d.CanRemux, "H.264+DTS cannot fully remux")
 
@@ -110,7 +109,7 @@ func TestAnalyzeMedia_SmallSource_NoUpscale(t *testing.T) {
 	}
 
 	profiles := GetEnabledProfiles([]string{"original", "1080p", "720p", "480p"})
-	d := AnalyzeMedia(info, profiles)
+	d := AnalyzeMedia(info, profiles, nil)
 
 	// 1080p profile should use source dimensions (720p source)
 	for _, p := range d.Profiles {
@@ -129,7 +128,7 @@ func TestAnalyzeMedia_NoAudioStreams(t *testing.T) {
 	}
 
 	profiles := GetEnabledProfiles([]string{"original"})
-	d := AnalyzeMedia(info, profiles)
+	d := AnalyzeMedia(info, profiles, nil)
 
 	assert.False(t, d.CanRemux, "no audio means can't fully remux")
 	assert.Equal(t, "", d.SourceAudioCodec)

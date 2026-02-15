@@ -92,8 +92,8 @@ func TestStreamHandler_ServeSegment(t *testing.T) {
 	segDir := t.TempDir()
 	profileDir := filepath.Join(segDir, "original")
 	require.NoError(t, os.MkdirAll(profileDir, 0o755))
-	segFile := filepath.Join(profileDir, "seg-00000.ts")
-	require.NoError(t, os.WriteFile(segFile, []byte("fake-ts-data"), 0o644))
+	segFile := filepath.Join(profileDir, "seg-00000.m4s")
+	require.NoError(t, os.WriteFile(segFile, []byte("fake-fmp4-data"), 0o644))
 
 	sess := &playback.Session{
 		ID:         uuid.Must(uuid.NewV7()),
@@ -113,15 +113,15 @@ func TestStreamHandler_ServeSegment(t *testing.T) {
 	require.NoError(t, sm.Create(sess))
 
 	req := httptest.NewRequest(http.MethodGet,
-		"/api/v1/playback/stream/"+sess.ID.String()+"/original/seg-00000.ts", nil)
+		"/api/v1/playback/stream/"+sess.ID.String()+"/original/seg-00000.m4s", nil)
 	rec := httptest.NewRecorder()
 
 	handler.ServeHTTP(rec, req)
 
 	assert.Equal(t, http.StatusOK, rec.Code)
-	assert.Equal(t, "video/mp2t", rec.Header().Get("Content-Type"))
+	assert.Equal(t, "video/mp4", rec.Header().Get("Content-Type"))
 	assert.Contains(t, rec.Header().Get("Cache-Control"), "immutable")
-	assert.Equal(t, "fake-ts-data", rec.Body.String())
+	assert.Equal(t, "fake-fmp4-data", rec.Body.String())
 }
 
 func TestStreamHandler_ServeSegment_NotFoundFile(t *testing.T) {
@@ -145,7 +145,7 @@ func TestStreamHandler_ServeSegment_NotFoundFile(t *testing.T) {
 	require.NoError(t, sm.Create(sess))
 
 	req := httptest.NewRequest(http.MethodGet,
-		"/api/v1/playback/stream/"+sess.ID.String()+"/original/seg-99999.ts", nil)
+		"/api/v1/playback/stream/"+sess.ID.String()+"/original/seg-99999.m4s", nil)
 	rec := httptest.NewRecorder()
 
 	handler.ServeHTTP(rec, req)
@@ -229,7 +229,7 @@ func TestStreamHandler_ServeAudioRenditionSegment(t *testing.T) {
 	segDir := t.TempDir()
 	audioDir := filepath.Join(segDir, "audio", "0")
 	require.NoError(t, os.MkdirAll(audioDir, 0o755))
-	segFile := filepath.Join(audioDir, "seg-00001.ts")
+	segFile := filepath.Join(audioDir, "seg-00001.m4s")
 	require.NoError(t, os.WriteFile(segFile, []byte("fake-audio-data"), 0o644))
 
 	sess := &playback.Session{
@@ -248,13 +248,13 @@ func TestStreamHandler_ServeAudioRenditionSegment(t *testing.T) {
 	require.NoError(t, sm.Create(sess))
 
 	req := httptest.NewRequest(http.MethodGet,
-		"/api/v1/playback/stream/"+sess.ID.String()+"/audio/0/seg-00001.ts", nil)
+		"/api/v1/playback/stream/"+sess.ID.String()+"/audio/0/seg-00001.m4s", nil)
 	rec := httptest.NewRecorder()
 
 	handler.ServeHTTP(rec, req)
 
 	assert.Equal(t, http.StatusOK, rec.Code)
-	assert.Equal(t, "video/mp2t", rec.Header().Get("Content-Type"))
+	assert.Equal(t, "video/mp4", rec.Header().Get("Content-Type"))
 	assert.Contains(t, rec.Header().Get("Cache-Control"), "immutable")
 	assert.Equal(t, "fake-audio-data", rec.Body.String())
 }

@@ -256,9 +256,19 @@ func (s *SyncService) getExistingSonarrSeries(ctx context.Context) (map[int]uuid
 	return result, nil
 }
 
-// addSeries creates a new series from Sonarr data.
+// addSeries creates a new series from Sonarr data, or merges into an existing
+// series if one was already created by a different sync path (e.g. library scan).
 func (s *SyncService) addSeries(ctx context.Context, ss Series, result *SyncResult) error {
 	series := s.mapper.ToSeries(&ss)
+
+	// Check if this series was already created by the library scan (keyed by TVDB ID)
+	if series.TVDbID != nil && *series.TVDbID > 0 {
+		if existing, err := s.tvshowRepo.GetSeriesByTVDbID(ctx, *series.TVDbID); err == nil {
+			s.logger.Info("series already exists (matched by TVDB ID), updating with Sonarr data",
+				"id", existing.ID, "title", existing.Title, "sonarr_id", ss.ID)
+			return s.updateSeries(ctx, ss, existing.ID, result)
+		}
+	}
 
 	// Create the series
 	createParams := s.seriesToCreateParams(series)

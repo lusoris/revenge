@@ -9,6 +9,7 @@ import (
 	"log/slog"
 
 	"github.com/google/uuid"
+	"github.com/lusoris/revenge/internal/api/middleware"
 	"github.com/lusoris/revenge/internal/api/ogen"
 	"github.com/lusoris/revenge/internal/playback"
 )
@@ -54,6 +55,9 @@ func (h *Handler) StartPlaybackSession(ctx context.Context, req *ogen.StartPlayb
 	if req.StartPosition.Set {
 		pbReq.StartPosition = req.StartPosition.Value
 	}
+
+	// Extract User-Agent from request metadata (injected by middleware)
+	pbReq.UserAgent = middleware.GetUserAgent(ctx)
 
 	sess, err := h.playbackService.StartSession(ctx, userID, pbReq)
 	if err != nil {

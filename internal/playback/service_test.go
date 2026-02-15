@@ -544,18 +544,18 @@ func TestAudioRenditionCodec(t *testing.T) {
 		wantCodec   string
 		wantBitrate int
 	}{
-		// HLS-compatible codecs should be copied
+		// Browser-MSE-compatible codecs should be copied
 		{name: "aac is copied", sourceCodec: "aac", wantCodec: "copy", wantBitrate: 0},
 		{name: "mp3 is copied", sourceCodec: "mp3", wantCodec: "copy", wantBitrate: 0},
-		{name: "ac3 is copied", sourceCodec: "ac3", wantCodec: "copy", wantBitrate: 0},
-		{name: "eac3 is copied", sourceCodec: "eac3", wantCodec: "copy", wantBitrate: 0},
+		{name: "flac is copied", sourceCodec: "flac", wantCodec: "copy", wantBitrate: 0},
+		{name: "opus is copied", sourceCodec: "opus", wantCodec: "copy", wantBitrate: 0},
 
-		// Non-HLS codecs should be transcoded to AAC at 256 kbps
-		{name: "dts is transcoded", sourceCodec: "dts", wantCodec: "aac", wantBitrate: 256},
+		// Non-browser-decodable codecs should be transcoded to AAC at 256 kbps
+		{name: "ac3 is transcoded", sourceCodec: "ac3", wantCodec: "aac", wantBitrate: 256},
+		{name: "eac3 is transcoded", sourceCodec: "eac3", wantCodec: "aac", wantBitrate: 256},
 		{name: "truehd is transcoded", sourceCodec: "truehd", wantCodec: "aac", wantBitrate: 256},
-		{name: "flac is transcoded", sourceCodec: "flac", wantCodec: "aac", wantBitrate: 256},
+		{name: "dts is transcoded", sourceCodec: "dts", wantCodec: "aac", wantBitrate: 256},
 		{name: "pcm_s16le is transcoded", sourceCodec: "pcm_s16le", wantCodec: "aac", wantBitrate: 256},
-		{name: "opus is transcoded", sourceCodec: "opus", wantCodec: "aac", wantBitrate: 256},
 		{name: "vorbis is transcoded", sourceCodec: "vorbis", wantCodec: "aac", wantBitrate: 256},
 		{name: "empty codec is transcoded", sourceCodec: "", wantCodec: "aac", wantBitrate: 256},
 	}
