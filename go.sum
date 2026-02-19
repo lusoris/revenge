@@ -411,8 +411,8 @@ github.com/redis/rueidis/mock v1.0.71 h1:6hZG6GWfQatOwhmATpaIuH+bGvrU/cAFwOf3ntG
 github.com/redis/rueidis/mock v1.0.71/go.mod h1:B38Te25JMMav86Uw6CDUX4rE6GyOIH/XcHPqzYHrkbY=
 github.com/redis/rueidis/rueidisotel v1.0.71 h1:igqgjH2fNkN4ibxgmlOnJkn5OtfuhLzck7MPSL5ERtk=
 github.com/redis/rueidis/rueidisotel v1.0.71/go.mod h1:hm97S5l1prqnXfI1xK6QqVGYEUmaYEPg6qzEJXg3Low=
-github.com/refraction-networking/utls v1.8.1 h1:yNY1kapmQU8JeM1sSw2H2asfTIwWxIkrMJI0pRUOCAo=
-github.com/refraction-networking/utls v1.8.1/go.mod h1:jkSOEkLqn+S/jtpEHPOsVv/4V4EVnelwbMQl4vCWXAM=
+github.com/refraction-networking/utls v1.8.2 h1:j4Q1gJj0xngdeH+Ox/qND11aEfhpgoEvV+S9iJ2IdQo=
+github.com/refraction-networking/utls v1.8.2/go.mod h1:jkSOEkLqn+S/jtpEHPOsVv/4V4EVnelwbMQl4vCWXAM=
 github.com/riverqueue/river v0.30.2 h1:RtJ3/CBat00Jjtllvy2P7A/QxSH3PRR0ri/B8PxWm1w=
 github.com/riverqueue/river v0.30.2/go.mod h1:iPpsnw82MCcwAVhLo42g7eNdb5apT8VZ37Bel2x/Gws=
 github.com/riverqueue/river/riverdriver v0.30.2 h1:JUmzh0iGPVpK4H7hugpgmQm2crOI9X4iKsd/9wz3IJk=

@@ -170,7 +170,7 @@ require (
 	github.com/prometheus/procfs v0.16.1 // indirect
 	github.com/quic-go/qpack v0.6.0 // indirect
 	github.com/quic-go/quic-go v0.57.1 // indirect
-	github.com/refraction-networking/utls v1.8.1 // indirect
+	github.com/refraction-networking/utls v1.8.2 // indirect
 	github.com/riverqueue/river/riverdriver v0.30.2 // indirect
 	github.com/riverqueue/river/rivershared v0.30.2 // indirect
 	github.com/segmentio/asm v1.2.1 // indirect
